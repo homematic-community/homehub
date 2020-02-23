@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="de">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=1200">
+
+        <title><?php echo $title; ?></title>
+        <base href="<?php echo $appBase.'/'; ?>">
+        <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+
+        <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
+        <link href="../assets/css/style.css" rel="stylesheet">
+
+        <?php
+            if($customCss == true) {
+                echo '<link href="../assets/css/custom.css" rel="stylesheet">';
+            }
+        ?>
+        
+        <link rel="shortcut icon" href="../assets/images/favicon.png">
+
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+            <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <body>
+        <header>
+            <span></span>
+            <span><?php echo $title; ?></span>
+            <span id="time"></span>
+        </header>
+        <div class="container" id="wrapper">
+            <nav id="sidebar" class="offcanvas">
+                <?php
+                    foreach($menu as $entry) {
+                        $selected = '';
+                        if($entry['name'] == $selectedCat) {
+                            $selected = 'selected';
+                        }
+
+                        echo '<a class="'.$selected.'" href="'.urlencode($entry['name']).'"><img src="../assets/icons/'.$entry['icon'].'" class="icon">'.$entry['name'].'</a>';
+                                                
+                        if(isset($entry['append_divider']) && $entry['append_divider'] == "true") {
+                            echo '<div class="divider"></div>';
+                        }
+                    }
+                ?>
+            </nav>
+            <div id="content" class="panel-group">                
+                <?php
+                    if(isset($flash['error'])) {
+                        echo '<div id="flash-error" style="display: block;">'.$flash['error'].'</div>';
+                    } else {
+                        echo '<div id="flash-error"></div>';
+                    }
+                ?>
+                
+                <?php
+                    $lastCategory = $selectedCat;
+
+                    foreach($components as $category => $categoryComponents) {
+                        foreach($categoryComponents as $component) {
+                            $func = str_replace('-', '_', $component['component']);
+                            
+                            if(function_exists($func)) {
+                                $retVal = call_user_func($func, $component);
+
+                                if($retVal <> '') {
+                                    if($lastCategory == $selectedCat && $lastCategory <> $category) {
+                                        echo '<fieldset><legend>'.$category.'</legend>';
+
+                                        $lastComponent = '';
+                                    } elseif($lastCategory <> $category) {
+                                        echo '</fieldset><fieldset><legend>'.$category.'</legend>';
+
+                                        $lastComponent = '';
+                                    }
+
+                                    echo $retVal;
+                                    
+                                    if(isset($component['append_divider']) && $component['append_divider'] == "true") {
+                                        echo '<div class="divider"></div>';
+                                    }
+
+                                    $lastCategory = $category;
+                                }
+                            }
+                        }
+                    }
+
+                    if($lastCategory <> $selectedCat) {
+                        echo '</fieldset>';
+                    }
+                ?>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            //<![CDATA[
+            var homematicIp = '<?php echo $homematicIp; ?>';
+            var timerMiliseconds = <?php echo $timerPeriod * 1000; ?>;
+            //]]>
+        </script>
+
+        <script src="../assets/js/jquery-2.2.1.min.js"></script>
+        <script src="../assets/js/bootstrap.min.js"></script>
+        <script src='../assets/js/script.js'></script>
+        
+        <?php
+            if($customJs == true) {
+                echo '<script src="../assets/js/custom.js"></script>';
+            }
+        ?><?php
+          if (isset($_SERVER["PATH_INFO"])){
+            if ($_SERVER["PATH_INFO"] == "/Radio") echo '<script src="../assets/js/radio.js"></script>';
+          }
+        ?>
+    </body>
+</html>
