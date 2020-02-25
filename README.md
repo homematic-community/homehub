@@ -19,111 +19,128 @@ HomeHub benötigt eine installierte XML-API auf der CCU.
 ## Unterstützte HomeMatic Komponenten (zumindest lesend)
 * HM-CC-RT-DN
 * HM-CC-SCD
-* HM-CC-TC (validieren)
+* HM-CC-TC
 * HM-CC-VD
-* HM-CC-VG-1 (validieren)
-* HM-Dis-TD-T (validieren)
+* HM-CC-VG-1
+* HM-Dis-TD-T
 * HM-Dis-WM55
 * HM-ES-PMSw1-DR
-* HM-ES-PMSw1-Pl-DN-R1 (validieren)
-* HM-ES-PMSw1-Pl-DN-R5 (validieren)
 * HM-ES-PMSw1-Pl
+* HM-ES-PMSw1-Pl-DN-R1
+* HM-ES-PMSw1-Pl-DN-R5
 * HM-ES-TX-WM
 * HM-LC-Bl1-FM
-* HM-LC-Bl1-SM (validieren)
 * HM-LC-Bl1PBU-FM
+* HM-LC-Bl1-SM
 * HM-LC-Dim1PWM-CV
-* HM-LC-Dim1T-CV (validieren)
+* HM-LC-Dim1T-CV
 * HM-LC-Dim1T-FM
-* HM-LC-Dim1T-Pl
 * HM-LC-Dim1TPBU-FM
+* HM-LC-Dim1T-Pl
 * HM-LC-RGBW-WM
 * HM-LC-Sw1-Ba-PCB
-* HM-LC-Sw1-DR (validieren)
+* HM-LC-Sw1-DR
 * HM-LC-Sw1-FM
 * HM-LC-Sw1-PB-FM
+* HM-LC-Sw1PBU-FM
+* HM-LC-Sw1-Pl
 * HM-LC-Sw1-Pl-2
 * HM-LC-Sw1-Pl-CT-R1
 * HM-LC-Sw1-Pl-DN-R1
 * HM-LC-Sw1-Pl-DN-R5
-* HM-LC-Sw1-Pl
-* HM-LC-Sw1-SM (validieren)
-* HM-LC-Sw1PBU-FM
+* HM-LC-Sw1-SM
 * HM-LC-Sw2-FM
 * HM-LC-Sw4-Ba-PCB
-* HM-LC-Sw4-DR (validieren)
+* HM-LC-Sw4-DR
 * HM-LC-Sw4-PCB
 * HM-LC-Sw4-SM
 * HM-LC-Sw4-WM
-* HM-MOD-EM-8 (validieren)
-* HM-MOD-Re-8 (validieren)
-* HM-OU-CFM-Pl (validieren)
+* HM-MOD-EM-8
+* HM-MOD-Re-8
+* HM-OU-CFM-Pl
 * HM-OU-CM-PCB
 * HM-OU-LED16
-* HM-PB-2-FM (validieren)
+* HM-PB-2-FM
 * HM-PB-2-WM
-* HM-PB-2-WM55-2
 * HM-PB-2-WM55
-* HM-PB-4-WM (validieren)
-* HM-PB-4Dis-WM-2
+* HM-PB-2-WM55-2
 * HM-PB-4Dis-WM
+* HM-PB-4Dis-WM-2
+* HM-PB-4-WM
 * HM-PB-6-WM55
 * HM-PBI-4-FM
+* HM-RC-19
 * HM-RC-19-B
 * HM-RC-19-SW
-* HM-RC-19
+* HM-RC-4
 * HM-RC-4-2
 * HM-RC-4-B
-* HM-RC-4
 * HM-RC-8
 * HM-RC-Dis-H-x-EU
-* HM-RC-Key3-B (validieren)
+* HM-RC-Key3-B
 * HM-RC-Key4-2
 * HM-RC-P1
 * HM-RCV-50
 * HM-SCI-3-FM
-* HM-Sec-Key-S
 * HM-Sec-Key
-* HM-Sec-MDIR-2
+* HM-Sec-Key-S
 * HM-Sec-MDIR
+* HM-Sec-MDIR-2
 * HM-Sec-RHS
-* HM-Sec-SC-2
 * HM-Sec-SC
+* HM-Sec-SC-2
 * HM-Sec-SCo
 * HM-Sec-SD-2-Team
 * HM-Sec-SD-Team
 * HM-Sec-SFA-SM
-* HM-Sec-TiS (validieren)
-* HM-Sec-WDS (validieren)
+* HM-Sec-TiS
+* HM-Sec-WDS
 * HM-Sec-WDS-2
 * HM-Sec-Win
-* HM-Sen-DB-PCB (validieren)
+* HM-Sen-DB-PCB
 * HM-Sen-EP
-* HM-Sen-MDIR-O-2 (validieren)
-* HM-Sen-MDIR-O (validieren)
-* HM-Sen-MDIR-SM (validieren)
+* HM-Sen-MDIR-O
+* HM-Sen-MDIR-O-2
+* HM-Sen-MDIR-SM
 * HM-Sen-MDIR-WM55
 * HM-Sen-RD-O
 * HM-Sen-Wa-Od
 * HM-SwI-3-FM
 * HM-TC-IT-WM-W-EU
 * HM-WDC7000
-* HM-WDS10-TH-O
 * HM-WDS100-C6-O
+* HM-WDS10-TH-O
 * HM-WDS30-OT2-SM
-* HM-WDS30-OT2-SM-2 (validieren)
-* HM-WDS30-T-O (validieren)
-* HM-WDS40-TH-I-2
+* HM-WDS30-OT2-SM-2
+* HM-WDS30-T-O
 * HM-WDS40-TH-I
-* HMW-IO-12-FM (validieren)
+* HM-WDS40-TH-I-2
+* HMW-IO-12-FM
 * HMW-IO-12-Sw14-DR
 * HMW-IO-12-Sw7-DR
 * HMW-IO-4-FM
 * HMW-LC-Bl1-DR
 * HMW-LC-Dim1L-DR
 * HMW-LC-Sw2-DR
-* HMW-RCV-50 (validieren)
+* HMW-RCV-50
 * HMW-Sen-SC-12-DR
+* HMIP-BDT
+* HMIP-BROLL
+* HMIP-BSL
+* HMIP-BSM
+* HMIP-BWTH
+* HMIP-eTRV
+* HMIP-FSM
+* HMIP-FSM16
+* HMIP-PSM
+* HMIP-SCI
+* HMIP-SCI 
+* HMIP-SRH
+* HMIP-STHD
+* HMIP-SWDO-I
+* HMIP-SWO-B
+* HMIP-WTH-2
+* HMIPW-DRS8
 * Programme
 * Systemvariablen
 
