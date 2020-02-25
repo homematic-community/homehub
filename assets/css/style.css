@@ -28,6 +28,10 @@ header #time {
     text-align: right;
 }
 
+header #date {
+    text-align: left;
+}
+
 a:hover {
     text-decoration: none;
 }

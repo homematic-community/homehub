@@ -28,7 +28,7 @@
     </head>
     <body>
         <header>
-            <span></span>
+            <span id="date"></span>
             <span><?php echo $title; ?></span>
             <span id="time"></span>
         </header>
@@ -62,10 +62,10 @@
                     $lastCategory = $selectedCat;
 
                     foreach($components as $category => $categoryComponents) {
-                        foreach($categoryComponents as $component) {
+                        foreach($categoryComponents as $component) {         
                             $func = str_replace('-', '_', $component['component']);
                             
-                            if(function_exists($func)) {
+                            if(function_exists($func)) { 
                                 $retVal = call_user_func($func, $component);
 
                                 if($retVal <> '') {
@@ -113,10 +113,6 @@
             if($customJs == true) {
                 echo '<script src="../assets/js/custom.js"></script>';
             }
-        ?><?php
-          if (isset($_SERVER["PATH_INFO"])){
-            if ($_SERVER["PATH_INFO"] == "/Radio") echo '<script src="../assets/js/radio.js"></script>';
-          }
         ?>
     </body>
 </html>

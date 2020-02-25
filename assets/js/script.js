@@ -23,9 +23,10 @@ $(document).ready(function () {
 var updateDatapoints = function () {
     //192.168.2.6/config/xmlapi/state.cgi?datapoint_id=
 
-    // Uhrzeit setzen
+    // Uhrzeit und Datum setzen
     date = new Date();
     $('#time').html(('0' + date.getHours()).slice(-2) + ':' + ('0' + date.getMinutes()).slice(-2) + ' Uhr');
+    $('#date').html(('0' + date.getDate()).slice(-2) + '.' + ('0' + (date.getMonth()+1)).slice(-2) + '.' + date.getFullYear());
 
     var id = '';
 
@@ -2291,28 +2292,26 @@ var updateDatapoints = function () {
                         }
                         break;
                     case 'HmIP-STHD':
-                        switch (datapoint) {  
+                        switch (datapoint) {
+                            case 'HUMIDITY':
+                                $('[data-id="' + ise_id + '"]').html('RF: ' + (Math.round(value * 10) / 10) + ' %');
+                                break;
                             case 'ACTUAL_TEMPERATURE':
-                                $('[data-id="' + ise_id + '"]').html((Math.round(value * 10) / 10) + ' &deg;C');
+                                $('[data-id="' + ise_id + '"]').html('Ist: ' + (Math.round(value * 10) / 10) + ' &deg;C&nbsp;&nbsp;&nbsp;&nbsp;/');
                                 break;
                             case 'SET_POINT_MODE':
                                 if (value === '0') {
                                     $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/time_automatic.png" />');
-                                    $('[data-id="' + ise_id + '"]').attr('data-set-id', parseInt(ise_id) + 3); //MANU_MODE
+                                    $('[data-id="' + ise_id + '"]').attr('data-set-id', parseInt(ise_id)-10); //MANU_MODE
                                     $('[data-id="' + ise_id + '"]').attr('data-set-value', '1');
                                 } else {
                                     $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/time_manual_mode.png" />');
-                                    $('[data-id="' + ise_id + '"]').attr('data-set-id', parseInt(ise_id) - 6); //AUTO_MODE
-                                    $('[data-id="' + ise_id + '"]').attr('data-set-value', '1');
+                                    $('[data-id="' + ise_id + '"]').attr('data-set-id', parseInt(ise_id)-10); //AUTO_MODE
+                                    $('[data-id="' + ise_id + '"]').attr('data-set-value', '0');
                                 }
                                 break;
-                            case 'HUMIDITY':
-                                $('[data-id="' + ise_id + '"]').html((Math.round(value * 10) / 10) + ' %');
-                                break;
-                            case 'LOW_BAT':
-                                if (value === 'true') {
-                                    $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/measure_battery_25.png" />');
-                                }
+                            case 'ACTIVE_PROFILE':
+                                $('[data-id="' + ise_id + '"]').html(value);
                                 break;
                             case 'SET_POINT_TEMPERATURE':
                                 $('[data-id="' + ise_id + '"]').html('Soll: ' + (Math.round(value * 10) / 10) + ' &deg;C&nbsp;&nbsp;&nbsp;&nbsp;/');
@@ -2324,66 +2323,77 @@ var updateDatapoints = function () {
                                     $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/fts_window_1w_open.png" />');
                                 }
                                 break;
+                            case 'LOW_BAT':
+                                if (value === 'true') {
+                                    $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/measure_battery_25.png" />');
+                                }
+                                break;   
                             default:
                                 $('[data-id="' + ise_id + '"]').html(value);
                         }
                         break;
                     case 'HmIP-WTH-2':
-                        switch (datapoint) {  
+                        switch (datapoint) {
+                            case 'HUMIDITY':
+                                $('[data-id="' + ise_id + '"]').html('RF: ' + (Math.round(value * 10) / 10) + ' %');
+                                break;
                             case 'ACTUAL_TEMPERATURE':
-                                $('[data-id="' + ise_id + '"]').html('Ist: ' + (Math.round(value * 10) / 10) + ' &deg;&nbsp;&nbsp;&nbsp;&nbsp;/');
+                                $('[data-id="' + ise_id + '"]').html('Ist: ' + (Math.round(value * 10) / 10) + ' &deg;C&nbsp;&nbsp;&nbsp;&nbsp;/');
                                 break;
                             case 'SET_POINT_MODE':
                                 if (value === '0') {
                                     $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/time_automatic.png" />');
-                                    $('[data-id="' + ise_id + '"]').attr('data-set-id', parseInt(ise_id) + 3); //MANU_MODE
+                                    $('[data-id="' + ise_id + '"]').attr('data-set-id', parseInt(ise_id)-10); //MANU_MODE
                                     $('[data-id="' + ise_id + '"]').attr('data-set-value', '1');
                                 } else {
                                     $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/time_manual_mode.png" />');
-                                    $('[data-id="' + ise_id + '"]').attr('data-set-id', parseInt(ise_id) - 6); //AUTO_MODE
-                                    $('[data-id="' + ise_id + '"]').attr('data-set-value', '1');
+                                    $('[data-id="' + ise_id + '"]').attr('data-set-id', parseInt(ise_id)-10); //AUTO_MODE
+                                    $('[data-id="' + ise_id + '"]').attr('data-set-value', '0');
                                 }
                                 break;
-                            case 'HUMIDITY':
-                                $('[data-id="' + ise_id + '"]').html('RF: ' + (Math.round(value * 10) / 10) + ' %');
+                            case 'ACTIVE_PROFILE':
+                                $('[data-id="' + ise_id + '"]').html(value);
+                                break;
+                            case 'SET_POINT_TEMPERATURE':
+                                $('[data-id="' + ise_id + '"]').html('Soll: ' + (Math.round(value * 10) / 10) + ' &deg;C&nbsp;&nbsp;&nbsp;&nbsp;/');
+                                break;
+                            case 'WINDOW_STATE':
+                                if (value === '0') {
+                                    $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/fts_window_1w.png" />');
+                                } else {
+                                    $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/fts_window_1w_open.png" />');
+                                }
                                 break;
                             case 'LOW_BAT':
                                 if (value === 'true') {
                                     $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/measure_battery_25.png" />');
                                 }
-                                break;
-                            case 'SET_POINT_TEMPERATURE':
-                                $('[data-id="' + ise_id + '"]').html('Soll: ' + (Math.round(value * 10) / 10) + ' &deg;C&nbsp;&nbsp;&nbsp;&nbsp;/');
-                                break;
-                            case 'WINDOW_STATE':
-                                if (value === '0') {
-                                    $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/fts_window_1w.png" />');
-                                } else {
-                                    $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/fts_window_1w_open.png" />');
-                                }
-                                break;
+                                break;   
                             default:
                                 $('[data-id="' + ise_id + '"]').html(value);
                         }
                         break;
                     case 'HmIP-BWTH':
-                        switch (datapoint) {  
+                        switch (datapoint) {
+                            case 'HUMIDITY':
+                                $('[data-id="' + ise_id + '"]').html('RF: ' + (Math.round(value * 10) / 10) + ' %');
+                                break;
                             case 'ACTUAL_TEMPERATURE':
-                                $('[data-id="' + ise_id + '"]').html('Ist: ' + (Math.round(value * 10) / 10) + ' &deg;&nbsp;&nbsp;&nbsp;&nbsp;/');
+                                $('[data-id="' + ise_id + '"]').html('Ist: ' + (Math.round(value * 10) / 10) + ' &deg;C&nbsp;&nbsp;&nbsp;&nbsp;/');
                                 break;
                             case 'SET_POINT_MODE':
                                 if (value === '0') {
                                     $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/time_automatic.png" />');
-                                    $('[data-id="' + ise_id + '"]').attr('data-set-id', parseInt(ise_id) + 3); //MANU_MODE
+                                    $('[data-id="' + ise_id + '"]').attr('data-set-id', parseInt(ise_id)-10); //MANU_MODE
                                     $('[data-id="' + ise_id + '"]').attr('data-set-value', '1');
                                 } else {
                                     $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/time_manual_mode.png" />');
-                                    $('[data-id="' + ise_id + '"]').attr('data-set-id', parseInt(ise_id) - 6); //AUTO_MODE
-                                    $('[data-id="' + ise_id + '"]').attr('data-set-value', '1');
+                                    $('[data-id="' + ise_id + '"]').attr('data-set-id', parseInt(ise_id)-10); //AUTO_MODE
+                                    $('[data-id="' + ise_id + '"]').attr('data-set-value', '0');
                                 }
                                 break;
-                            case 'HUMIDITY':
-                                $('[data-id="' + ise_id + '"]').html('RF: ' + (Math.round(value * 10) / 10) + ' %');
+                            case 'ACTIVE_PROFILE':
+                                $('[data-id="' + ise_id + '"]').html(value);
                                 break;
                             case 'SET_POINT_TEMPERATURE':
                                 $('[data-id="' + ise_id + '"]').html('Soll: ' + (Math.round(value * 10) / 10) + ' &deg;C&nbsp;&nbsp;&nbsp;&nbsp;/');
@@ -2394,29 +2404,32 @@ var updateDatapoints = function () {
                                 } else {
                                     $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/fts_window_1w_open.png" />');
                                 }
-                                break;
+                                break;   
                             default:
                                 $('[data-id="' + ise_id + '"]').html(value);
                         }
                         break;
                     case 'HMIP-eTRV':
-                        switch (datapoint) {  
+                        switch (datapoint) {
                             case 'ACTUAL_TEMPERATURE':
-                                $('[data-id="' + ise_id + '"]').html('Ist: ' + (Math.round(value * 10) / 10) + ' &deg;&nbsp;&nbsp;&nbsp;&nbsp;/');
+                                $('[data-id="' + ise_id + '"]').html('Ist: ' + (Math.round(value * 10) / 10) + ' &deg;C&nbsp;&nbsp;&nbsp;&nbsp;/');
                                 break;
                             case 'SET_POINT_MODE':
                                 if (value === '0') {
                                     $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/time_automatic.png" />');
-                                    $('[data-id="' + ise_id + '"]').attr('data-set-id', parseInt(ise_id) + 3); //MANU_MODE
+                                    $('[data-id="' + ise_id + '"]').attr('data-set-id', parseInt(ise_id)-10); //MANU_MODE
                                     $('[data-id="' + ise_id + '"]').attr('data-set-value', '1');
                                 } else {
                                     $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/time_manual_mode.png" />');
-                                    $('[data-id="' + ise_id + '"]').attr('data-set-id', parseInt(ise_id) - 6); //AUTO_MODE
-                                    $('[data-id="' + ise_id + '"]').attr('data-set-value', '1');
+                                    $('[data-id="' + ise_id + '"]').attr('data-set-id', parseInt(ise_id)-10); //AUTO_MODE
+                                    $('[data-id="' + ise_id + '"]').attr('data-set-value', '0');
                                 }
                                 break;
+                            case 'ACTIVE_PROFILE':
+                                $('[data-id="' + ise_id + '"]').html(value);
+                                break;
                             case 'SET_POINT_TEMPERATURE':
-                                $('[data-id="' + ise_id + '"]').html('Soll: ' + (Math.round(value * 10) / 10) + ' &deg;C');
+                                $('[data-id="' + ise_id + '"]').html('Soll: ' + (Math.round(value * 10) / 10));
                                 break;
                             case 'WINDOW_STATE':
                                 if (value === '0') {
@@ -2424,7 +2437,12 @@ var updateDatapoints = function () {
                                 } else {
                                     $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/fts_window_1w_open.png" />');
                                 }
-                                break;
+                                break; 
+                            case 'LOW_BAT':
+                                if (value === 'true') {
+                                    $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/measure_battery_25.png" />');
+                                }
+                                break;  
                             default:
                                 $('[data-id="' + ise_id + '"]').html(value);
                         }
