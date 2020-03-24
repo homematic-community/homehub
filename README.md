@@ -130,11 +130,13 @@ HomeHub benötigt eine installierte XML-API auf der CCU.
 * HMIP-BSM
 * HMIP-BWTH
 * HMIP-eTRV
+* HMIP-eTRV-2
+* HMIP-eTRV-B
+* HMIP-SLO
 * HMIP-FSM
 * HMIP-FSM16
 * HMIP-PSM
 * HMIP-SCI
-* HMIP-SCI 
 * HMIP-SRH
 * HMIP-STHD
 * HMIP-SWDO-I
