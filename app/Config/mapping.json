@@ -278,6 +278,14 @@
             {
                 "name": "HMIP-eTRV",
                 "icon": "sani_heating.png"
+            },
+            {
+                "name": "HMIP-eTRV-B",
+                "icon": "sani_heating.png"
+            },
+            {
+                "name": "HMIP-eTRV-2",
+                "icon": "sani_heating.png"
             }
         ],    
         "Sender": [
@@ -512,6 +520,10 @@
             {
                 "name": "HmIP-SWO-B",
                 "icon": "temp_temperature.png"
+            },
+            {
+                "name": "HmIP-SLO",
+                "icon": "message_light_intensity.png"
             }
         ],
         "Programme": [

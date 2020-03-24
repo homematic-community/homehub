@@ -2446,6 +2446,82 @@ var updateDatapoints = function () {
                             default:
                                 $('[data-id="' + ise_id + '"]').html(value);
                         }
+                        break; 
+                    case 'HMIP-eTRV-B':
+                        switch (datapoint) {
+                            case 'ACTUAL_TEMPERATURE':
+                                $('[data-id="' + ise_id + '"]').html('Ist: ' + (Math.round(value * 10) / 10) + ' &deg;C&nbsp;&nbsp;&nbsp;&nbsp;/');
+                                break;
+                            case 'SET_POINT_MODE':
+                                if (value === '0') {
+                                    $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/time_automatic.png" />');
+                                    $('[data-id="' + ise_id + '"]').attr('data-set-id', parseInt(ise_id)-10); //MANU_MODE
+                                    $('[data-id="' + ise_id + '"]').attr('data-set-value', '1');
+                                } else {
+                                    $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/time_manual_mode.png" />');
+                                    $('[data-id="' + ise_id + '"]').attr('data-set-id', parseInt(ise_id)-10); //AUTO_MODE
+                                    $('[data-id="' + ise_id + '"]').attr('data-set-value', '0');
+                                }
+                                break;
+                            case 'ACTIVE_PROFILE':
+                                $('[data-id="' + ise_id + '"]').html(value);
+                                break;
+                            case 'SET_POINT_TEMPERATURE':
+                                $('[data-id="' + ise_id + '"]').html('Soll: ' + (Math.round(value * 10) / 10));
+                                break;
+                            case 'WINDOW_STATE':
+                                if (value === '0') {
+                                    $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/fts_window_1w.png" />');
+                                } else {
+                                    $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/fts_window_1w_open.png" />');
+                                }
+                                break; 
+                            case 'LOW_BAT':
+                                if (value === 'true') {
+                                    $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/measure_battery_25.png" />');
+                                }
+                                break;  
+                            default:
+                                $('[data-id="' + ise_id + '"]').html(value);
+                        }
+                        break; 
+                    case 'HMIP-eTRV-2':
+                        switch (datapoint) {
+                            case 'ACTUAL_TEMPERATURE':
+                                $('[data-id="' + ise_id + '"]').html('Ist: ' + (Math.round(value * 10) / 10) + ' &deg;C&nbsp;&nbsp;&nbsp;&nbsp;/');
+                                break;
+                            case 'SET_POINT_MODE':
+                                if (value === '0') {
+                                    $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/time_automatic.png" />');
+                                    $('[data-id="' + ise_id + '"]').attr('data-set-id', parseInt(ise_id)-10); //MANU_MODE
+                                    $('[data-id="' + ise_id + '"]').attr('data-set-value', '1');
+                                } else {
+                                    $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/time_manual_mode.png" />');
+                                    $('[data-id="' + ise_id + '"]').attr('data-set-id', parseInt(ise_id)-10); //AUTO_MODE
+                                    $('[data-id="' + ise_id + '"]').attr('data-set-value', '0');
+                                }
+                                break;
+                            case 'ACTIVE_PROFILE':
+                                $('[data-id="' + ise_id + '"]').html(value);
+                                break;
+                            case 'SET_POINT_TEMPERATURE':
+                                $('[data-id="' + ise_id + '"]').html('Soll: ' + (Math.round(value * 10) / 10));
+                                break;
+                            case 'WINDOW_STATE':
+                                if (value === '0') {
+                                    $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/fts_window_1w.png" />');
+                                } else {
+                                    $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/fts_window_1w_open.png" />');
+                                }
+                                break; 
+                            case 'LOW_BAT':
+                                if (value === 'true') {
+                                    $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/measure_battery_25.png" />');
+                                }
+                                break;  
+                            default:
+                                $('[data-id="' + ise_id + '"]').html(value);
+                        }
                         break;    
                     case 'HM-WDC7000':
                         switch (datapoint) {
@@ -2542,6 +2618,24 @@ var updateDatapoints = function () {
                                 break;
                             case 'WIND_SPEED':
                                 $('[data-id="' + ise_id + '"]').html((Math.round(value * 10) / 10) + ' km/h');
+                                break;
+                            default:
+                                $('[data-id="' + ise_id + '"]').html(value);
+                        }
+                        break;
+                    case 'HmIP-SLO':
+                        switch (datapoint) {
+                            case 'CURRENT_ILLUMINATION':
+                                $('[data-id="' + ise_id + '"]').html('Helligkeit: ' + (Math.round(value * 10) / 10) + ' Lux');
+                                break;
+                            case 'AVERAGE_ILLUMINATION':
+                                $('[data-id="' + ise_id + '"]').html('&Oslash;: ' + (Math.round(value * 10) / 10) + ' Lux');
+                                break;
+                            case 'LOWEST_ILLUMINATION':
+                                $('[data-id="' + ise_id + '"]').html('Min: ' + (Math.round(value * 10) / 10) + ' Lux');
+                                break;
+                            case 'HIGHEST_ILLUMINATION':
+                                $('[data-id="' + ise_id + '"]').html('Max: ' + (Math.round(value * 10) / 10) + ' Lux');
                                 break;
                             default:
                                 $('[data-id="' + ise_id + '"]').html(value);
