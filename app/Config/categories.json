@@ -3,7 +3,12 @@
     {
       "name": "Home",
       "icon": "control_home.png",
-      "subcategories": [],
+      "subcategories": [
+        {
+          "name": "Home_Index",
+          "display_name": "Info"
+        }
+      ],
       "append_divider": "true"
     },
     {
@@ -21,6 +26,10 @@
         {
           "name": "EG_Heizung",
           "display_name": "Heizung"
+        },
+        {
+          "name": "EG_Reinigung",
+          "display_name": "Reinigung"
         } 
       ]
     },
@@ -77,6 +86,10 @@
           "display_name": "Beleuchtung"
         },
         {
+          "name": "Garten_Strom",
+          "display_name": "Strom"
+        },
+        {
           "name": "Garten_Umwelt",
           "display_name": "Umwelt"
         } 
@@ -92,8 +105,20 @@
           "display_name": "Zentralsteuerung"
         },
         {
-          "name": "Licht einzeln",
-          "display_name": "Einzelsteuerung"
+          "name": "Licht_EG",
+          "display_name": "Erdgeschoss"
+        },
+        {
+          "name": "Licht_OG",
+          "display_name": "Obergeschoss"
+        },
+        {
+          "name": "Licht_DG",
+          "display_name": "Dachgeschoss"
+        },
+        {
+          "name": "Licht_KG",
+          "display_name": "Keller"
         }       
       ]
     },
@@ -106,8 +131,20 @@
           "display_name": "Zentralsteuerung"
         },
         {
-          "name": "Rolllaeden einzeln",
-          "display_name": "Einzelsteuerung"
+          "name": "Rolllaeden_EG",
+          "display_name": "Erdgeschoss"
+        },
+        {
+          "name": "Rolllaeden_OG",
+          "display_name": "Obergeschoss"
+        },
+        {
+          "name": "Rolllaeden_DG",
+          "display_name": "Dachgeschoss"
+        },
+        {
+          "name": "Rolllaeden_Garten",
+          "display_name": "Garten"
         }
       ]
     },
@@ -126,6 +163,10 @@
         {
           "name": "Fenster_DG",
           "display_name": "Dachgeschoss"
+        },
+        {
+          "name": "Fenster_KG",
+          "display_name": "Keller"
         }
       ],
       "append_divider": "true"

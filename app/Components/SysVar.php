@@ -7,7 +7,7 @@
 
 function SysVar($component) {
     if ($component['visible'] == 'true' && isset($component['ise_id'])) {
-        if (!isset($component['expand'])) $component['expand'] = 'true';
+        if (!isset($component['operate'])) $component['operate'] = 'true';
         switch($component['type']) {
             case '2':
                 // True / False
@@ -16,19 +16,27 @@ function SysVar($component) {
                     $valueList = $component['value_name_0'].';'.$component['value_name_1'];
                 }
                 
+                // Indikator aus im Off oder On-Mode
+                if(!isset($component['indicator_mode'])) {
+                    $component['indicator_mode'] = '';
+                }
+                
                 // Farben invertieren?
                 if(!isset($component['invert_color'])) {
                     $component['invert_color'] = 'false';
                 }
+                
                 if (!isset($component['color'])) $component['color'] = '#595959';
-                return '<div class="hh" style=\'border-left-color: '.$component['color'].'; border-left-style: solid;\'>'
+                $content = '<div class="hh" style=\'border-left-color: '.$component['color'].'; border-left-style: solid;\'>'
                     . '<div class="pull-left"><img src="../assets/icons/' . $component["icon"] . '" class="icon">' . $component['name'] . '</div>'
                     . '<div class="pull-right">'
-                        . '<span class="info set" data-id="' . $component['ise_id'] . '" data-component="' . $component['component'] . '" data-datapoint="2" data-unit="' . htmlentities($component['unit']) . '" data-set-id="' . $component['ise_id'] . '" data-set-value="" data-valuelist="'.$valueList.'" data-invert-color="' . $component['invert_color'] . '"></span>'
+                        . '<span class="info';
+                        if ($component['operate'] == 'true') $content = $content.' set';
+                         $content = $content.'" data-id="' . $component['ise_id'] . '" data-component="' . $component['component'] . '" data-datapoint="2" data-unit="' . htmlentities($component['unit']) . '" data-set-id="' . $component['ise_id'] . '" data-set-value="" data-valuelist="'.$valueList.'" data-invert-color="' . $component['invert_color'] . '" data-indicator-mode="' . $component['indicator_mode'] . '"></span>'
                     . '</div>'
                     . '<div class="clearfix"></div>'
                 . '</div>';
-
+                return $content;
                 break;
             case '4':
                 // Number
@@ -36,13 +44,12 @@ function SysVar($component) {
         
                 if (!isset($component['color'])) $component['color'] = '#595959';
                     $content = '<div class="hh" style=\'border-left-color: '.$component['color'].'; border-left-style: solid;\'>';
-                    if ($component['expand'] == 'true') $content = $content.'<div data-toggle="collapse" data-target="#' . $modalId . '">';
+                    if ($component['operate'] == 'true') $content = $content.'<div data-toggle="collapse" data-target="#' . $modalId . '">';
                         $content = $content.'<div class="pull-left"><img src="../assets/icons/' . $component["icon"] . '" class="icon">' . $component['name'] . '</div>'
                         . '<div class="pull-right">'
-                            . '<span class="info" data-id="' . $component['ise_id'] . '" data-component="' . $component['component'] . '" data-datapoint="4" data-unit="' . htmlentities($component['unit']) . '"></span>'
-                        . '</div>'
-                        . '<div class="clearfix"></div>';
-                    if ($component['expand'] == 'true') $content = $content.'</div><div class="hh2 collapse" id="' . $modalId . '">'
+                            . '<span class="info lheight" data-id="' . $component['ise_id'] . '" data-component="' . $component['component'] . '" data-datapoint="4" data-unit="' . htmlentities($component['unit']) . '"></span>'
+                        . '</div>';
+                    if ($component['operate'] == 'true') $content = $content.'<div class="clearfix"></div></div><div class="hh2 collapse" id="' . $modalId . '">'
                         . '<div class="row text-center">'
                             . '<div class="form-inline">'
                                 . '<div class="input-group">'
@@ -73,16 +80,33 @@ function SysVar($component) {
                         . '</button>';
                     }
                 }
-
+                // Indikator anzeigen?
+                if(!isset($component['indicator'])) {
+                    $component['indicator'] = '-1';
+                }
+                
+                // Indikator aus im Off oder On-Mode
+                if(!isset($component['indicator_mode'])) {
+                    $component['indicator_mode'] = '';
+                }
+                
+                // Farben invertieren?
+                if(!isset($component['invert_color'])) {
+                    $component['invert_color'] = 'false';
+                }
+                
                 if (!isset($component['color'])) $component['color'] = '#595959';
                     $content = '<div class="hh" style=\'border-left-color: '.$component['color'].'; border-left-style: solid;\'>';
-                    if ($component['expand'] == 'true') $content = $content.'<div data-toggle="collapse" data-target="#' . $modalId . '">';
+                    if ($component['operate'] == 'true') $content = $content.'<div data-toggle="collapse" data-target="#' . $modalId . '">';
                         $content = $content.'<div class="pull-left"><img src="../assets/icons/' . $component["icon"] . '" class="icon">' . $component['name'] . '</div>'
                         . '<div class="pull-right">'
-                            . '<span class="info" data-id="' . $component['ise_id'] . '" data-component="' . $component['component'] . '" data-datapoint="16" data-unit="' . htmlentities($component['unit']) . '" data-valuelist="'.$valueList.'"></span>'
-                        . '</div>'
-                        . '<div class="clearfix"></div>';
-                    if ($component['expand'] == 'true') $content = $content.'</div><div class="hh2 collapse" id="' . $modalId . '">'
+                            . '<span class="info';
+                            if ($component['indicator'] == '-1') $content = $content.' lheight';
+                            $content = $content.'" data-id="' . $component['ise_id'] . '" data-component="' . $component['component'] . '" data-datapoint="16" data-unit="' . htmlentities($component['unit']) . '" data-valuelist="'.$valueList.'" data-indicator="' . $component['indicator'] . '" data-indicator-mode="' . $component['indicator_mode'] . '"';
+                            if ($component['indicator'] != '-1') $content = $content.' data-invert-color="' . $component['invert_color'] . '"';
+                            $content = $content.'></span>'
+                        . '</div>';
+                    if ($component['operate'] == 'true') $content = $content.'<div class="clearfix"></div></div><div class="hh2 collapse" id="' . $modalId . '">'
                         . '<div class="row text-center">'
                             . '<div class="btn-group">'
                                 . $buttons
@@ -95,15 +119,33 @@ function SysVar($component) {
                 // Text
                 $modalId = mt_rand();
         
+                // Indikator anzeigen?
+                if(!isset($component['indicator'])) {
+                    $component['indicator'] = '-1';
+                }
+                
+                // Indikator aus im Off oder On-Mode
+                if(!isset($component['indicator_mode'])) {
+                    $component['indicator_mode'] = '';
+                }
+                
+                // Farben invertieren?
+                if(!isset($component['invert_color'])) {
+                    $component['invert_color'] = 'false';
+                }
+                
                 if (!isset($component['color'])) $component['color'] = '#595959';
                     $content = '<div class="hh" style=\'border-left-color: '.$component['color'].'; border-left-style: solid;\'>';
-                    if ($component['expand'] == 'true') $content = $content.'<div data-toggle="collapse" data-target="#' . $modalId . '">';
+                    if ($component['operate'] == 'true') $content = $content.'<div data-toggle="collapse" data-target="#' . $modalId . '">';
                         $content = $content.'<div class="pull-left"><img src="../assets/icons/' . $component["icon"] . '" class="icon">' . $component['name'] . '</div>'
                         . '<div class="pull-right">'
-                            . '<span class="info" data-id="' . $component['ise_id'] . '" data-component="' . $component['component'] . '" data-datapoint="20" data-unit="' . htmlentities($component['unit']) . '"></span>'
-                        . '</div>'
-                        . '<div class="clearfix"></div>';
-                    if ($component['expand'] == 'true') $content = $content.'</div><div class="hh2 collapse" id="' . $modalId . '">'
+                            . '<span class="info';
+                            if ($component['indicator'] == '') $content = $content.' lheight';
+                            $content = $content.'" data-id="' . $component['ise_id'] . '" data-component="' . $component['component'] . '" data-datapoint="20" data-unit="' . htmlentities($component['unit']) . '" data-indicator="' . $component['indicator'] . '" data-indicator-mode="' . $component['indicator_mode'] . '"';
+                            if ($component['indicator'] != '') $content = $content.' data-invert-color="' . $component['invert_color'] . '"';
+                            $content = $content.'></span>'
+                        . '</div>';
+                    if ($component['operate'] == 'true') $content = $content.'<div class="clearfix"></div></div><div class="hh2 collapse" id="' . $modalId . '">'
                         . '<div class="row text-center">'
                             . '<div class="form-inline">'
                                 . '<div class="input-group">'

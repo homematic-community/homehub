@@ -1,5 +1,5 @@
 <?php
-function HmIPW_DRS8($component) {
+function HmIPW_DRS4($component) {
     if ($component['parent_device_interface'] == 'HmIP-RF' && $component['visible'] == 'true' && isset($component['STATE'])) {
         if (!isset($component['color'])) $component['color'] = '#FFCC00';
         return '<div class="hh" style=\'border-left-color: '.$component['color'].'; border-left-style: solid;\'>'

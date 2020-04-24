@@ -83,7 +83,7 @@ nav>a>.icon{
 
 nav>.divider {
     display: block;
-    height: 10px;
+    height: 8px;
     border-left-color: #000000;
 }
 
@@ -97,7 +97,7 @@ nav>.divider {
 
 .hh {
     display: block;
-    padding: 7px 15px;
+    padding: 6px 15px;
     margin-bottom: 2px;
     background-color: #292929;
     background-image: linear-gradient(to bottom left, #393939, #191919);
@@ -117,22 +117,24 @@ nav>.divider {
 
 .divider {
     display: block;
-    height: 10px;
+    height: 8px;
 }
 
 fieldset {
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     border-color: gray;
 }
 
 fieldset>legend {
-    padding: 0px 18px;
+    padding: 0px 14px;
     color: white;
-    background-color: #454545;
-    background-image: linear-gradient(to right, #595959, #191919);
+    background-color: #666666;
+    background-image: linear-gradient(to right, #696969, #393939);
     border-radius: 8px 0px 0px 0px;
     border: none;
     margin-bottom: 2px;
+    font-style: italic;
+    line-height: 1.3;
 }
 
 /* Listen */
@@ -178,6 +180,17 @@ ul>li img.icon {
 .run,
 .info {
     margin-left: 20px;
+    min-height: 30px;
+}
+
+.lheight {
+    line-height: 1.7;
+    
+}
+
+.noicon {
+    margin: 0px 0px;
+    padding: 7px 7px 7px 7px;
 }
 
 .set,
@@ -190,35 +203,54 @@ div[data-toggle] {
 .btn-false,
 .btn-text,
 .btn-action,
-.btn-icon {
+.btn-icon,
+.btn-off {
+    padding: 2px 10px 0px 10px;
+    display: inline-block;
+    min-width: 50px;
+    min-height: 32px;
+    text-align: center;
+}
+
+.btn-icon,
+.btn-action {
     border-radius: 4px;
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-    font-size: 15px;
-    padding: 5px 10px;
-    display: inline-block;
-    min-width: 50px;
-    text-align: center;
     box-shadow: 2px 2px 4px 0px rgba(0,0,0,0.4);
 }
 
-.btn-stat-true,
-.btn-stat-false {   
-    border-radius: 4px;
-    padding: 0px 9px 1px;
-    display: inline-block;
-    min-width: 50px;
-    box-shadow: 2px 2px 4px 0px rgba(0,0,0,0.4);
+.btn-true { 
+    border-left-width: 0px;
+    border-right-width: 10px;
+    border-right-style: solid;
+    border-image: 
+    radial-gradient(
+      rgb(0, 240, 0),
+      rgb(0, 160, 0)
+    ) 1 100%; 
 }
 
-.btn-true,
-.btn-stat-true {
-    background: rgb(28, 184, 65);
+.btn-false { 
+    border-left-width: 0px;
+    border-right-width: 10px;
+    border-right-style: solid;
+    border-image: 
+    radial-gradient(
+      rgb(255, 0, 0),
+      rgb(180, 0, 0)
+    ) 1 100%; 
 }
 
-.btn-false,
-.btn-stat-false {
-    background: rgb(202, 60, 60);
-}
+.btn-off { 
+    border-left-width: 0px;
+    border-right-width: 10px;
+    border-right-style: solid;
+    border-image: 
+    radial-gradient(
+      rgb(88, 88, 88),
+      rgb(40, 40, 40)
+    ) 1 100%; 
+} 
 
 .btn-action {
     background: rgb(130, 130, 130);
@@ -230,21 +262,23 @@ div[data-toggle] {
 }
 
 .btn-icon {
-    padding: 0px 10px;
-}
-
-.btn-true:active,
-.btn-false:active,
-.btn-text:active,
-.btn-action:active,     
-.btn-icon:active {
-    position: relative;
-    top: 2px;
+    padding: 2px 10px;
 }
 
 .btn-primary {
     background-color: rgb(49, 82, 113);
     border-color: rgb(29, 62, 93);
+}
+
+.btn-noicon {
+    padding: 0px;
+    margin: 0px;
+    background: none;
+    outline: none; 
+}
+
+.btn-noicon:focus {
+    outline: none;
 }
 
 .left {

@@ -1,12 +1,16 @@
 <?php
 
-// HM-LC-Bl1-SM|Markise:0||VISIBLE=|OPERATE=|UNREACH=3764|STICKY_UNREACH=3760|CONFIG_PENDING=3750|DUTYCYCLE=3754|RSSI_DEVICE=3758|RSSI_PEER=3759|
-// HM-LC-Bl1-SM|Markise||VISIBLE=true|OPERATE=true|LEVEL=3772|STOP=3773|
+// Validated by Gerti
 
-// Validated by Braindead
+function HmIPW_DRBL4($component) {
 
-function HM_LC_Bl1_SM($component) {
-    if ($component['parent_device_interface'] == 'BidCos-RF' && $component['visible'] == 'true' && isset($component['LEVEL'])) {
+    global $export;
+    $obj = $export;
+    $key = array_search(substr($component['address'], 0, -1)."3", array_column($obj['channels'], 'address'));
+    foreach($obj['channels'][$key]['datapoints'] as $datapoint)
+    { $state_component[$datapoint['type']] = $datapoint['ise_id']; }
+ 
+    if ($component['parent_device_interface'] == 'HmIP-RF' && $component['visible'] == 'true' && isset($component['LEVEL'])) {
         $modalId = mt_rand();
         if (!isset($component['color'])) $component['color'] = '#0033FF';
         return '<div class="hh" style=\'border-left-color: '.$component['color'].'; border-left-style: solid;\'>'

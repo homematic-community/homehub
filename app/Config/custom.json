@@ -1,6 +1,6 @@
 {
   "custom": {
-    "Home": [
+    "Home_Index": [
       {
         "name": "Keymatic:1",
         "display_name": "Haustür",
@@ -16,48 +16,58 @@
         "name": "S_Alarmanlage",
         "icon": "secur_alarm.png",
         "display_name": "Alarmanlage",
-        "append_divider": "true"
+        "append_divider": "true",
+        "indicator": "0"
       },
       {
         "name": "S_Fenster_Text",
         "display_name": "Fenster",
         "icon": "fts_window_2w_open_l.png",
-        "expand": "false"
+        "operate": "false",
+        "indicator": "geschlossen",
+        "indicator_mode": "off"
       },
       {
         "name": "S_Lichter_Text",
         "icon": "light_light_dim_100.png",
         "display_name": "Licht",
         "append_divider": "true",
-        "expand": "false"
+        "operate": "false",
+        "indicator": "aus",
+        "indicator_mode": "off"
       },
       {
         "name": "S_WaMa",
         "display_name": "Waschmaschine",
-        "icon": "scene_washing_machine.png"
+        "icon": "scene_washing_machine.png",
+        "indicator": "0,false;1,true;2,off",
+        "operate": "false"
       },
       {
         "name": "S_Trockner",
         "display_name": "Trockner",
         "icon": "scene_washing_machine.png",
-        "append_divider": "true"
-      },
-      {
-        "name": "S_HO_Tanja",
-        "icon": "scene_office.png",
-        "display_name": "Home Office Tanja",
+        "indicator": "0,false;1,true;2,off",
+        "operate": "false",
         "append_divider": "true"
       },
       {
         "name": "S_Briefkasten",
         "display_name": "Briefkasten",
-        "icon": "message_postbox_mail.png"
+        "icon": "message_postbox_mail.png",
+        "indicator": "1",
+        "indicator_mode": "on",
+        "invert_color": "true"
       },
       {
         "name": "S_Muellabfuhr",
         "display_name": "Müllabfuhr",
-        "icon": "message_garbage_collection.png",
-        "expand": "false"
+        "icon": "message_garbage.png",
+        "append_divider": "true",
+        "operate": "false",
+        "indicator": "Heute|Morgen",
+        "indicator_mode": "on",
+        "invert_color": "true"
       },
       {
         "name": "S_Wetterinfo",
@@ -65,12 +75,24 @@
         "display_name": "Wetter",
         "color": "#595959",
         "append_divider": "true",
-        "expand": "false"
+        "operate": "false",
+        "indicator": "Kein",
+        "indicator_mode": "off"
       },
       {
-        "name": "S_Tablette",
+        "name": "S_HO_Tanja",
+        "icon": "scene_office.png",
+        "display_name": "Home Office",
+        "indicator_mode": "on"
+      },
+      {
+        "name": "S_Tablette_Kontaktlinsen",
         "icon": "message_medicine.png",
-        "display_name": "Prothyrid"
+        "display_name": "Hinweis",
+        "operate": "false",
+        "indicator": "Kontaktlinsen",
+        "indicator_mode": "on",
+        "invert_color": "true"
       }
     ],
     "EG_Licht": [
@@ -108,13 +130,17 @@
         "name": "S_Hue_Lowboard",
         "icon": "light_light_dim_100.png",
         "display_name": "Lowboard",
-        "color": "#ffcc00"
+        "color": "#ffcc00",
+        "indicator": "0",
+        "invert_color": "true"
       },
       {
         "name": "S_Hue_Stehleuchte",
         "icon": "light_light_dim_100.png",
         "display_name": "Stehleuchte",
-        "color": "#ffcc00"
+        "color": "#ffcc00",
+        "indicator": "0",
+        "invert_color": "true"
       }
     ],
     "EG_Rolllaeden": [
@@ -162,6 +188,15 @@
         "icon": "sani_heating.png",
         "display_name": "Heizung Gästetoilette",
         "append_divider": "true"
+      }
+    ],
+    "EG_Reinigung": [
+      {
+        "name": "S_Roborock",
+        "icon": "scene_robo_vac_cleaner.png",
+        "display_name": "Saugroboter",
+        "color": "#ee6600",
+        "indicator_mode": "on"
       }
     ],
     "OG_Licht": [
@@ -275,7 +310,13 @@
         "name": "WTH_DG_Buero:1",
         "icon": "sani_heating.png",
         "display_name": "Heizung Büro Michael"
+      },
+      {
+        "name": "WTH_DG_Gaestezimmer:1",
+        "icon": "sani_heating.png",
+        "display_name": "Heizung Gästezimmer"
       }
+      
     ],
     "DG_Spitzboden": [
       {
@@ -364,7 +405,14 @@
         "icon": "fts_window_roof_open_1.png",
         "display_name": "Gästezimmer"
       }
-    ],  
+    ],
+    "Fenster_KG": [
+      {
+        "name": "FK_Kino:1",
+        "icon": "fts_window_1w_tilt.png",
+        "display_name": "Kino"
+      }
+    ], 
     "Garten_Beschattung": [
       {
         "name": "Markise:4",
@@ -373,6 +421,11 @@
       }
     ],
     "Garten_Licht": [
+      {
+        "name": "Aussenleuchten_vorne:4",
+        "icon": "light_light_dim_100.png",
+        "display_name": "Aussenbeleuchtung vorn"
+      },
       {
         "name": "Gartenbeleuchtung_vorne:2",
         "icon": "light_light_dim_100.png",
@@ -388,18 +441,23 @@
         "icon": "light_light_dim_100.png",
         "display_name": "Terrasse"
       }
+    ],
+    "Garten_Strom": [
+      {
+        "name": "Garten_Steckdose:2",
+        "icon": "control_on_off.png",
+        "display_name": "Steckdose",
+        "color": "#FF6600"
+      }
     ],  
     "Garten_Umwelt": [
       {
         "name": "S_Sonnenschein",
         "icon": "weather_sun.png",
         "display_name": "Sonnenschein",
-        "color": "#00CC33"
-      },
-      {
-        "name": "Thermostat_aussen:1",
-        "icon": "temp_temperature.png",
-        "display_name": "Temperatur / Luftfeuchte"
+        "color": "#00CC33",
+        "operate": "false",
+        "indicator_mode": "on"
       },
       {
         "name": "Wetterstation:1",
@@ -412,7 +470,7 @@
         "icon": "temp_temperature_max.png",
         "display_name": "Voraussichtliche Tageshöchsttemperatur",
         "color": "#00CC33",
-        "expand": "false"
+        "operate": "false"
       }
     ],  
     "System_Status": [
@@ -421,49 +479,49 @@
         "icon": "measure_power_meter.png",
         "display_name": "DutyCycle",
         "color": "#CC0000",
-        "expand": "false"
+        "operate": "false"
       },
       {
         "name": "CPU",
         "icon": "temp_temperature.png",
         "display_name": "CPU Temperatur",
         "color": "#CC0000",
-        "expand": "false"
+        "operate": "false"
       },
       {
         "name": "Speicher",
         "icon": "measure_power_meter.png",
         "display_name": "Speicher",
         "color": "#CC0000",
-        "expand": "false"
+        "operate": "false"
       },
       {
         "name": "Uptime",
         "icon": "time_clock.png",
         "display_name": "Laufzeit",
         "color": "#CC0000",
-        "expand": "false"
+        "operate": "false"
       },
       {
         "name": "S_Ladezustand_Tablet",
         "icon": "measure_battery_75.png",
         "display_name": "Tablet",
         "color": "#CC0000",
-        "expand": "false"
+        "operate": "false"
       },
       {
         "name": "S_USV_Batteriestatus",
         "icon": "measure_battery_75.png",
         "display_name": "USV",
         "color": "#CC0000",
-        "expand": "false"
+        "operate": "false"
       },
       {
         "name": "S_Batteriewarnungen",
         "icon": "measure_battery_25.png",
         "display_name": "Leere Batterien",
         "color": "#CC0000",
-        "expand": "false"
+        "operate": "false"
       }
     ],
     "Basismodis": [
@@ -514,6 +572,30 @@
         "icon": "scene_day.png",
         "display_name": "Tagesabschnitt",
         "color": "#CC0099"
+      },
+      {
+        "name": "S_Roborock_Automatik",
+        "icon": "scene_robo_vac_cleaner.png",
+        "display_name": "Saugroboter Automatikmodus",
+        "color": "#CC0099"
+      },
+      {
+        "name": "S_Rasenmaeher",
+        "icon": "scene_robo_lawnmower.png",
+        "display_name": "Fahrzeiten Rasenmäher (Mo Di Mi Do Fr Sa So)",
+        "color": "#CC0099"
+      },
+      {
+        "name": "S_Rasenmaeher_Automatik",
+        "icon": "scene_robo_lawnmower.png",
+        "display_name": "Rasenmäher Automatikmodus",
+        "color": "#CC0099"
+      },
+      {
+        "name": "P_Tablette_Kontaktlinsen",
+        "icon": "control_reload.png",
+        "display_name": "Kontaktlinsen Counter Reset",
+        "color": "#CC0099"
       }
     ], 
     "Beschattungsmodis": [
@@ -562,7 +644,7 @@
         "icon": "measure_power.png",
         "display_name": "Aktueller Verbrauch",
         "color": "#FF6600",
-        "expand": "false"
+        "operate": "false"
       },
       {
         "name": "S_Verbrauch_Differenz",
@@ -570,21 +652,21 @@
         "display_name": "Verbrauch Vortag",
         "color": "#FF6600",
         "append_divider": "true",
-        "expand": "false"
+        "operate": "false"
       },
       {
         "name": "S_Verbrauch_WaMa",
         "icon": "measure_power.png",
         "display_name": "Verbrauch Waschmaschine",
         "color": "#FF6600",
-        "expand": "false"
+        "operate": "false"
       },
       {
         "name": "S_Verbrauch_Trockner",
         "icon": "measure_power.png",
         "display_name": "Verbrauch Trockner",
         "color": "#FF6600",
-        "expand": "false"
+        "operate": "false"
       }
     ],
     "Stromversorgung": [
@@ -621,7 +703,7 @@
         "color": "#FFCC00"
       }
     ],
-    "Licht einzeln": [
+    "Licht_EG": [
       {
         "name": "Wohnzimmer:4",
         "icon": "light_light_dim_100.png",
@@ -656,15 +738,20 @@
         "name": "S_Hue_Lowboard",
         "icon": "light_light_dim_100.png",
         "display_name": "Lowboard",
-        "color": "#ffcc00"
+        "color": "#ffcc00",
+        "indicator": "0",
+        "invert_color": "true"
       },
       {
         "name": "S_Hue_Stehleuchte",
         "icon": "light_light_dim_100.png",
         "display_name": "Stehleuchte",
         "color": "#ffcc00",
-        "append_divider": "true"
-      },
+        "indicator": "0",
+        "invert_color": "true"
+      }
+    ],
+    "Licht_OG": [
       {
         "name": "Schlafzimmer:1",
         "icon": "light_light_dim_100.png",
@@ -698,9 +785,10 @@
       {
         "name": "Treppenhaus:4",
         "icon": "light_light_dim_100.png",
-        "display_name": "Treppenhaus",
-        "append_divider": "true"
-      },
+        "display_name": "Treppenhaus"
+      }
+    ],
+    "Licht_DG": [
       {
         "name": "Buero_DG_Michael:4",
         "icon": "light_light_dim_100.png",
@@ -714,9 +802,10 @@
       {
         "name": "Flur_DG:4",
         "icon": "light_light_dim_100.png",
-        "display_name": "Flur DG",
-        "append_divider": "true"
-      },
+        "display_name": "Flur DG"
+      }
+    ],
+    "Licht_KG": [
       {
         "name": "Waschkeller:4",
         "icon": "light_light_dim_100.png",
@@ -741,7 +830,7 @@
         "color": "#0033FF"
       }
     ],
-    "Rolllaeden einzeln": [
+    "Rolllaeden_EG": [
       {
         "name": "Rollladen_Terrasse:4",
         "icon": "fts_shutter_50.png",
@@ -755,9 +844,10 @@
       {
         "name": "Rollladen_Kueche:4",
         "icon": "fts_shutter_50.png",
-        "display_name": "Rollladen Küche",
-        "append_divider": "true"
-      },
+        "display_name": "Rollladen Küche"
+      }
+    ],
+    "Rolllaeden_OG": [
       {
         "name": "Rollladen_Ankleidezimmer:4",
         "display_name": "Rollladen Ankleidezimmer",
@@ -776,13 +866,21 @@
       {
         "name": "Rollladen_Bad:4",
         "display_name": "Rollladen Bad",
-        "icon": "fts_shutter_50.png",
-        "append_divider": "true"
-      },
+        "icon": "fts_shutter_50.png"
+      }
+    ],
+    "Rolllaeden_DG": [
       {
         "name": "Rollladen_Gaestebad:4",
         "icon": "fts_shutter_50.png",
         "display_name": "Rollladen Gästebad"
+      }  
+    ],
+    "Rolllaeden_Garten": [
+      {
+        "name": "Markise:4",
+        "icon": "fts_sunblind.png",
+        "display_name": "Markise"
       }  
     ]
   }        

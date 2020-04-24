@@ -154,6 +154,10 @@
                 "icon": "light_light_dim_100.png"
             },
             {
+                "name": "HmIP-FSI16",
+                "icon": "light_light_dim_100.png"
+            },
+            {
                 "name": "HmIP-BDT",
                 "icon": "light_light_dim_100.png"
             },
@@ -163,6 +167,14 @@
             },
             {
                 "name": "HmIPW-DRS8",
+                "icon": "light_light_dim_100.png"
+            },
+            {
+                "name": "HmIPW-DRS4",
+                "icon": "light_light_dim_100.png"
+            },
+            {
+                "name": "HmIPW-DRD3",
                 "icon": "light_light_dim_100.png"
             }
         ],
@@ -202,6 +214,10 @@
                 "icon": "fts_shutter_40.png"
             },
             {
+                "name": "HmIPW-DRBL4",
+                "icon": "fts_shutter_40.png"
+            },
+            {
                 "name": "HM-Sec-RHS",
                 "icon": "fts_window_1w_open.png"
             },
@@ -234,7 +250,15 @@
                 "icon": "fts_window_2w_open_l.png"
             },
             {
+                "name": "HmIP-SWDO",
+                "icon": "fts_window_2w_open_l.png"
+            },
+            {
                 "name": "HmIP-SWDO-I",
+                "icon": "fts_window_2w_open_l.png"
+            },
+            {
+                "name": "HmIP-SWDO-PL",
                 "icon": "fts_window_2w_open_l.png"
             },
             {
@@ -277,14 +301,6 @@
             },
             {
                 "name": "HMIP-eTRV",
-                "icon": "sani_heating.png"
-            },
-            {
-                "name": "HMIP-eTRV-B",
-                "icon": "sani_heating.png"
-            },
-            {
-                "name": "HMIP-eTRV-2",
                 "icon": "sani_heating.png"
             }
         ],    
@@ -520,10 +536,6 @@
             {
                 "name": "HmIP-SWO-B",
                 "icon": "temp_temperature.png"
-            },
-            {
-                "name": "HmIP-SLO",
-                "icon": "message_light_intensity.png"
             }
         ],
         "Programme": [
