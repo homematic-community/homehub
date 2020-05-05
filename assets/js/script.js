@@ -27,10 +27,15 @@ $(document).ready(function () {
 var updateDatapoints = function () {
     //192.168.2.6/config/xmlapi/state.cgi?datapoint_id=
 
-    // Uhrzeit und Datum setzen
+    // Uhrzeit, Datum und Logo setzen
     date = new Date();
+    if (logo !== "") {
+        var showlogo = '<img src="' + logo + '" /> &nbsp;&nbsp;&nbsp;';
+    } else {
+       var showlogo = "";
+    }
     $('#time').html(('0' + date.getHours()).slice(-2) + ':' + ('0' + date.getMinutes()).slice(-2) + ' Uhr');
-    $('#date').html(('0' + date.getDate()).slice(-2) + '.' + ('0' + (date.getMonth()+1)).slice(-2) + '.' + date.getFullYear());
+    $('#date').html(showlogo + ('0' + date.getDate()).slice(-2) + '.' + ('0' + (date.getMonth()+1)).slice(-2) + '.' + date.getFullYear());
 
     var id = '';
 
@@ -3098,11 +3103,7 @@ var updateDatapoints = function () {
                                 var indicator = $('[data-id="' + ise_id + '"]').attr('data-indicator');
                                 var indicator_mode = $('[data-id="' + ise_id + '"]').attr('data-indicator-mode');
                                 var invert_color = $('[data-id="' + ise_id + '"]').attr('data-invert-color');
-                                 
-                                if (indicator !== "-1") {
-                                    
-                                }
-                                                                
+                                                               
                                 if (indicator !== "-1") {
                                   // Liste suchen und zerlegen
                                   var res = indicator.search(",");
@@ -3110,27 +3111,44 @@ var updateDatapoints = function () {
                                     var indarray = indicator.split(';');
                                     for (var i = 0; i < indarray.length; i++){
                                       var indicator_array = indarray[i].split(',');
-                                      if (value === indicator_array[0]){
-                                        if (indicator_array[1] === "true") {
+                                      if (value === indicator_array[0].trim()){
+                                        if (indicator_array[1].trim() === "true") {
                                            var on_type = "true";
                                            var off_type = "false";
                                            var snd_off_type = "off";
+                                           var trd_off_type = "warn";
                                         }
-                                        else if (indicator_array[1] === "false") {
+                                        else if (indicator_array[1].trim() === "false") {
                                            var on_type = "false";
                                            var off_type = "true";
                                            var snd_off_type = "off";
+                                           var trd_off_type = "warn";
+                                        }
+                                        else if (indicator_array[1].trim() === "warn") {
+                                           var on_type = "warn";
+                                           var off_type = "true";
+                                           var snd_off_type = "false";
+                                           var trd_off_type = "off";
                                         }
                                         else {
                                            var on_type = "off";
                                            var off_type = "false";
                                            var snd_off_type = "true";
+                                           var trd_off_type = "warn";
                                         }
-                                        $('[data-id="' + ise_id + '"]').addClass('btn-' + on_type);
-                                        $('[data-id="' + ise_id + '"]').removeClass('btn-' + off_type);
-                                        $('[data-id="' + ise_id + '"]').removeClass('btn-' + snd_off_type);
+                                        break;
+                                      }
+                                      else if ((i+1) === indarray.length) {
+                                        var on_type = "off";
+                                        var off_type = "false";
+                                        var snd_off_type = "true";
+                                        var trd_off_type = "warn";
                                       }
                                     }
+                                    $('[data-id="' + ise_id + '"]').addClass('btn-' + on_type);
+                                    $('[data-id="' + ise_id + '"]').removeClass('btn-' + off_type);
+                                    $('[data-id="' + ise_id + '"]').removeClass('btn-' + snd_off_type);
+                                    $('[data-id="' + ise_id + '"]').removeClass('btn-' + trd_off_type);
                                   }
                                   else {                                
                                     var off_type = "false";
@@ -3183,27 +3201,76 @@ var updateDatapoints = function () {
                                     if (invert_color === "false") on_type = "off";
                                     else off_type = "off";
                                 }
-                                
+                                 
                                 if (indicator !== "-1") {
-                                  var patt = new RegExp(indicator);
-                                  var res = patt.test(value);
-
-                                  if (res === true) {
-                                      if (invert_color === 'false') {
-                                          $('[data-id="' + ise_id + '"]').addClass('btn-' + on_type);
-                                          $('[data-id="' + ise_id + '"]').removeClass('btn-' + off_type);
-                                      } else {
-                                          $('[data-id="' + ise_id + '"]').addClass('btn-' + off_type);
-                                          $('[data-id="' + ise_id + '"]').removeClass('btn-' + on_type);
-                                      } 
-                                  } else {
-                                      if (invert_color === 'false') {
-                                          $('[data-id="' + ise_id + '"]').addClass('btn-' + off_type);
-                                          $('[data-id="' + ise_id + '"]').removeClass('btn-' + on_type);
-                                      } else {
-                                          $('[data-id="' + ise_id + '"]').addClass('btn-' + on_type);
-                                          $('[data-id="' + ise_id + '"]').removeClass('btn-' + off_type);
-                                      } 
+                                  // Liste suchen und zerlegen
+                                  var res = indicator.search(",");
+                                  if (res > -1) {
+                                    var indarray = indicator.split(';');
+                                    for (var i = 0; i < indarray.length; i++){
+                                      var indicator_array = indarray[i].split(',');
+                                      var patt = new RegExp(indicator_array[0].trim());
+                                      var res = patt.test(value);
+                                      if (res === true){
+                                        if (indicator_array[1].trim() === "true") {
+                                           var on_type = "true";
+                                           var off_type = "false";
+                                           var snd_off_type = "off";
+                                           var trd_off_type = "warn";
+                                        }
+                                        else if (indicator_array[1].trim() === "false") {
+                                           var on_type = "false";
+                                           var off_type = "true";
+                                           var snd_off_type = "off";
+                                           var trd_off_type = "warn";
+                                        }
+                                        else if (indicator_array[1].trim() === "warn") {
+                                           var on_type = "warn";
+                                           var off_type = "true";
+                                           var snd_off_type = "false";
+                                           var trd_off_type = "off";
+                                        }
+                                        else {
+                                           var on_type = "off";
+                                           var off_type = "false";
+                                           var snd_off_type = "true";
+                                           var trd_off_type = "warn";
+                                        }                                        
+                                        break;
+                                      }                                     
+                                      else if ((i+1) === indarray.length) {
+                                        var on_type = "off";
+                                        var off_type = "false";
+                                        var snd_off_type = "true";
+                                        var trd_off_type = "warn";                                        
+                                      }
+                                    }
+                                    $('[data-id="' + ise_id + '"]').addClass('btn-' + on_type);
+                                    $('[data-id="' + ise_id + '"]').removeClass('btn-' + off_type);
+                                    $('[data-id="' + ise_id + '"]').removeClass('btn-' + snd_off_type);
+                                    $('[data-id="' + ise_id + '"]').removeClass('btn-' + trd_off_type);
+                                  }
+                                  else {  
+                                    var patt = new RegExp(indicator);
+                                    var res = patt.test(value);
+  
+                                    if (res === true) {
+                                        if (invert_color === 'false') {
+                                            $('[data-id="' + ise_id + '"]').addClass('btn-' + on_type);
+                                            $('[data-id="' + ise_id + '"]').removeClass('btn-' + off_type);
+                                        } else {
+                                            $('[data-id="' + ise_id + '"]').addClass('btn-' + off_type);
+                                            $('[data-id="' + ise_id + '"]').removeClass('btn-' + on_type);
+                                        } 
+                                    } else {
+                                        if (invert_color === 'false') {
+                                            $('[data-id="' + ise_id + '"]').addClass('btn-' + off_type);
+                                            $('[data-id="' + ise_id + '"]').removeClass('btn-' + on_type);
+                                        } else {
+                                            $('[data-id="' + ise_id + '"]').addClass('btn-' + on_type);
+                                            $('[data-id="' + ise_id + '"]').removeClass('btn-' + off_type);
+                                        } 
+                                    }
                                   }
                                 }
                                 

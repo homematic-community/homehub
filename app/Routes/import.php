@@ -1,5 +1,4 @@
 <?php
-
 $app->get('/Import', function ($request,  $response, $arguments) {
     global $homematicIp;
 

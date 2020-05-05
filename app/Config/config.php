@@ -8,3 +8,6 @@ $timerPeriod = 10;
 
 // Title shown in Header
 $title = 'Am Steinfeld 9';
+
+// Logo (30px x 30px) shown in Header
+$logo = '../assets/images/hmip_logo.png';

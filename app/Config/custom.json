@@ -17,15 +17,14 @@
         "icon": "secur_alarm.png",
         "display_name": "Alarmanlage",
         "append_divider": "true",
-        "indicator": "0"
+        "indicator": "0,true;1,warn;2,false"
       },
       {
         "name": "S_Fenster_Text",
         "display_name": "Fenster",
         "icon": "fts_window_2w_open_l.png",
         "operate": "false",
-        "indicator": "geschlossen",
-        "indicator_mode": "off"
+        "indicator": ". .G .,false;. .G,warn;EG,true;OG,true;DG,true,KG,true"
       },
       {
         "name": "S_Lichter_Text",
@@ -33,8 +32,7 @@
         "display_name": "Licht",
         "append_divider": "true",
         "operate": "false",
-        "indicator": "aus",
-        "indicator_mode": "off"
+        "indicator": ". .G . .G .,false;. .G .,warn;EG,true;OG,true;DG,true,KG,true"
       },
       {
         "name": "S_WaMa",
@@ -55,9 +53,7 @@
         "name": "S_Briefkasten",
         "display_name": "Briefkasten",
         "icon": "message_postbox_mail.png",
-        "indicator": "1",
-        "indicator_mode": "on",
-        "invert_color": "true"
+        "indicator": "0,off;1,false;2,true"
       },
       {
         "name": "S_Muellabfuhr",
@@ -65,9 +61,7 @@
         "icon": "message_garbage.png",
         "append_divider": "true",
         "operate": "false",
-        "indicator": "Heute|Morgen",
-        "indicator_mode": "on",
-        "invert_color": "true"
+        "indicator": "Heute,false;^Morgen,warn;"
       },
       {
         "name": "S_Wetterinfo",
@@ -76,8 +70,7 @@
         "color": "#595959",
         "append_divider": "true",
         "operate": "false",
-        "indicator": "Kein",
-        "indicator_mode": "off"
+        "indicator": "Temperatur: -,false;2[0-9][.][0-9] km,warn;[3-9][0-9][.][0-9] km,false;Kein,off;Regen,warn"
       },
       {
         "name": "S_HO_Tanja",
@@ -90,9 +83,7 @@
         "icon": "message_medicine.png",
         "display_name": "Hinweis",
         "operate": "false",
-        "indicator": "Kontaktlinsen",
-        "indicator_mode": "on",
-        "invert_color": "true"
+        "indicator": "3,true;2,true;1,warn;Kontaktlinsen,false;Prothyrid,off"
       }
     ],
     "EG_Licht": [
@@ -592,7 +583,7 @@
         "color": "#CC0099"
       },
       {
-        "name": "P_Tablette_Kontaktlinsen",
+        "name": "P10_108_Tablette_Kontaktlinsen",
         "icon": "control_reload.png",
         "display_name": "Kontaktlinsen Counter Reset",
         "color": "#CC0099"
@@ -703,125 +694,6 @@
         "color": "#FFCC00"
       }
     ],
-    "Licht_EG": [
-      {
-        "name": "Wohnzimmer:4",
-        "icon": "light_light_dim_100.png",
-        "display_name": "Wohnraum"
-      },
-      {
-        "name": "Couch:4",
-        "icon": "light_light_dim_100.png",
-        "display_name": "Couch"
-      }, 
-      {
-        "name": "Kueche:4",
-        "icon": "light_light_dim_100.png",
-        "display_name": "Küche"
-      },
-      {
-        "name": "Esszimmer:4",
-        "icon": "light_light_dim_100.png",
-        "display_name": "Esszimmer"
-      },
-      {
-        "name": "Flur:4",
-        "icon": "light_light_dim_100.png",
-        "display_name": "Flur EG"
-      },
-      {
-        "name": "Gaestetoilette:4",
-        "icon": "light_light_dim_100.png",
-        "display_name": "Gästetoilette"
-      },
-      {
-        "name": "S_Hue_Lowboard",
-        "icon": "light_light_dim_100.png",
-        "display_name": "Lowboard",
-        "color": "#ffcc00",
-        "indicator": "0",
-        "invert_color": "true"
-      },
-      {
-        "name": "S_Hue_Stehleuchte",
-        "icon": "light_light_dim_100.png",
-        "display_name": "Stehleuchte",
-        "color": "#ffcc00",
-        "indicator": "0",
-        "invert_color": "true"
-      }
-    ],
-    "Licht_OG": [
-      {
-        "name": "Schlafzimmer:1",
-        "icon": "light_light_dim_100.png",
-        "display_name": "Schlafzimmer"
-      },
-      {
-        "name": "Ankleidezimmer:4",
-        "icon": "light_light_dim_100.png",
-        "display_name": "Ankleidezimmer"
-      },
-      {
-        "name": "Nachttischlampe_Michael:1",
-        "icon": "light_light_dim_100.png",
-        "display_name": "Nachttischlampe Michael"
-      },
-      {
-        "name": "Nachttischlampe_Tanja:2",
-        "icon": "light_light_dim_100.png",
-        "display_name": "Nachttischlampe Tanja"
-      },
-      {
-        "name": "Badezimmer:4",
-        "icon": "light_light_dim_100.png",
-        "display_name": "Badezimmer"
-      },
-      {
-        "name": "Flur_OG:4",
-        "icon": "light_light_dim_100.png",
-        "display_name": "Flur OG"
-      },
-      {
-        "name": "Treppenhaus:4",
-        "icon": "light_light_dim_100.png",
-        "display_name": "Treppenhaus"
-      }
-    ],
-    "Licht_DG": [
-      {
-        "name": "Buero_DG_Michael:4",
-        "icon": "light_light_dim_100.png",
-        "display_name": "Büro Dachgeschoss"
-      },
-      {
-        "name": "Gaestezimmer:4",
-        "icon": "light_light_dim_100.png",
-        "display_name": "Gästezimmer"
-      },
-      {
-        "name": "Flur_DG:4",
-        "icon": "light_light_dim_100.png",
-        "display_name": "Flur DG"
-      }
-    ],
-    "Licht_KG": [
-      {
-        "name": "Waschkeller:4",
-        "icon": "light_light_dim_100.png",
-        "display_name": "Waschkeller"
-      },
-      {
-        "name": "Hauswirtschaftsraum:2",
-        "icon": "light_light_dim_100.png",
-        "display_name": "Hauswirtschaftsraum"
-      },
-      {
-        "name": "Steckdose_KG_Kino:1",
-        "icon": "light_light_dim_100.png",
-        "display_name": "Kino"
-      }
-    ],
     "Rolllaeden zentral": [
       {
         "name": "S_Rollladen_Zentral",
@@ -830,58 +702,13 @@
         "color": "#0033FF"
       }
     ],
-    "Rolllaeden_EG": [
+    "Heizung zentral": [
       {
-        "name": "Rollladen_Terrasse:4",
-        "icon": "fts_shutter_50.png",
-        "display_name": "Rollladen Terrasse"
-      },
-      {
-        "name": "Rollladen_Seitentuer:4",
-        "icon": "fts_shutter_50.png",
-        "display_name": "Rollladen Seitentür"
-      },
-      {
-        "name": "Rollladen_Kueche:4",
-        "icon": "fts_shutter_50.png",
-        "display_name": "Rollladen Küche"
+        "name": "S_Heizung",
+        "icon": "sani_heating.png",
+        "display_name": "Heizungsmodus",
+        "color": "#00CC33"
       }
-    ],
-    "Rolllaeden_OG": [
-      {
-        "name": "Rollladen_Ankleidezimmer:4",
-        "display_name": "Rollladen Ankleidezimmer",
-        "icon": "fts_shutter_50.png"
-      },
-      {
-        "name": "Rollladen_Schlafzimmer:4",
-        "display_name": "Rollladen Schlafzimmer",
-        "icon": "fts_shutter_50.png"
-      },
-      {
-        "name": "Rollladen_Buegelzimmer:4",
-        "icon": "fts_shutter_50.png",
-        "display_name": "Rollladen Bügelzimmer"
-      },
-      {
-        "name": "Rollladen_Bad:4",
-        "display_name": "Rollladen Bad",
-        "icon": "fts_shutter_50.png"
-      }
-    ],
-    "Rolllaeden_DG": [
-      {
-        "name": "Rollladen_Gaestebad:4",
-        "icon": "fts_shutter_50.png",
-        "display_name": "Rollladen Gästebad"
-      }  
-    ],
-    "Rolllaeden_Garten": [
-      {
-        "name": "Markise:4",
-        "icon": "fts_sunblind.png",
-        "display_name": "Markise"
-      }  
     ]
   }        
 }

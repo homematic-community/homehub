@@ -10,7 +10,7 @@ function HmIP_BROLL($component) {
     foreach($obj['channels'][$key]['datapoints'] as $datapoint)
     { $state_component[$datapoint['type']] = $datapoint['ise_id']; }
  
-    if ($component['parent_device_interface'] == 'HmIP-RF' && $component['visible'] == 'true' && isset($component['LEVEL'])) {
+    if ($component['parent_device_interface'] == 'HmIP-RF' && $component['visible'] == 'true' && isset($component['STOP'])) {
         $modalId = mt_rand();
         if (!isset($component['color'])) $component['color'] = '#0033FF';
         return '<div class="hh" style=\'border-left-color: '.$component['color'].'; border-left-style: solid;\'>'
@@ -26,7 +26,7 @@ function HmIP_BROLL($component) {
                 . '</button>'
                 . '&nbsp;&nbsp;&nbsp;'
                 . '<button type="button" class="btn btn-noicon set" data-set-id="' . $component['STOP'] . '" data-set-value="1">'  
-                    . '<span class="info noicon" data-id="' . ($state_component['LEVEL']). '" data-component="' . $component['component'] . '" data-datapoint="LEVEL"></span>'
+                    . '<span class="info noicon" data-id="' . $state_component['LEVEL']. '" data-component="' . $component['component'] . '" data-datapoint="LEVEL"></span>'
                 . '</button>' 
             . '</div>'
             . '<div class="clearfix"></div>'

@@ -105,25 +105,29 @@
           "display_name": "Zentralsteuerung"
         },
         {
-          "name": "Licht_EG",
+          "name": "EG_Licht",
           "display_name": "Erdgeschoss"
         },
         {
-          "name": "Licht_OG",
+          "name": "OG_Licht",
           "display_name": "Obergeschoss"
         },
         {
-          "name": "Licht_DG",
+          "name": "DG_Licht",
           "display_name": "Dachgeschoss"
         },
         {
           "name": "Licht_KG",
           "display_name": "Keller"
+        },
+        {
+          "name": "Garten_Licht",
+          "display_name": "Garten"
         }       
       ]
     },
     {
-      "name": "Rolll&auml;den",
+      "name": "Beschattung ",
       "icon": "fts_shutter_50.png",
       "subcategories": [
         {
@@ -131,20 +135,42 @@
           "display_name": "Zentralsteuerung"
         },
         {
-          "name": "Rolllaeden_EG",
+          "name": "EG_Rolllaeden",
           "display_name": "Erdgeschoss"
         },
         {
-          "name": "Rolllaeden_OG",
+          "name": "OG_Rolllaeden",
           "display_name": "Obergeschoss"
         },
         {
-          "name": "Rolllaeden_DG",
+          "name": "DG_Rolllaeden",
           "display_name": "Dachgeschoss"
         },
         {
-          "name": "Rolllaeden_Garten",
+          "name": "Garten_Beschattung",
           "display_name": "Garten"
+        }
+      ]
+    },
+    {
+      "name": "Raumklima",
+      "icon": "sani_heating.png",
+      "subcategories": [
+        {
+          "name": "Heizung zentral",
+          "display_name": "Zentralsteuerung"
+        },
+        {
+          "name": "EG_Heizung",
+          "display_name": "Erdgeschoss"
+        },
+        {
+          "name": "OG_Heizung",
+          "display_name": "Obergeschoss"
+        },
+        {
+          "name": "DG_Heizung",
+          "display_name": "Dachgeschoss"
         }
       ]
     },
@@ -170,7 +196,7 @@
         }
       ],
       "append_divider": "true"
-    },
+    }, 
     {
       "name": "Modis",
       "icon": "control_switch_m_4.png",

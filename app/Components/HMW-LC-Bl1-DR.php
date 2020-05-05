@@ -36,7 +36,7 @@ function HMW_LC_Bl1_DR($component) {
                 . '</button>'
                 . '&nbsp;&nbsp;&nbsp;'
                 . '<button type="button" class="btn btn-noicon set" data-set-id="' . $component['STOP'] . '" data-set-value="1">'  
-                    . '<span class="info noicon" data-id="' . ($state_component['LEVEL']). '" data-component="' . $component['component'] . '" data-datapoint="LEVEL"></span>'
+                    . '<span class="info noicon" data-id="' . $component['LEVEL']. '" data-component="' . $component['component'] . '" data-datapoint="LEVEL"></span>'
                 . '</button>' 
             . '</div>'
             . '<div class="clearfix"></div>'

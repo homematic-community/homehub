@@ -1,16 +1,13 @@
 <?php
 
-// HM-ES-PMSw1-Pl|Toilette Waschmaschine:0||VISIBLE=|OPERATE=|UNREACH=7238|STICKY_UNREACH=7234|CONFIG_PENDING=7220|DUTYCYCLE=7228|RSSI_DEVICE=7232|RSSI_PEER=7233|DEVICE_IN_BOOTLOADER=7224|UPDATE_PENDING=7242|
-// HM-ES-PMSw1-Pl|Toilette Waschmaschine:1||VISIBLE=true|OPERATE=true|STATE=7250|
-// HM-ES-PMSw1-Pl|Toilette Waschmaschine:2||VISIBLE=true|OPERATE=true|ENERGY_COUNTER=7255|POWER=7257|CURRENT=7254|VOLTAGE=7258|FREQUENCY=7256|
-// HM-ES-PMSw1-Pl|Toilette Waschmaschine:3||VISIBLE=true|OPERATE=true|DECISION_VALUE=7260|
-// HM-ES-PMSw1-Pl|Toilette Waschmaschine:4||VISIBLE=true|OPERATE=true|DECISION_VALUE=7262|
-// HM-ES-PMSw1-Pl|Toilette Waschmaschine:5||VISIBLE=true|OPERATE=true|DECISION_VALUE=7264|
-// HM-ES-PMSw1-Pl|Toilette Waschmaschine:6||VISIBLE=true|OPERATE=true|DECISION_VALUE=7266|
-
-// Validated by Braindead, steingarten
-
 function HMIP_PSM($component) {
+
+    global $export;
+    $obj = $export;
+    $key = array_search(substr($component['address'], 0, -1)."6", array_column($obj['channels'], 'address'));
+    foreach($obj['channels'][$key]['datapoints'] as $datapoint)
+    { $power_component[$datapoint['type']] = $datapoint['ise_id']; }
+    
     if ($component['parent_device_interface'] == 'HmIP-RF' && $component['visible'] == 'true' && isset($component['STATE'])) {
         $modalId = mt_rand();  
         if (!isset($component['color'])) $component['color'] = '#FFCC00';
@@ -22,11 +19,11 @@ function HMIP_PSM($component) {
                     . '</div>'
                     . '<div class="clearfix"></div>'
                 . '</div>'
-                . '<div class="hh2 collapse" id="' . $modalId . '"> 
-                    <div class="row text-center">'
-                    . '<span class="info" data-id="' . ($component['STATE']+12) . '" data-component="' . $component['component'] . '" data-datapoint="CURRENT"></span>'
-                    . '<span class="info" data-id="' . ($component['STATE']+16) . '" data-component="' . $component['component'] . '" data-datapoint="POWER"></span>'
-                    . '<span class="info" data-id="' . ($component['STATE']+13) . '" data-component="' . $component['component'] . '" data-datapoint="ENERGY_COUNTER"></span>'
+                . '<div class="hh2 collapse" id="' . $modalId . '">' 
+                    . '<div class="row text-center">'
+                        . '<span class="info" data-id="' . ($power_component['CURRENT']) . '" data-component="' . $component['component'] . '" data-datapoint="CURRENT"></span>'
+                        . '<span class="info" data-id="' . ($power_component['POWER']) . '" data-component="' . $component['component'] . '" data-datapoint="POWER"></span>'
+                        . '<span class="info" data-id="' . ($power_component['ENERGY_COUNTER']) . '" data-component="' . $component['component'] . '" data-datapoint="ENERGY_COUNTER"></span>'
                 . '</div>'
             . '</div>'
         . '</div>';

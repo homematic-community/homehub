@@ -4,6 +4,7 @@ $app->get('/[{selectedCat}]', function ($request,  $response, $arguments) {
     global $homematicIp;
     global $timerPeriod;
     global $title;
+    global $logo;
     
     $selectedCat = $request->getAttribute('selectedCat', 'Home');
     
@@ -170,6 +171,7 @@ $app->get('/[{selectedCat}]', function ($request,  $response, $arguments) {
     $this->view->addAttribute('homematicIp', $homematicIp);
     $this->view->addAttribute('timerPeriod', $timerPeriod);
     $this->view->addAttribute('title', $title);
+    $this->view->addAttribute('logo', $logo);
     $this->view->addAttribute('appBase', $appBase);
     $this->view->addAttribute('customCss', $customCss);
     $this->view->addAttribute('customJs', $customJs);
