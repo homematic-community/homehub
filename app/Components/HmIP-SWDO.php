@@ -5,7 +5,7 @@
 
 // Validated by Braindead, steingarten
 
-function HmIP_SWDO($component) {
+function HMIP_SWDO($component) {
 
     global $export;
     $obj = $export;

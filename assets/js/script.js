@@ -2147,7 +2147,7 @@ var updateDatapoints = function () {
                                 $('[data-id="' + ise_id + '"]').html(value);
                         }
                         break;
-                    case 'HmIP-SWDO':
+                    case 'HMIP-SWDO':
                         switch (datapoint) {
                             case 'LOW_BAT':
                                 if (value === 'true') {
