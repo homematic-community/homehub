@@ -1,10 +1,4 @@
 <?php
-
-// HM-LC-Dim1T-Pl|Dunstabzug Licht:0||VISIBLE=|OPERATE=|UNREACH=13221|STICKY_UNREACH=13217|CONFIG_PENDING=13207|DUTYCYCLE=13211|RSSI_DEVICE=13215|RSSI_PEER=13216|
-// HM-LC-Dim1T-Pl|Dunstabzug Licht:1|BidCos-RF||1|VISIBLE=true|OPERATE=true|LEVEL=4825|OLD_LEVEL=4826|RAMP_TIME=4829|RAMP_STOP=4828|ERROR_REDUCED=4819|ERROR_OVERLOAD=4815|ERROR_OVERHEAT=4811|
-
-// Validated by firephaser
-
 function HM_LC_Dim1T_Pl($component) {
     if ($component['parent_device_interface'] == 'BidCos-RF' && $component['visible'] == 'true' && isset($component['LEVEL'])) {
         $modalId = mt_rand();

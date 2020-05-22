@@ -1,10 +1,4 @@
 <?php
-
-// HM-LC-RGBW-WM|RGBW Controller Power:0|BidCos-RF|VISIBLE=|OPERATE=|UNREACH=3291|STICKY_UNREACH=3287|CONFIG_PENDING=3269|LOWBAT=3281|DUTYCYCLE=3277|RSSI_DEVICE=3285|RSSI_PEER=3286|DEVICE_IN_BOOTLOADER=3273|UPDATE_PENDING=3295|
-// HM-LC-RGBW-WM|RGBW Controller Dimmer|BidCos-RF|VISIBLE=true|OPERATE=true|LEVEL=3303|OLD_LEVEL=3304|RAMP_TIME=3307|RAMP_STOP=3306|
-// HM-LC-RGBW-WM|RGBW Controller Farbe|BidCos-RF|VISIBLE=true|OPERATE=true|COLOR=3314|USER_COLOR=3320|RAMP_TIME=3318|
-// HM-LC-RGBW-WM|RGBW Controller Prog|BidCos-RF|VISIBLE=true|OPERATE=true|PROGRAM=3332|USER_PROGRAM=3335|RAMP_TIME=3333|
-
 function HM_LC_RGBW_WM($component) {
     if ($component['parent_device_interface'] == 'BidCos-RF' && $component['visible'] == 'true' && isset($component['LEVEL'])) {
         $modalId = mt_rand();

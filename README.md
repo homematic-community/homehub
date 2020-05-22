@@ -126,6 +126,7 @@ HomeHub benötigt eine installierte XML-API auf der CCU.
 * HMW-Sen-SC-12-DR
 * HMIP-BDT
 * HMIP-BROLL
+* HMIP-FROLL
 * HMIP-BSL
 * HMIP-BSM
 * HMIP-BWTH
@@ -136,8 +137,13 @@ HomeHub benötigt eine installierte XML-API auf der CCU.
 * HMIP-FSM
 * HMIP-FSM16
 * HMIP-FSI16
+* HMIP-PS
 * HMIP-PSM
 * HMIP-SCI
+* HMIP-SLO
+* HMIP-SMI
+* HMIP-SMI55
+* HMIP-SPI
 * HMIP-SRH
 * HMIP-STHD
 * HMIP-SWDO-I
@@ -148,6 +154,15 @@ HomeHub benötigt eine installierte XML-API auf der CCU.
 * HMIPW-DRS8
 * HMIPW-DRD3 (validieren)
 * HMIPW-DRBL4 (validieren)
+* HMIPW-DRI16 (validieren)
+* HMIPW-DRI32 (validieren)
+* HmIPW-SMI55 (validieren)
+* HmIPW-SPI (validieren)
+* HmIPW-STHD (validieren)
+* HmIPW-WTH (validieren)
+* HmIP-SAM
+* HmIP-SWD
+* HmIP-SWDM
 * Programme
 * Systemvariablen
 

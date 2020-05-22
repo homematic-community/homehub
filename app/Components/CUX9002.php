@@ -1,12 +1,4 @@
 <?php
-
-// HM-WDS10-TH-O|Garten Wetter Web:0|CUxD|CUX9002001|VISIBLE=|OPERATE=|UNREACH=5467|
-// HM-WDS10-TH-O|Garten Wetter Web:1|CUxD|CUX9002001|VISIBLE=true|OPERATE=true|TEMPERATURE=5479|HUMIDITY=5474|DEW_POINT=5473|ABS_HUMIDITY=5472|TEMP_MIN_24H=5481|TEMP_MAX_24H=5480|HUM_MIN_24H=5476|HUM_MAX_24H=5475|
-// HM-WDS10-TH-O|Garten Wetter Web:2|CUxD|CUX9002001|VISIBLE=true|OPERATE=true|
-// HM-WDS10-TH-O|Garten Wetter Web:3|CUxD|CUX9002001|VISIBLE=true|OPERATE=true|
-
-// Validated by Braindead
-
 function CUX9002($component) {
     if ($component['parent_device_interface'] == 'CUxD' && $component['visible'] == 'true' && isset($component['TEMPERATURE'])) {
         $datapoints = array();
@@ -36,7 +28,8 @@ function CUX9002($component) {
             $datapoints[] = '<span class="info" data-id="' . $component['HUM_MAX_24H'] . '" data-component="' . $component['component'] . '" data-datapoint="HUM_MAX_24H"></span>';
         }
         
-        return '<div class="hh">'
+        if (!isset($component['color'])) $component['color'] = '#595959';
+            return '<div class="hh" style=\'border-left-color: '.$component['color'].'; border-left-style: solid;\'>'
             . '<div class="pull-left"><img src="../assets/icons/' . $component["icon"] . '" class="icon">' . $component['name'] . '</div>'
             . '<div class="pull-right">'
                 . implode('', $datapoints)

@@ -9,8 +9,8 @@ function HmIP_BSM($component) {
     $key = array_search(substr($component['address'], 0, -1)."7", array_column($obj['channels'], 'address'));
     foreach($obj['channels'][$key]['datapoints'] as $datapoint)
     { $power_component[$datapoint['type']] = $datapoint['ise_id']; }
-
-    if ($component['parent_device_interface'] == 'HmIP-RF' && $component['visible'] == 'true' && isset($component['STATE'])) {
+    
+    if ($component['parent_device_interface'] == 'HmIP-RF' && $component['visible'] == 'true' && isset($component['STATE'])) {   
         $modalId = mt_rand();  
         if (!isset($component['color'])) $component['color'] = '#FFCC00';
         return '<div class="hh" style=\'border-left-color: '.$component['color'].'; border-left-style: solid;\'>'
@@ -28,6 +28,6 @@ function HmIP_BSM($component) {
                     . '<span class="info" data-id="' . ($power_component['ENERGY_COUNTER']) . '" data-component="' . $component['component'] . '" data-datapoint="ENERGY_COUNTER"></span>'
                 . '</div>'
             . '</div>'
-        . '</div>';
+        . '</div>'; 
     }
 }

@@ -1,7 +1,4 @@
 <?php
-
-// Validated by Braindead, steingarten
-
 function HM_ES_PMSw1_Pl($component) {
     if ($component['parent_device_interface'] == 'BidCos-RF' && $component['visible'] == 'true' && isset($component['STATE'])) {
         $modalId = mt_rand();  

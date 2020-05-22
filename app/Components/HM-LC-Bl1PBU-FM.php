@@ -1,10 +1,4 @@
 <?php
-
-// HM-LC-Bl1PBU-FM|Schlafzimmer Jalousie:0||VISIBLE=|OPERATE=|UNREACH=9123|STICKY_UNREACH=9119|CONFIG_PENDING=9105|DUTYCYCLE=9113|RSSI_DEVICE=9117|RSSI_PEER=9118|DEVICE_IN_BOOTLOADER=9109|UPDATE_PENDING=9127|
-// HM-LC-Bl1PBU-FM|Schlafzimmer Jalousie:1||VISIBLE=true|OPERATE=true|LEVEL=9135|STOP=9136|
-
-// Validated by Braindead
-
 function HM_LC_Bl1PBU_FM($component) {
     if ($component['parent_device_interface'] == 'BidCos-RF' && $component['visible'] == 'true' && isset($component['LEVEL'])) {
         $modalId = mt_rand();

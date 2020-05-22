@@ -40,8 +40,9 @@
                         if($entry['name'] == $selectedCat) {
                             $selected = 'selected';
                         }
-
-                        echo '<a class="'.$selected.'" href="'.urlencode($entry['name']).'"><img src="../assets/icons/'.$entry['icon'].'" class="icon">'.$entry['name'].'</a>';
+                        
+                        if (!isset($entry['color'])) $entry['color'] = '#595959';
+                        echo '<a class="'.$selected.'" href="'.urlencode($entry['name']).'" style="border-left-color: '.$entry['color'].'; border-left-style: solid;"><img src="../assets/icons/'.$entry['icon'].'" class="icon">'.$entry['name'].'</a>';
                                                 
                         if(isset($entry['append_divider']) && $entry['append_divider'] == "true") {
                             echo '<div class="divider"></div>';

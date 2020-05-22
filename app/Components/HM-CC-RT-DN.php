@@ -1,20 +1,10 @@
 <?php
-
-// HM-CC-RT-DN|Badezimmer Heizung:0||VISIBLE=|OPERATE=|UNREACH=1472|STICKY_UNREACH=1468|CONFIG_PENDING=1453|LOWBAT=1462|RSSI_DEVICE=1466|RSSI_PEER=1467|DEVICE_IN_BOOTLOADER=1457|UPDATE_PENDING=1476|
-// HM-CC-RT-DN|Badezimmer Heizung:1||VISIBLE=true|OPERATE=false|
-// HM-CC-RT-DN|Badezimmer Heizung:2||VISIBLE=true|OPERATE=false|
-// HM-CC-RT-DN|Badezimmer Heizung:3||VISIBLE=true|OPERATE=false|
-// HM-CC-RT-DN|Badezimmer Heizung:4||VISIBLE=true|OPERATE=true|CONTROL_MODE=1490|FAULT_REPORTING=1491|BATTERY_STATE=1486|VALVE_STATE=1526|BOOST_STATE=1488|ACTUAL_TEMPERATURE=1484|SET_TEMPERATURE=1525|AUTO_MODE=1485|MANU_MODE=1514|BOOST_MODE=1487|COMFORT_MODE=1489|LOWERING_MODE=1513|PARTY_MODE_SUBMIT=1515|PARTY_TEMPERATURE=1524|PARTY_START_TIME=1518|PARTY_START_DAY=1516|PARTY_START_MONTH=1517|PARTY_START_YEAR=1519|PARTY_STOP_TIME=1522|PARTY_STOP_DAY=1520|PARTY_STOP_MONTH=1521|PARTY_STOP_YEAR=1523|
-// HM-CC-RT-DN|Badezimmer Heizung:5||VISIBLE=true|OPERATE=false|
-// HM-CC-RT-DN|Badezimmer Heizung:6||VISIBLE=true|OPERATE=false|
-
-// Validated by Braindead
-
 function HM_CC_RT_DN($component) {
     if ($component['parent_device_interface'] == 'BidCos-RF' && $component['visible'] == 'true' && isset($component['CONTROL_MODE'])) {
         $modalId = mt_rand();
         
-        return '<div class="hh">'
+        if (!isset($component['color'])) $component['color'] = '#00CC33';
+        return '<div class="hh" style=\'border-left-color: '.$component['color'].'; border-left-style: solid;\'>'
             . '<div data-toggle="collapse" data-target="#' . $modalId . '">'
                 .'<div class="pull-left"><img src="../assets/icons/' . $component["icon"] . '" class="icon">' . $component['name'] . '</div>'
                 . '<div class="pull-right">'

@@ -9,8 +9,8 @@
 
 function HMW_LC_Bl1_DR($component) {
     if ($component['parent_device_interface'] == 'BidCos-Wired' && $component['visible'] == 'true' && isset($component['PRESS_SHORT'])) {
-        if (!isset($component['color'])) $component['color'] = '#0033FF';
-        return '<div class="hh" style=\'border-left-color: '.$component['color'].'; border-left-style: solid;\'>'
+        if (!isset($component['color'])) $component['color'] = '#595959';
+            return '<div class="hh" style=\'border-left-color: '.$component['color'].'; border-left-style: solid;\'>'
             . '<div class="pull-left"><img src="../assets/icons/' . $component["icon"] . '" class="icon">' . $component['name'] . '</div>'
             . '<div class="pull-right">'
                 . '<span class="set btn-text" data-set-id="' . $component['PRESS_SHORT'] . '" data-set-value="1">Kurz</span>'

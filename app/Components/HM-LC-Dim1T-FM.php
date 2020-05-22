@@ -1,10 +1,4 @@
 <?php
-
-// HM-LC-Dim1T-FM|Dimmer Fensterlicht:0|BidCos-RF||0|VISIBLE=|OPERATE=|UNREACH=26572|STICKY_UNREACH=26568|CONFIG_PENDING=26560|DUTYCYCLE=26564|RSSI_DEVICE=36854|RSSI_PEER=36855|
-// HM-LC-Dim1T-FM|Fensterlicht|BidCos-RF||1|VISIBLE=true|OPERATE=true|LEVEL=26592|OLD_LEVEL=26593|RAMP_TIME=26596|RAMP_STOP=26595|ERROR_REDUCED=26586|ERROR_OVERLOAD=26582|ERROR_OVERHEAT=26578|
-
-// validated by ger.isi
-
 function HM_LC_Dim1T_FM($component) {
     if ($component['parent_device_interface'] == 'BidCos-RF' && $component['visible'] == 'true' && isset($component['LEVEL'])) {
         $modalId = mt_rand();

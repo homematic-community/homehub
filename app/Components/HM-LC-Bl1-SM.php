@@ -1,10 +1,4 @@
 <?php
-
-// HM-LC-Bl1-SM|Markise:0||VISIBLE=|OPERATE=|UNREACH=3764|STICKY_UNREACH=3760|CONFIG_PENDING=3750|DUTYCYCLE=3754|RSSI_DEVICE=3758|RSSI_PEER=3759|
-// HM-LC-Bl1-SM|Markise||VISIBLE=true|OPERATE=true|LEVEL=3772|STOP=3773|
-
-// Validated by Braindead
-
 function HM_LC_Bl1_SM($component) {
     if ($component['parent_device_interface'] == 'BidCos-RF' && $component['visible'] == 'true' && isset($component['LEVEL'])) {
         $modalId = mt_rand();

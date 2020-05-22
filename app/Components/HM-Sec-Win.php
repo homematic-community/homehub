@@ -1,16 +1,10 @@
 <?php
-
-// HM-Sec-Win|Fenster Stiegenhaus:0|BidCos-RF||0|VISIBLE=|OPERATE=|UNREACH=24011|STICKY_UNREACH=24007|CONFIG_PENDING=23993|LOWBAT=24001|DUTYCYCLE=23997|RSSI_DEVICE=24005|RSSI_PEER=24006|
-// HM-Sec-Win|Fensterantrieb Gang|BidCos-RF||1|VISIBLE=true|OPERATE=true|LEVEL=24025|RELOCK_DELAY=24026|SPEED=24027|STOP=24029|STATE_UNCERTAIN=24028|ERROR=24017|
-// HM-Sec-Win|Fensterantrieb Gang Batterie|BidCos-RF||2|VISIBLE=true|OPERATE=true|LEVEL=24032|STATUS=24033|
-
-// Validated by ger.isi
-
 function HM_Sec_Win($component) {
     if ($component['parent_device_interface'] == 'BidCos-RF' && $component['visible'] == 'true' && isset($component['RELOCK_DELAY'])) {
         $modalId = mt_rand();
         
-        return '<div class="hh">'
+        if (!isset($component['color'])) $component['color'] = '#FF0000';
+        return '<div class="hh" style=\'border-left-color: '.$component['color'].'; border-left-style: solid;\'>'
             . '<div data-toggle="collapse" data-target="#' . $modalId . '">'
                 . '<div class="pull-left"><img src="../assets/icons/' . $component["icon"] . '" class="icon">' . $component['name'] . '</div>'
                 . '<div class="pull-right">'

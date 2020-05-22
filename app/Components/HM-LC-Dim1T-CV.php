@@ -1,8 +1,4 @@
 <?php
-
-// HM-LC-Dim1T-CV|Testdimmer:0||VISIBLE=|OPERATE=|UNREACH=13221|STICKY_UNREACH=13217|CONFIG_PENDING=13207|DUTYCYCLE=13211|RSSI_DEVICE=13215|RSSI_PEER=13216|
-// HM-LC-Dim1T-CV|Testdimmer:1||VISIBLE=true|OPERATE=true|LEVEL=13241|OLD_LEVEL=13242|RAMP_TIME=13245|RAMP_STOP=13244|ERROR_REDUCED=13235|ERROR_OVERLOAD=13231|ERROR_OVERHEAT=13227|
-
 function HM_LC_Dim1T_CV($component) {
     if ($component['parent_device_interface'] == 'BidCos-RF' && $component['visible'] == 'true' && isset($component['LEVEL'])) {
         $modalId = mt_rand();

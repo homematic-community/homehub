@@ -61,7 +61,7 @@
         "icon": "message_garbage.png",
         "append_divider": "true",
         "operate": "false",
-        "indicator": "Heute,false;^Morgen,warn;"
+        "indicator": "Heute,false;^Morgen,warn"
       },
       {
         "name": "S_Wetterinfo",

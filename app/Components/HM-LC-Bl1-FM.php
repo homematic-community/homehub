@@ -1,7 +1,4 @@
 <?php
-
-// HM-LC-BL1-FM|Wohnzimmer Jalousie:1|Wohnzimmer|LEVEL=9002|STOP=9003|INHIBIT=9000|
-
 function HM_LC_BL1_FM($component) {
     if ($component['parent_device_interface'] == 'BidCos-RF' && $component['visible'] == 'true' && isset($component['LEVEL'])) {
         $modalId = mt_rand();

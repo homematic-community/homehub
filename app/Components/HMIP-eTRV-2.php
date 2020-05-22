@@ -1,9 +1,4 @@
 <?php
-
-// HmIP-WTH-2|Thermostat Gästetoilette:0||CONFIG_PENDING=62855|DUTY_CYCLE=62859|LOW_BAT=62860|OPERATING_VOLTAGE=62864|RSSI_DEVICE=62865|RSSI_PEER=62866|UNREACH=62867|UPDATE_PENDING=62871|
-// HmIP-WTH-2|Thermostat Gästetoilette:1||ACTIVE_PROFILE=62876|ACTUAL_TEMPERATURE=62877|BOOST_MODE=62878|CONTROL_DIFFERENTIAL_TEMP=62879|CONTROL_MODE=62880|DURATION_UNIT=62881|DURATION_VALUE=62882|FROST_PROTECTION=62883|HEATING_COOLING=62884|HUMIDITY=62885|PARTY_MODE=62886|PARTY_SET_POINT_TEMPERATU=62887|PARTY_TIME_END=62888|PARTY_TIME_START=62889|SET_POINT_MODE=62890|SET_POINT_TEMPERATURE=62891|SWITCH_POINT_OCCURED=62892|WINDOW_STATE=62893|
-
-   
 function HMIP_eTRV_2($component) {
 
     global $export;
@@ -23,8 +18,8 @@ function HMIP_eTRV_2($component) {
                     . '<span class="info" data-id="' . $component['ACTUAL_TEMPERATURE'] . '" data-component="' . $component['component'] . '" data-datapoint="ACTUAL_TEMPERATURE"></span>'
                     . '<span class="info" data-id="' . $component['SET_POINT_TEMPERATURE'] . '" data-component="' . $component['component'] . '" data-datapoint="SET_POINT_TEMPERATURE"></span>'
                     . '<span class="info" data-id="' . $component['WINDOW_STATE'] . '" data-component="' . $component['component'] . '" data-datapoint="WINDOW_STATE"></span>'
-                    . '<span class="info set btn-icon" data-id="' . $component['SET_POINT_MODE'] . '" data-component="' . $component['component'] . '" data-datapoint="SET_POINT_MODE" data-set-id="" data-set-value""></span>'
-                    . '<span class="info set btn-icon" data-id="' . $component['ACTIVE_PROFILE'] . '" data-component="' . $component['component'] . '" data-datapoint="ACTIVE_PROFILE" data-set-id="" data-set-value""></span>'
+                    . '<span class="info set btn-icon" data-id="' . $component['SET_POINT_MODE'] . '" data-component="' . $component['component'] . '" data-datapoint="SET_POINT_MODE" data-set-id="" data-set-value=""></span>'
+                    . '<span class="info set btn-icon" data-id="' . $component['ACTIVE_PROFILE'] . '" data-component="' . $component['component'] . '" data-datapoint="ACTIVE_PROFILE" data-set-id="" data-set-value=""></span>'
                 . '</div>'
                 . '<div class="clearfix"></div>'
             . '</div>'

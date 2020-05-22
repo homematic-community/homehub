@@ -99,7 +99,7 @@ $app->get('/[{selectedCat}]', function ($request,  $response, $arguments) {
             if(isset($mapping[$category['name']])) {
                 foreach($mapping[$category['name']] as $mappingEntry) {
                     foreach(array('channels', 'systemvariables', 'programs') AS $part) {
-                        $dummies = array_filter($export[$part], function($dummy) use ($mappingEntry) {
+                        $dummies = array_filter($export[$part], function($dummy) use ($mappingEntry) { 
                             if($dummy['component'] == $mappingEntry['name']) {
                                 if(isset($dummy['visible']) && $dummy['visible'] === 'true') {
                                     return true;
@@ -156,6 +156,15 @@ $app->get('/[{selectedCat}]', function ($request,  $response, $arguments) {
 
                                 if(isset($customEntry['display_name']) && $customEntry['display_name'] <> '') {
                                     $dummy['name'] = $customEntry['display_name'];
+                                }
+                                
+                                if(isset($customEntry['operate']) && $customEntry['operate'] <> '') {
+                                    $dummy['operate'] = $customEntry['operate'];
+                                }
+                                else $dummy['operate'] = "true";
+                                
+                                if(isset($customEntry['color']) && $customEntry['color'] <> '') {
+                                    $dummy['color'] = $customEntry['color'];
                                 }
                                 $customComponents[] = array_merge($customEntry, $dummy);
                             }

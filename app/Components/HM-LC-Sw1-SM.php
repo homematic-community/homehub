@@ -1,8 +1,4 @@
 <?php
-
-// HM-LC-Sw1-SM|BodenFeuchte2:0||VISIBLE=|OPERATE=|
-// HM-LC-Sw1-SM|BodenFeuchte2:1||VISIBLE=true|OPERATE=true|STATE=25214|VALUE=25215|EVENTCTR=25212|
-
 function HM_LC_Sw1_SM($component) {
     if ($component['parent_device_interface'] == 'BidCos-RF' && $component['visible'] == 'true' && isset($component['STATE'])) {
         if (!isset($component['color'])) $component['color'] = '#FFCC00';

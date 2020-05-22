@@ -158,6 +158,10 @@
                 "icon": "message_socket_on_off.png"
             },
             {
+                "name": "HMIP-PS",
+                "icon": "message_socket_on_off.png"
+            },
+            {
                 "name": "HmIP-BSL",
                 "icon": "light_light_dim_100.png"
             },
@@ -214,6 +218,10 @@
                 "icon": "fts_shutter_40.png"
             },
             {
+                "name": "HmIP-FROLL",
+                "icon": "fts_shutter_40.png"
+            },
+            {
                 "name": "HmIPW-DRBL4",
                 "icon": "fts_shutter_40.png"
             }
@@ -266,6 +274,18 @@
             {
                 "name": "HmIP-SCI",
                 "icon": "fts_window_2w_open_l.png"
+            },
+            {
+                "name": "HmIP-SWDM",
+                "icon": "fts_window_2w_open_l.png"
+            },
+            {
+                "name": "HmIPW_DRI16",
+                "icon": "fts_window_2w_open_l.png"
+            },
+            {
+                "name": "HmIPW_DRI32",
+                "icon": "fts_window_2w_open_l.png"
             }
         ],
         "Heizung": [
@@ -298,11 +318,23 @@
                 "icon": "sani_heating.png"
             },
             {
+                "name": "HmIPW-WTH",
+                "icon": "sani_heating.png"
+            },
+            {
+                "name": "HmIPW-STHD",
+                "icon": "sani_heating.png"
+            },
+            {
                 "name": "HmIP-BWTH",
                 "icon": "sani_heating.png"
             },
             {
                 "name": "HMIP-eTRV",
+                "icon": "sani_heating.png"
+            },
+            {
+                "name": "HMIP-eTRV-2",
                 "icon": "sani_heating.png"
             }
         ],    
@@ -496,6 +528,34 @@
             {
                 "name": "HMW-Sen-SC-12-DR",
                 "icon": "control_switch_m_4.png"
+            },
+            {
+                "name": "HmIP-SMI",
+                "icon": "status_man.png"
+            },
+            {
+                "name": "HmIP-SMI55",
+                "icon": "status_man.png"
+            },
+            {
+                "name": "HmIPW-SMI55",
+                "icon": "status_man.png"
+            },
+            {
+                "name": "HmIP-SPI",
+                "icon": "status_man.png"
+            },
+            {
+                "name": "HmIPW-SPI",
+                "icon": "status_man.png"
+            },
+            {
+                "name": "HmIP-SAM",
+                "icon": "status_man.png"
+            },
+            {
+                "name": "HmIP-SWD",
+                "icon": "sani_water_tap.png"
             }
         ],
         "Wetter": [
@@ -537,6 +597,10 @@
             },
             {
                 "name": "HmIP-SWO-B",
+                "icon": "temp_temperature.png"
+            },
+            {
+                "name": "HmIP-STHO",
                 "icon": "temp_temperature.png"
             }
         ],
