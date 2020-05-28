@@ -2130,6 +2130,62 @@ var updateDatapoints = function () {
                                 $('[data-id="' + ise_id + '"]').html(value);
                         }
                         break;
+                    case 'HmIP-SMO':
+                        switch (datapoint) {
+                            case 'CURRENT_ILLUMINATION':
+                                $('[data-id="' + ise_id + '"]').html(Math.round(value));
+                                break;
+                            case 'LOW_BAT':
+                                if (value === 'true') {
+                                    $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/measure_battery_25.png" />');
+                                }
+                                break;
+                            case 'MOTION':
+                                if (value === 'true') {
+                                    $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/user_available.png" />');
+                                } else {
+                                    $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/user_n_a.png" />');
+                                }
+                                break;
+                            case 'MOTION_DETECTION_ACTIVE':
+                                if (value === 'true') {
+                                    $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/message_presence_active.png" />');
+                                } else {
+                                    $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/message_presence_disabled.png" />');
+                                }
+                                break;
+                            default:
+                                $('[data-id="' + ise_id + '"]').html(value);
+                        }
+                        break;
+                    case 'HmIP-SMO-A':
+                        switch (datapoint) {
+                            case 'CURRENT_ILLUMINATION':
+                                $('[data-id="' + ise_id + '"]').html(Math.round(value));
+                                break;
+                            case 'LOW_BAT':
+                                if (value === 'true') {
+                                    $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/measure_battery_25.png" />');
+                                }
+                                break;
+                            case 'MOTION':
+                                if (value === 'true') {
+                                    $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/user_available.png" />');
+                                } else {
+                                    $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/user_n_a.png" />');
+                                }
+                                break;
+                            case 'MOTION_DETECTION_ACTIVE':
+                                if (value === 'true') {
+                                    $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/message_presence_active.png" />');
+                                } else {
+                                    $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/message_presence_disabled.png" />');
+                                }
+                                break;
+                            default:
+                                $('[data-id="' + ise_id + '"]').html(value);
+                        }
+                        break;
                     case 'HmIPW-SPI':
                         switch (datapoint) {
                             case 'CURRENT_ILLUMINATION':
@@ -2331,7 +2387,7 @@ var updateDatapoints = function () {
                                 $('[data-id="' + ise_id + '"]').html(value);
                         }
                         break;
-                    case 'HMIP-SWDM':
+                    case 'HmIP-SWDM':
                         switch (datapoint) {
                             case 'LOW_BAT':
                                 if (value === 'true') {
@@ -3107,6 +3163,84 @@ var updateDatapoints = function () {
                                 break;
                             case 'WIND_SPEED':
                                 $('[data-id="' + ise_id + '"]').html('Wind: ' + (Math.round(value * 10) / 10) + ' km/h');
+                                break;
+                            default:
+                                $('[data-id="' + ise_id + '"]').html(value);
+                        }
+                        break;
+                    case 'HmIP-SWO-PL':
+                        switch (datapoint) {
+                            case 'LOW_BAT':
+                                if (value === 'true') {
+                                    $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/measure_battery_25.png" />');
+                                }
+                                break;
+                            case 'ILLUMINATION':
+                                $('[data-id="' + ise_id + '"]').html('Helligkeit: ' + (Math.round(value * 10) / 10) + ' Lux');
+                                break;
+                            case 'HUMIDITY':
+                                $('[data-id="' + ise_id + '"]').html('Feuchte: ' + (Math.round(value * 10) / 10) + ' %');
+                                break;
+                            case 'SUNSHINEDURATION':
+                                $('[data-id="' + ise_id + '"]').html('Sonnenschein: ' + (Math.round(value * 10) / 10) + ' Min.');
+                                break;
+                            case 'ACTUAL_TEMPERATURE':
+                                $('[data-id="' + ise_id + '"]').html('Temperatur: ' + (Math.round(value * 10) / 10) + ' &deg;C');
+                                break;
+                            case 'WIND_SPEED':
+                                $('[data-id="' + ise_id + '"]').html('Wind: ' + (Math.round(value * 10) / 10) + ' km/h');
+                                break;
+                            case 'RAIN_COUNTER':
+                                $('[data-id="' + ise_id + '"]').html((Math.round(value * 10) / 10) + ' mm');
+                                break;
+                            case 'RAINING':
+                                if (value === 'true') {
+                                    $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/weather_rain.png" />');
+                                } else {
+                                    $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/weather_sun.png" />');
+                                }
+                                break;
+                            default:
+                                $('[data-id="' + ise_id + '"]').html(value);
+                        }
+                        break;
+                    case 'HmIP-SWO-PR':
+                        switch (datapoint) {
+                            case 'LOW_BAT':
+                                if (value === 'true') {
+                                    $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/measure_battery_25.png" />');
+                                }
+                                break;
+                            case 'ILLUMINATION':
+                                $('[data-id="' + ise_id + '"]').html('Helligkeit: ' + (Math.round(value * 10) / 10) + ' Lux');
+                                break;
+                            case 'HUMIDITY':
+                                $('[data-id="' + ise_id + '"]').html('Feuchte: ' + (Math.round(value * 10) / 10) + ' %');
+                                break;
+                            case 'SUNSHINEDURATION':
+                                $('[data-id="' + ise_id + '"]').html('Sonnenschein: ' + (Math.round(value * 10) / 10) + ' Min.');
+                                break;
+                            case 'ACTUAL_TEMPERATURE':
+                                $('[data-id="' + ise_id + '"]').html('Temperatur: ' + (Math.round(value * 10) / 10) + ' &deg;C');
+                                break;
+                            case 'WIND_SPEED':
+                                $('[data-id="' + ise_id + '"]').html('Wind: ' + (Math.round(value * 10) / 10) + ' km/h');
+                                break;
+                            case 'RAIN_COUNTER':
+                                $('[data-id="' + ise_id + '"]').html((Math.round(value * 10) / 10) + ' mm');
+                                break;
+                            case 'RAINING':
+                                if (value === 'true') {
+                                    $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/weather_rain.png" />');
+                                } else {
+                                    $('[data-id="' + ise_id + '"]').html('<img src="../assets/icons/weather_sun.png" />');
+                                }
+                                break;
+                            case 'WIND_DIR':
+                                $('[data-id="' + ise_id + '"]').html((Math.round(value * 10) / 10) + '&deg;');
+                                break;
+                            case 'WIND_DIR_RANGE':
+                                $('[data-id="' + ise_id + '"]').html((Math.round(value * 10) / 10) + '&deg;');
                                 break;
                             default:
                                 $('[data-id="' + ise_id + '"]').html(value);

@@ -334,7 +334,11 @@
                 "icon": "sani_heating.png"
             },
             {
-                "name": "HMIP-eTRV-2",
+                "name": "HmIP-eTRV-2",
+                "icon": "sani_heating.png"
+            },
+            {
+                "name": "HmIP-eTRV-B",
                 "icon": "sani_heating.png"
             }
         ],    
@@ -538,6 +542,14 @@
                 "icon": "status_man.png"
             },
             {
+                "name": "HmIP-SMO",
+                "icon": "status_man.png"
+            },
+            {
+                "name": "HmIP-SMO-A",
+                "icon": "status_man.png"
+            },
+            {
                 "name": "HmIPW-SMI55",
                 "icon": "status_man.png"
             },
@@ -597,6 +609,14 @@
             },
             {
                 "name": "HmIP-SWO-B",
+                "icon": "temp_temperature.png"
+            },
+            {
+                "name": "HmIP-SWO-PL",
+                "icon": "temp_temperature.png"
+            },
+            {
+                "name": "HmIP-SWO-PR",
                 "icon": "temp_temperature.png"
             },
             {
