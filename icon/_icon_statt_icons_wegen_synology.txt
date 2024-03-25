@@ -1,0 +1,16 @@
+<?php
+
+function Iframe($component) {
+    $modalId = mt_rand();
+    return '<div class="hh hhdouble" style="border:0px solid black;">'
+        . '<div data-toggle="collapsed" data-target="#' . $modalId . '">'
+            . '<img src="icons/' . $component["icon"] . '" class="icon">' . $component['name']
+        . '</div>'
+		   . '<iframe src="' . $component['url'] . '" style="border:0px;width:100%;height:calc(100% - 45px);"></iframe>'
+      //  . '<div class="hhdouble " id="' . $modalId . '" style="overflow: visible;height:600px;width:100%;">'
+     //       . '<iframe src="' . $component['url'] . '" style="border:0px;"></iframe>'
+	
+			
+      //  . '</div>'
+    . '</div>';
+}
