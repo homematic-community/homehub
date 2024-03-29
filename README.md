@@ -44,4 +44,4 @@ Bei folgenden Komponenten lässt sich durch Angabe von ``"showtime":"true"`` die
 - SysVar
 
 Lizenzen
-HomeHub nutzt [jQuery](https://jquery.com/license/), [Chartjs](Chartjs.org], [knx-uf-iconset](https://github.com/OpenAutomationProject/knx-uf-iconset), [Bootstrap](https://getbootstrap.com/)
+HomeHub nutzt [jQuery](https://jquery.com/license/), [Chartjs](Chartjs.org), [knx-uf-iconset](https://github.com/OpenAutomationProject/knx-uf-iconset), [Bootstrap](https://getbootstrap.com/)
