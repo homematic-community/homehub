@@ -1,0 +1,17 @@
+{
+   "custom":{
+      "Home":[
+         {
+            "name":"Anwesenheit",
+            "icon":"secur_burglary.png",
+            "display_name":"Beispielvariable - Anwesenheit"
+         },
+         {
+            "name":"Anwesenheit",
+            "icon":"secur_burglary.png",
+            "display_name":"Beispielvariable - Anwesenheit - nochmal"
+         }
+		 	
+      ]
+   }
+}
