@@ -6,7 +6,19 @@ Installiertem CURL und PHP-CURL Modul
 
 Anleitung steht im [HomeMatic-Forum](https://homematic-forum.de/forum/viewtopic.php?f=41&t=81476) zur Verfügung. (noch Version 4.0)
 
+### Oberfläche
 
+Ansicht in großer Auflösung (>1000 px breite)
+
+![2024-03-29 10_49_27](https://github.com/homematic-community/homehub/assets/126362145/71e3c7cf-21aa-4550-a9f5-7645c682e700)
+
+Ansicht in mittlerer Auflösung (>=600 px breite)
+
+![2024-03-29 10_51_09](https://github.com/homematic-community/homehub/assets/126362145/83b29ffa-e017-4691-ba48-74eadea3b234)
+
+Ansicht in geringer Auflösung (<600 px breite) - Smartphone
+
+![2024-03-29 10_50_11](https://github.com/homematic-community/homehub/assets/126362145/3c0e7771-9822-421d-b66c-63f6cc6d2214)
 
 ### showtime
 
