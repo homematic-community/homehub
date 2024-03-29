@@ -1,4 +1,4 @@
-****HomeHub für die CCU gibt es nun schon viele Jahre und bietet eine schlanke leicht konfigurierbare Lösung für Homematic CCUs (keine Homematic Cloud).****
+## HomeHub für die CCU gibt es nun schon viele Jahre und bietet eine schlanke leicht konfigurierbare Lösung für Homematic CCUs (keine Homematic Cloud).
 
 Systemanforderungen:
 Webserver mit PHP
@@ -8,7 +8,7 @@ Anleitung steht im [HomeMatic-Forum](https://homematic-forum.de/forum/viewtopic.
 
 
 
-showtime
+### showtime
 
 
 Bei folgenden Komponenten lässt sich durch Angabe von ``"showtime":"true"`` die Zeit der letzten Aktivität einblenden:
@@ -43,5 +43,5 @@ Bei folgenden Komponenten lässt sich durch Angabe von ``"showtime":"true"`` die
 - Program
 - SysVar
 
-Lizenzen
+## Lizenzen
 HomeHub nutzt [jQuery](https://jquery.com/license/), [Chartjs](Chartjs.org), [knx-uf-iconset](https://github.com/OpenAutomationProject/knx-uf-iconset), [Bootstrap](https://getbootstrap.com/)
