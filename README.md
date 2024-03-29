@@ -42,3 +42,6 @@ Bei folgenden Komponenten lässt sich durch Angabe von ``"showtime":"true"`` die
 - HMW-RCV-50
 - Program
 - SysVar
+
+Lizenzen
+HomeHub nutzt [jQuery](https://jquery.com/license/), [Chartjs](Chartjs.org], [knx-uf-iconset](https://github.com/OpenAutomationProject/knx-uf-iconset), [Bootstrap](https://getbootstrap.com/)
