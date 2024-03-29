@@ -1,286 +1,194 @@
-Voraussetzung:
---------------
-- simpexml und php-curl müssen als PHP-Module aktiviert sein.
-
-
-Installation:
--------------
-Kopiere die Dateien in einen Ordner z. B. "homehub4" um diese Version in Ruhe testen zu können.
-Gib den Ordnern "config" und "cache" Schreibberechtigungen.
-
-
-Benenne die config.template.php in config.php um und editiere die Datei "config.php" 
-und hinterlege die korrekte IP deiner CCU und Wertr.
-
-Rufe den Ordner auf -> http://WEBSERVERIP/homehub4
-
-
-
-
-
-Anlegen der Kategorien in der Navigationsspalte
------------------------------------------------
-
-Editiere die Datei "config\categories.json".
-
-Jeder Eintrag besteht zumindest aus einem "name" und einem "icon".
-
-Eine Auflistung der verfügbaren Icons erhälst du, wenn du die Datei "homehub4/icons.php" aufrufst.
-
-      {
-         "name":"Beschattung",
-         "icon":"fts_shutter_40.png"
-      },
-
-
-Ein "," darf beim letzten Eintrag nicht existieren.
-
-Zusätzlich kann zur besseren Trennung ein Abstand zur nächsten Kategorie über folgenden Eintrag 
-
-"append_divider":"true" 
-
-definiert werden.
-
-Die Datei kann mittels auf der Webseite "https://jsonformatter.curiousconcept.com/" überprüft werden.
-
-Bitte achte darauf, die Dateien immer im UTF-8 Format zu speichern und nicht im ANSI.
-
-
-
-
-
-
-
-Anzuzeigende Elemente einer Kategorie konfigurieren
----------------------------------------------------
-
-
-Fortgeschritten
----------------
-
-
-Kategorien mit Unterkategorien
-------------------------------
-
-
-Sysvarpin - Pin-Abfrage für Wertänderung einbinden
---------------------------------------------------
-
-
-{
-  "component":"sysvarpin",
-  "icon":"secur_burglary.png",
-  "display_name":"text oder zahl",
-  "code":"0815",
-  "ise_id":"55369",
-  "pinvalue":"true,false"
-},		 
-
-
-
-
-Experte
--------
-
-
-Diagramme einbinden
--------------------
-
-	{
-            "component":"diagramm",
-            "name":"Strombezug",
-            "icon":"time_graph.png",
-            "ise_id":"4457",
-            "history":"100",
-            "collect":"1"
-	},
-
-Cronjob einrichten für "diagramm_collect.php"
-
- */1 * * * * curl --silent http://localhost/homehub/diagramm_collect.php >/dev/null 2>&1
-
-Pfade sind anzupassen
-
-
-Bei der Synology kann man eine Aufgabe erstellen. (täglich wiederholen, Start 0:00, jede Minute, Ende 23:59)
-
-Skript ausführen: curl http://192.168.178.117/homehub4/diagramm_collect.php
-
-Pfad ist ggf. anzupassen.
-
-
-
-
-
-
-
-
-diagramm - mehrere 
--------------------
-
-
-
-
-Mit legende
-
-
-{
-            "component":"diagramm",
-            "name":"Fussbodenheizung Wohnbereich Multi",
-            "icon":"time_graph.png",
-            "ise_id":"54338",
-            "history":"100",
-            "collect":"10",
-	    "legend":"Büro;Wohnbereich;OG Badezimmer;OG Elternschlafzimmer;OG Leo"
-},
-
-
-
-
-Ohne Legende
-
-{
-            "component":"diagramm",
-            "name":"Fussbodenheizung Wohnbereich Multi",
-            "icon":"time_graph.png",
-            "ise_id":"54338",
-            "history":"100",
-            "collect":"10"
-},
-
-
-Ise-ID muss die (maximal 5) Werte durch ; getrennt enthalten. 
-
-Die Ise ids kann man in einer zusammenfassen mit folgendem Script - (Systemvariable -> sv_wohnzimmer_th im Beispiel - ist vorher anzulegen) -> als Variablentyp Zeichenkette
-
-
-
-
-
-Besser direkt ISE IDs
-
-
-!Wohnzimmer - Büro
-dom.GetObject("sv_temperatur_eg").State(dom.GetObject(32456).Value()#";"#dom.GetObject(34850).Value());
-dom.GetObject("sv_humidity_eg").State(dom.GetObject(32466).Value()#";"#dom.GetObject(34860).Value());
-
-
-!Eltern - Leo - Tom - Bad 
-dom.GetObject("sv_temperatur_og").State(dom.GetObject(32651).Value()#";"#dom.GetObject(34912).Value()#";"#dom.GetObject(32763).Value()#";"#dom.GetObject(32394).Value());
-dom.GetObject("sv_humidity_og").State(dom.GetObject(32661).Value()#";"#dom.GetObject(34922).Value()#";"#dom.GetObject(32773).Value()#";"#dom.GetObject(32404).Value());
-
-
-! Aussen - Garage 
-dom.GetObject("sv_temperatur_aussen").State(dom.GetObject(36605).Value()#";"#dom.GetObject(36669).Value());
-dom.GetObject("sv_humidity_aussen").State(dom.GetObject(36607).Value()#";"#dom.GetObject(36671).Value());
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-MultiView
------------
-
-Mehrere Werte 
-
-
-         {
-            "component":"MultiView",
-            "name":"MultiView",
-            "icon":"fts_shutter_automatic.png",
-            "ise_id":"32997,46681,36605,36607,32474",
-			"ise_unit":"w,kwh,,,",
-			"ise_component":",,,,HmIP-BWTH",
-			"ise_datapoint":",,,,ACTUAL_TEMPERATURE"
-         },
-
-
-die ise_unit, ise_component und ise_datapoint müssen immer so viele Werte enthalten wie die ise_id - separiert durch komma.
-
-mit Unit kann man eine einheit angeben
-wenn man component und datapoint der original ise-id nimmt übernimmt der die formatierung von dort. Beide müssen gesetzt sein für den Wert.
-
-
-Bei systemvariablen kann auch noch der Wert aus (true/false) übernommen werden- Beispiel:
-
-	           {
-            "component":"MultiView",
-            "name":"MultiView",
-            "icon":"fts_shutter_automatic.png",
-            "ise_id":"950,14133,8586",
-			"ise_unit":"EG,OG,Garage",
-			"ise_component":"SysVar,SysVar,SysVar",
-			"ise_datapoint":"2,2,2",
-			"ise_datavaluelist":"An;AUS,aktiv;inaktiv,Alarm deaktiviert;Alarm aktiviert"
-         },
-
-
------------------------------------------------------------------------------------------------
-15.06.2023 HH - mal als kleine Eselbrücke und Beispiele:
-Bei Sysvars kann mit dem Eintrag
-"operate": "false"
-ein ändern verhindert werden.
-
-Zusätzlich kann mit
-"indicator": "2,false;1,true;0,warn;3,alarm"
-die angezeigte Farbe für den Status verändert werden.
-false: Aus (grau)
-true: Ein (grün)
-warn: Warnung (gelb)
-alarm: Alarm (rot)
-
-
-Mit dem Eintrag
-"color": "#FF8833"
-kann die Farbe vorne verändert werden.
-Experte: in der PHP Datei von dem Gerätetyp den "color" Wert ändern, wirkt global!
-
-
-Als Beispiel kann bei den Geräten HM-Sec-RHS, HM-Sec-SC, HM-Sec-SC-2, HmIP-SCI mit dem Eintrag
-"state_icons": "0,fts_window_1w_gn.png;1,fts_window_1w_tilt_rd.png;2,fts_window_1w_open_rd.png"
-oder
-"state_icons": "false,fts_door_gn.png;true,fts_door_open_rd.png"
-oder
-"state_icons": "false,message_postbox.png;true,message_postbox_mail.png"
-die angezeigten Icons verändert werden.
-
-
-bzgl. der Component Iframe als Beispiel:
-{
-	"component": "Iframe",
-	"name": "Wettervorhersage",
-	"icon": "weather_station.png",
-	"aufgeklappt": "1",
-	"color": "#AADDCC",
-	"url": "https://www.wetter.de/wetter/r/0123456789"
-}
-// aufgeklappt	= 0 zugeklappt 1 aufgeklappt - standard 1
-
-
-
-Aus Gertis Beitrag zur v3.3
-https://homematic-forum.de/forum/viewtopic.php?f=41&t=76034&hilit=homehub+gerti#p737539
-würde ich den FALMOT aus auch Beispiel aufführen:
-
-Wer die FALMOT in seiner Visualisierung verwenden möchte, muss dazu folgenden Eintrag in der custom.json hinzufügen: 
-{
-        "name": "FALMOT:1",
-        "icon": "falmot.png",
-        "display_name": "Heizkreise Wohnen",
-        "channels": "1,2,3,4,5"
-}
-
-
-
-Mehr fällt mir grad nicht ein! :)
+# HomeHub WebUI
+HomeHub ist ein alternatives Frontend für HomeMatic. Der Hauptfokus liegt darauf, eine Übersicht über die vorhandenen HomeMatic Komponenten zu geben und die Möglichkeit zu bieten, Komponenten wie Jalousien und Heizung schnell zu bedienen.
+
+## Wie wird HomeHub installiert?
+HomeHub benötigt eine installierte XML-API auf der CCU.
+
+1. HomeHub auf einen Webserver im LAN kopieren.
+2. In der Datei app/Config/config.php die korrekte IP der CCU in die Variable $homematicIp eintragen.
+3. Den Ordnern app/Config und cache 777 Rechte geben.
+4. http://IP_OF_YOUR_SERVER/HomeHub im Browser öffnen.
+5. Im Menü auf Import klicken, um Komponenten, Programme und Systemvariablen von der CCU einzulesen.
+
+## Anforderungen
+* XML-API
+* PHP 5.5
+* libxml Erweiterung
+* JavaScript
+
+## Unterstützte HomeMatic Komponenten (zumindest lesend)
+* HM-CC-RT-DN
+* HM-CC-SCD
+* HM-CC-TC
+* HM-CC-VD
+* HM-CC-VG-1
+* HM-Dis-TD-T
+* HM-Dis-WM55
+* HM-ES-PMSw1-DR
+* HM-ES-PMSw1-Pl
+* HM-ES-PMSw1-Pl-DN-R1
+* HM-ES-PMSw1-Pl-DN-R5
+* HM-ES-TX-WM
+* HM-LC-Bl1-FM
+* HM-LC-Bl1PBU-FM
+* HM-LC-Bl1-SM
+* HM-LC-Dim1PWM-CV
+* HM-LC-Dim1T-CV
+* HM-LC-Dim1T-FM
+* HM-LC-Dim1TPBU-FM
+* HM-LC-Dim1T-Pl
+* HM-LC-RGBW-WM
+* HM-LC-Sw1-Ba-PCB
+* HM-LC-Sw1-DR
+* HM-LC-Sw1-FM
+* HM-LC-Sw1-PB-FM
+* HM-LC-Sw1PBU-FM
+* HM-LC-Sw1-Pl
+* HM-LC-Sw1-Pl-2
+* HM-LC-Sw1-Pl-CT-R1
+* HM-LC-Sw1-Pl-DN-R1
+* HM-LC-Sw1-Pl-DN-R5
+* HM-LC-Sw1-SM
+* HM-LC-Sw2-FM
+* HM-LC-Sw4-Ba-PCB
+* HM-LC-Sw4-DR
+* HM-LC-Sw4-PCB
+* HM-LC-Sw4-SM
+* HM-LC-Sw4-WM
+* HM-MOD-EM-8
+* HM-MOD-Re-8
+* HM-OU-CFM-Pl
+* HM-OU-CM-PCB
+* HM-OU-LED16
+* HM-PB-2-FM
+* HM-PB-2-WM
+* HM-PB-2-WM55
+* HM-PB-2-WM55-2
+* HM-PB-4Dis-WM
+* HM-PB-4Dis-WM-2
+* HM-PB-4-WM
+* HM-PB-6-WM55
+* HM-PBI-4-FM
+* HM-RC-19
+* HM-RC-19-B
+* HM-RC-19-SW
+* HM-RC-4
+* HM-RC-4-2
+* HM-RC-4-B
+* HM-RC-8
+* HM-RC-Dis-H-x-EU
+* HM-RC-Key3-B
+* HM-RC-Key4-2
+* HM-RC-P1
+* HM-RCV-50
+* HM-SCI-3-FM
+* HM-Sec-Key
+* HM-Sec-Key-S
+* HM-Sec-MDIR
+* HM-Sec-MDIR-2
+* HM-Sec-RHS
+* HM-Sec-SC
+* HM-Sec-SC-2
+* HM-Sec-SCo
+* HM-Sec-SD-2-Team
+* HM-Sec-SD-Team
+* HM-Sec-SFA-SM
+* HM-Sec-TiS
+* HM-Sec-WDS
+* HM-Sec-WDS-2
+* HM-Sec-Win
+* HM-Sen-DB-PCB
+* HM-Sen-EP
+* HM-Sen-MDIR-O
+* HM-Sen-MDIR-O-2
+* HM-Sen-MDIR-SM
+* HM-Sen-MDIR-WM55
+* HM-Sen-RD-O
+* HM-Sen-Wa-Od
+* HM-SwI-3-FM
+* HM-TC-IT-WM-W-EU
+* HM-WDC7000
+* HM-WDS100-C6-O
+* HM-WDS10-TH-O
+* HM-WDS30-OT2-SM
+* HM-WDS30-OT2-SM-2
+* HM-WDS30-T-O
+* HM-WDS40-TH-I
+* HM-WDS40-TH-I-2
+* HMW-IO-12-FM
+* HMW-IO-12-Sw14-DR
+* HMW-IO-12-Sw7-DR
+* HMW-IO-4-FM
+* HMW-LC-Bl1-DR
+* HMW-LC-Dim1L-DR
+* HMW-LC-Sw2-DR
+* HMW-RCV-50
+* HMW-Sen-SC-12-DR
+* HMIP-BDT
+* HMIP-BROLL
+* HMIP-FROLL
+* HMIP-BSL
+* HMIP-BSM
+* HMIP-BWTH
+* HMIP-eTRV
+* HMIP-eTRV-2
+* HMIP-eTRV-B
+* HMIP-SLO
+* HMIP-FSM
+* HMIP-FSM16
+* HMIP-FSI16
+* HMIP-PS
+* HMIP-PSM
+* HMIP-SCI
+* HMIP-SLO
+* HMIP-SMI
+* HMIP-SMI55
+* HMIP-SMO
+* HMIP-SMO-A
+* HMIP-SPI
+* HMIP-SRH
+* HMIP-STHD
+* HMIP-SWDO-I
+* HmIP-SWDO-PL
+* HMIP-SWO-B
+* HMIP-SWO-PL
+* HMIP-SWO-PR
+* HMIP-WTH-2
+* HMIPW-DRS4
+* HMIPW-DRS8
+* HMIPW-DRD3 (validieren)
+* HMIPW-DRBL4 (validieren)
+* HMIPW-DRI16 (validieren)
+* HMIPW-DRI32 (validieren)
+* HmIPW-SMI55 (validieren)
+* HmIPW-SPI (validieren)
+* HmIPW-STHD (validieren)
+* HmIPW-WTH (validieren)
+* HmIP-SAM
+* HmIP-SWD
+* HmIP-SWDM
+* Programme
+* Systemvariablen
+
+## Unterstützte CUxD Komponenten (zumindest lesend)
+* CUX2801
+* CUX2803
+* CUX4000 (noch nicht voll unterstützt)
+* CUX9002
+
+## Unterstützte Custom Komponenten
+* Audio (Radio Erft)
+* iFrame (HomeMatic-Forum)
+* Tagesschau in 100 Sekunden
+* Tankerkönig
+* WeatherUnderground
+* Webcam (INSTAR IN5905HD)
+
+## Konfigurationsmöglichkeiten in HomeHub
+* In der Datei app/Config/categories.json kann das Menü auf der linken Seite konfiguriert werden.
+* app/Config/mapping.json wird dazu genutzt Komponententypen wie z.B. HM-CC-RT-DN Menüeinträgen zuzuordnen.
+* Spezifische Komponenten wie z.B. das Heizkörperthermostat im Wohnzimmer kann in der Datei app/Config/custom.json einem oder mehreren Menüeinträgen zugeordnet werden.
+
+## Wie kann das Aussehen von HomeHub angepasst werden?
+Das Aussehen von HomeHub kann mit der Datei assets/css/custom.css angepasst werden. Das Stylesheet wird nach dem HomeHub Stylesheet aufgerufen.
+Es ist auch möglich, das komplette Design für einen einzelnen Menüeintrag zu verändern. Dazu muss eine HTML Datei für diese Kategorie angelegt werden und im Ordner app/Views/lowercase_category_name.html abgelegt werden.

@@ -1,0 +1,250 @@
+{
+  "categories": [
+    {
+      "name": "Home",
+      "icon": "control_home.png",
+      "subcategories": [
+        {
+          "name": "Home_Index",
+          "display_name": "Info"
+        }
+      ],
+      "append_divider": "true"
+    },
+    {
+      "name": "Erdgeschoss",
+      "icon": "control_building_eg.png",
+      "subcategories": [
+        {
+          "name": "EG_Licht",
+          "display_name": "Licht"
+        },
+        {
+          "name": "EG_Rolllaeden",
+          "display_name": "Rolll&auml;den"
+        },
+        {
+          "name": "EG_Heizung",
+          "display_name": "Heizung"
+        },
+        {
+          "name": "EG_Reinigung",
+          "display_name": "Reinigung"
+        } 
+      ]
+    },
+    {
+      "name": "Obergeschoss",
+      "icon": "control_building_og.png",
+      "subcategories": [
+        {
+          "name": "OG_Licht",
+          "display_name": "Licht"
+        },
+        {
+          "name": "OG_Rolllaeden",
+          "display_name": "Rolll&auml;den"
+        },
+        {
+          "name": "OG_Heizung",
+          "display_name": "Heizung"
+        } 
+      ]
+    },
+    {
+      "name": "Dachgeschoss",
+      "icon": "control_building_dg.png",
+      "subcategories": [
+        {
+          "name": "DG_Licht",
+          "display_name": "Licht"
+        },
+        {
+          "name": "DG_Rolllaeden",
+          "display_name": "Rolll&auml;den"
+        },
+        {
+          "name": "DG_Heizung",
+          "display_name": "Heizung"
+        },
+        {
+          "name": "DG_Spitzboden",
+          "display_name": "Spitzboden"
+        } 
+      ]
+    },
+    {
+      "name": "Garten",
+      "icon": "scene_garden.png",
+      "subcategories": [
+        {
+          "name": "Garten_Beschattung",
+          "display_name": "Beschattung"
+        },
+        {
+          "name": "Garten_Licht",
+          "display_name": "Beleuchtung"
+        },
+        {
+          "name": "Garten_Strom",
+          "display_name": "Strom"
+        },
+        {
+          "name": "Garten_Umwelt",
+          "display_name": "Umwelt"
+        } 
+      ],
+      "append_divider": "true"
+    },
+    {
+      "name": "Licht",
+      "icon": "light_light_dim_100.png",
+      "subcategories": [
+        {
+          "name": "Licht zentral",
+          "display_name": "Zentralsteuerung"
+        },
+        {
+          "name": "EG_Licht",
+          "display_name": "Erdgeschoss"
+        },
+        {
+          "name": "OG_Licht",
+          "display_name": "Obergeschoss"
+        },
+        {
+          "name": "DG_Licht",
+          "display_name": "Dachgeschoss"
+        },
+        {
+          "name": "Licht_KG",
+          "display_name": "Keller"
+        },
+        {
+          "name": "Garten_Licht",
+          "display_name": "Garten"
+        }       
+      ]
+    },
+    {
+      "name": "Beschattung ",
+      "icon": "fts_shutter_50.png",
+      "subcategories": [
+        {
+          "name": "Rolllaeden zentral",
+          "display_name": "Zentralsteuerung"
+        },
+        {
+          "name": "EG_Rolllaeden",
+          "display_name": "Erdgeschoss"
+        },
+        {
+          "name": "OG_Rolllaeden",
+          "display_name": "Obergeschoss"
+        },
+        {
+          "name": "DG_Rolllaeden",
+          "display_name": "Dachgeschoss"
+        },
+        {
+          "name": "Garten_Beschattung",
+          "display_name": "Garten"
+        }
+      ]
+    },
+    {
+      "name": "Raumklima",
+      "icon": "sani_heating.png",
+      "subcategories": [
+        {
+          "name": "Heizung zentral",
+          "display_name": "Zentralsteuerung"
+        },
+        {
+          "name": "EG_Heizung",
+          "display_name": "Erdgeschoss"
+        },
+        {
+          "name": "OG_Heizung",
+          "display_name": "Obergeschoss"
+        },
+        {
+          "name": "DG_Heizung",
+          "display_name": "Dachgeschoss"
+        }
+      ]
+    },
+    {
+      "name": "Fenster ",
+      "icon": "fts_window_2w.png",
+      "subcategories": [
+        {
+          "name": "Fenster_EG",
+          "display_name": "Erdgeschoss"
+        },
+        {
+          "name": "Fenster_OG",
+          "display_name": "Obergeschoss"
+        },
+        {
+          "name": "Fenster_DG",
+          "display_name": "Dachgeschoss"
+        },
+        {
+          "name": "Fenster_KG",
+          "display_name": "Keller"
+        }
+      ],
+      "append_divider": "true"
+    }, 
+    {
+      "name": "Modis",
+      "icon": "control_switch_m_4.png",
+      "subcategories": [
+        {
+          "name": "Basismodis",
+          "display_name": "Basis"
+        },
+        {
+          "name": "Beschattungsmodis",
+          "display_name": "Beschattung"
+        }
+      ]
+    },
+    {
+      "name": "Energie",
+      "icon": "measure_power.png",
+      "subcategories": [
+        {
+          "name": "Energie_Verbrauch",
+          "display_name": "Verbrauch"
+        },
+        {
+          "name": "Stromversorgung",
+          "display_name": "Stromversorgung"
+        }
+      ]
+    },
+    {
+      "name": "Systemzustand",
+      "icon": "measure_power_meter.png",
+      "subcategories": [
+       {
+          "name": "System_Status",
+          "display_name": "Systemstatus"
+        }
+      ],
+      "append_divider": "true"
+    },
+    {
+      "name": "Systemvariablen",
+      "icon": "control_clear.png",
+      "subcategories": []
+    },
+    {
+      "name": "Import",
+      "icon": "edit_settings.png",
+      "subcategories": []
+    }
+  ]
+}

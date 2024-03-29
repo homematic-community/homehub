@@ -29,12 +29,15 @@ if(isset($_GET['datapoint_id']))
 				 $element['value'] = str_replace("<","&lt;",  $element['value']);
   $element['value'] = str_replace( ">","&gt;", $element['value']);
 						echo '<datapoint ise_id="'.$element['ise_id'].'" value="'.$element['value'].'"/>';
+										echo '<datapoint ise_id="'.$element1['ise_id'].'t" value="03.27.2024 10:30:59"/>';
 						echo "\n";
+						$t = 1;
 					}
 					else
 					{
 						echo '<datapoint ise_id="'.$element['ise_id'].'" value=""/>';
 						echo "\n";
+						$t = 1;
 					}
 				}
 			}
@@ -54,12 +57,16 @@ if(isset($_GET['datapoint_id']))
   $element2['value'] = str_replace( ">","&gt;", $element2['value']);
 
 							echo '<datapoint ise_id="'.$element2['ise_id'].'" value="'.$element2['value'].'"/>';
+										echo '<datapoint ise_id="'.$element2['ise_id'].'t" value="03.27.2024 10:30:59"/>';
 							echo "\n";
+							$t = 1;
 						}
 						else
 						{
 							echo '<datapoint ise_id="'.$element2['ise_id'].'" value=""/>';
+							echo '<datapoint ise_id="'.$element2['ise_id'].'t" value="03.27.2024 10:30:59"/>';
 							echo "\n";
+							$t = 1;
 						}
 					}
 				
@@ -87,16 +94,25 @@ if(isset($_GET['datapoint_id']))
 										 $element['value'] = str_replace("<","&lt;",  $element['value']);
   $element['value'] = str_replace( ">","&gt;", $element['value']);
 						echo '<datapoint ise_id="'.$element['ise_id'].'" value="'.$element['value'].'"/>';
+						echo '<datapoint ise_id="'.$element['ise_id'].'t" value="'.$element['timestamp'].'"/>';
 						echo "\n";
+						$t = 1;
 					}
 					else
 					{
 						echo '<datapoint ise_id="'.$element['ise_id'].'" value=""/>';
 						echo "\n";
+						$t = 1;
 					}
 				}
 			}
 		}
+		if($t != 1)
+		{
+			
+			echo '<datapoint ise_id="'.$gesuchte_id.'" value="03.27.2024 10:30:59"/>';
+		}
+		$t = 0;
  
 	}
 

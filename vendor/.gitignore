@@ -1,0 +1,3 @@
+# ignore all vendor files, but create empty vendor folder
+*
+!.gitignore

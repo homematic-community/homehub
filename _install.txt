@@ -47,7 +47,9 @@ Bitte achte darauf, die Dateien immer im UTF-8 Format zu speichern und nicht im 
 
 
 
-
+Timestamp Angabe
+----------------
+Bei der Komponente "showtime":"true"
 
 
 

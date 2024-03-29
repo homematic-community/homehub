@@ -6,7 +6,7 @@
 include("config/config.php");
 
 // interface Pfad bestimmen
-$interface = $_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].str_replace($_SERVER['DOCUMENT_ROOT'], "", dirname(__FILE__));
+$interface = $_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].str_replace("diagramm_collect.php", "",$_SERVER['PHP_SELF']);
 if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
     $interface = "https://".$interface;
 }
@@ -113,7 +113,7 @@ if(isset($diagramm_change))
   $historyZaehler = 0;
 	
   // Abfrage an die CCU
-  $xmlFile = $interface.'interface.php?state.cgi&datapoint_id='.$diagramm_change;
+  $xmlFile = $interface.'interface.php?state.cgi&onlyvalue=1&datapoint_id='.$diagramm_change;
     echo $xmlFile; 
   $xml = simplexml_load_file($xmlFile);
 	echo $xml;
@@ -195,7 +195,7 @@ if(isset($diagramm))
   $historyZaehler = 0;
 	
   // Abfrage an die CCU
-  $xmlFile = $interface.'/interface.php?state.cgi&datapoint_id='.$diagramm;
+  $xmlFile = $interface.'/interface.php?state.cgi&onlyvalue=1&datapoint_id='.$diagramm;
   echo $xmlFile; 
   $xml = simplexml_load_file($xmlFile);
 echo $xml;

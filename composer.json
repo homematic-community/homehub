@@ -1,0 +1,7 @@
+{
+    "require": {
+        "slim/slim"          : "3.6",
+        "slim/php-view"      : "2.2.0",
+        "ramsey/array_column": "*"
+    }
+}

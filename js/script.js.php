@@ -88,7 +88,33 @@ var updateDatapoints = function () {
 						}						
 					}
 					?>
-    
+					case 'showtime':
+						var difference = new Date() - new Date(value);
+						var daysDifference = Math.floor(difference/1000/60/60/24);
+						difference -= daysDifference*1000*60*60*24
+						var hoursDifference = Math.floor(difference/1000/60/60);
+						difference -= hoursDifference*1000*60*60
+						var minutesDifference = Math.floor(difference/1000/60);
+						difference -= minutesDifference*1000*60
+						var secondsDifference = Math.floor(difference/1000);
+						if(daysDifference > "500") {
+							$('[data-id="' + ise_id + '"]').html(".");
+						} else if(daysDifference>1) {
+							$('[data-id="' + ise_id + '"]').html("<span style='font-size: smaller;'>vor " + daysDifference + " Tagen</span>");
+						} else if(daysDifference>0) {
+							$('[data-id="' + ise_id + '"]').html("<span style='font-size: smaller;'>vor einem Tag</span>");
+						} else if (hoursDifference>1) {
+							$('[data-id="' + ise_id + '"]').html("<span style='font-size: smaller;'>vor " + hoursDifference + " Std.</span>");
+						} else if (hoursDifference>0) {
+							$('[data-id="' + ise_id + '"]').html("<span style='font-size: smaller;'>vor " + hoursDifference + " Std.</span>");		  
+						} else if (minutesDifference>1) {
+							$('[data-id="' + ise_id + '"]').html("<span style='font-size: smaller;'>vor " + minutesDifference + " Min.</span>");	  
+						} else if (minutesDifference>0) {
+							$('[data-id="' + ise_id + '"]').html("<span style='font-size: smaller;'>vor " + minutesDifference + " Min.</span>");
+						} else {
+							$('[data-id="' + ise_id + '"]').html("<span style='font-size: smaller;'>vor " + secondsDifference + " Sek.</span>");
+						}
+						break;
                     case 'HMIP-PSM':
                     case 'HMIP-PS':
                     case 'HmIP-PSM-2':
@@ -114,6 +140,7 @@ var updateDatapoints = function () {
                     case 'HM-LC-Sw1-SM':
                     case 'HM-LC-Sw1PBU-FM':
                     case 'HM-LC-Sw2-FM':
+                    case 'HM-LC-Sw2PBU-FM':
                     case 'HM-LC-Sw4-Ba-PCB':
                     case 'HM-LC-Sw4-DR':
                     case 'HM-LC-Sw4-DR-2':
@@ -1579,6 +1606,38 @@ var updateDatapoints = function () {
                         }
                         break;
                     case 'HM-LC-RGBW-WM':
+						switch (datapoint) {
+                           case 'LEVEL':
+                                if (value >= '0.1') {
+
+                                    $('[data-id="' + ise_id + '"]').html('<img src="icon/light_light_on.png" />');                                
+                                    $('[data-id="' + ise_id + '"]').addClass('btn-true');
+                                    $('[data-id="' + ise_id + '"]').removeClass('btn-false');
+                                    $('[data-id="' + ise_id + '"]').attr('data-set-id', ise_id);
+                                    $('[data-id="' + ise_id + '"]').attr('data-set-value', '0');
+                                } else {
+                                    $('[data-id="' + ise_id + '"]').html('<img src="icon/light_light_off.png" />'); 
+                                    $('[data-id="' + ise_id + '"]').addClass('btn-false');
+                                    $('[data-id="' + ise_id + '"]').removeClass('btn-true');
+                                    $('[data-id="' + ise_id + '"]').attr('data-set-id', ise_id);
+                                    $('[data-id="' + ise_id + '"]').attr('data-set-value', '1');
+                                }
+									
+                                break;
+							case 'COLOR':
+                                $('[data-id="' + ise_id + '"]').html(value);
+                                break;
+                            case 'LOWBAT':
+                                if (value === 'true') {
+                                    $('[data-id="' + ise_id + '"]').html('<img src="icon/measure_battery_25.png" />');
+                                }
+                                break;
+									
+                            default:
+                                $('[data-id="' + ise_id + '"]').html(value);
+							}
+							break;
+					
                        case 'HmIP-RGBW':
                         switch (datapoint) {
                            case 'LEVEL':

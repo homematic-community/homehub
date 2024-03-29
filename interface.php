@@ -128,6 +128,124 @@ WriteLine(\"*<*/stateList*>*\");";
   exit();
 }
 
+
+
+
+// ALLE STATES
+if (strpos($_SERVER['QUERY_STRING'], "statelistall.cgi") !== false) {
+  $ccu_request = "";
+
+  // Baue Skript zusammen
+  $ccu_request = $ccu_request . "WriteLine(\"*<*stateList*>*\");
+integer show_remote = 1;
+integer show_internal = 1;
+string id; 
+! Alle Datenpunkte durchlaufen
+
+!foreach(id, dom.GetObject(ID_DEVICES).EnumUsedIDs()) {
+	foreach(id, root.Devices().EnumUsedIDs()) {
+  ! Einzelnen Datenpunkt holen
+  object oDevice = dom.GetObject(id);
+
+  integer iDevInterfaceId = oDevice.Interface();
+  object oDeviceInterface = dom.GetObject(iDevInterfaceId);
+  ! Namen und Wert des Elements ausgeben - geht nicht -> logged  info
+
+  boolean bDevReady = oDevice.ReadyConfig();
+  string sDevInterface   = oDeviceInterface.Name();
+  string sDevType        = oDevice.HssType();
+
+  WriteLine(\"*<*device name='\" # oDevice.Name() #\"' ise_id='\" # oDevice.ID() # \"' unreach='false' sticky_unreach='false' config_pending='false'*>*\");
+
+  string cid; 
+  integer x = 0;
+  ! Alle Datenpunkte durchlaufen
+  foreach(cid, oDevice.Channels()) {
+
+    ! Einzelnen Kanal holen
+    var ch = dom.GetObject(cid);
+    ! Namen und Wert des Kanals ausgeben
+    Write(\"*<*channel name='\"#ch.Name()#\"' ise_id='\"#ch.ID()#\"' direction='' index='\"# x #\"'  timestamp='\" # ch.LastTimestamp().ToInteger()# \"'\");
+
+    if (false == ch.Internal()) {
+      Write(\" visible='\" # ch.Visible() # \"'\");
+    } else {
+      Write(\" visible=''\");
+    }
+
+    Write(\" ready_config='' operate='\");
+    if (false == ch.Internal()) {
+     if( ch.UserAccessRights(iulOtherThanAdmin) == iarFullAccess ) {
+        Write(\"true\");
+      } else {
+         Write(\"false\");
+      }
+    }
+    Write(\"'*>*\");
+    WriteLine(\"\");
+
+
+    string did; 
+
+    ! Alle Datenpunkte durchlaufen
+    foreach(did, ch.DPs()) {
+      var dp = dom.GetObject(did);
+	     string dpA = dp.Name().StrValueByIndex(\".\", 2);
+
+                if( (dpA != \"ON_TIME\") && (dpA != \"INHIBIT\") && (dpA != \"CMD_RETS\") && (dpA != \"CMD_RETL\") && (dpA != \"CMD_SETS\") && (dpA != \"CMD_SETL\") ) {
+      WriteLine(\"*<*datapoint name='\"#dp.Name()#\"' type='\" # dp.Name().StrValueByIndex(\".\", 2) #\"' ise_id='\"#dp.ID()#\"' state='\"#dp.Value()#\"' value='\"#dp.Value()#\"' valuetype='\"#dp.ValueType()#\"' valueunit='\" # dp.ValueUnit() # \"' timestamp='\" # dp.LastTimestamp().ToInteger()# \"' operations='\"#dp.Operations()#\"'/*>*\");
+				  }
+    }
+    WriteLine(\"*<*/channel*>*\");
+	  x=x+1;
+  }
+ 
+
+  WriteLine(\"*<*/device*>*\");
+}
+WriteLine(\"*<*/stateList*>*\");";
+
+  // Debug Mode
+  if(isset($_GET["debug"]))
+  {
+    echo $ccu_request;
+    exit();
+  }
+
+  // Als indikator für die Rückgabe, um den Overhead zu filtern
+  $ccu_request = $ccu_request ."WriteLine(\"ENDE\");";
+
+// Curl Anfrage bauen
+  $curl = curl_init();
+  curl_setopt($curl,CURLOPT_URL, "http://" . $homematicIp . ":8181/hmip.exe");
+  if ($ccu_user != "" && $ccu_pass != "") {
+    curl_setopt($curl,CURLOPT_USERPWD, $ccu_user.":".$ccu_pass);	
+  }
+  curl_setopt($curl,CURLOPT_POST, 1);
+  curl_setopt($curl,CURLOPT_POSTFIELDS, $ccu_request);
+  curl_setopt($curl,CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($curl,CURLOPT_CONNECTTIMEOUT ,2);
+  curl_setopt($curl,CURLOPT_TIMEOUT, 20);
+  $content = curl_exec($curl);
+  curl_close($curl);
+ // exit();
+  // Trenne Rückgabe vom Overhead
+  $cleancontent = explode("ENDE",$content);
+  
+  // Konvertiere XML kritische Zeichen in HTML-Format
+  $cleancontent[0] = str_replace("<","&lt;",  $cleancontent[0]);
+  $cleancontent[0] = str_replace( ">","&gt;", $cleancontent[0]);
+  $cleancontent[0] = str_replace("*&lt;*","<",  $cleancontent[0]);
+  $cleancontent[0] = str_replace("*&gt;*", ">", $cleancontent[0]);
+ 
+
+  // Schreibe Ausgabe
+  header("Content-Type: text/xml; charset=ISO-8859-1");  
+  echo "<?xml version='1.0' encoding='ISO-8859-1' ?>"; 
+  echo $cleancontent[0];
+  exit();
+}
+
 // ALLE DEVICES
 if (strpos($_SERVER['QUERY_STRING'], "devicelist.cgi") !== false) {
   $ccu_request = "";
@@ -605,8 +723,18 @@ else if (strpos($_SERVER['QUERY_STRING'], "state.cgi") !== false) {
 	echo "keine datapoint_ids";
 	exit();
   }
+  
+  // suche und ersetze t wegen Timestamp, da es diese einträge nicht gibt
+  $datapoints = str_replace("t", "", $_GET['datapoint_id']);
+
   // Trenne datapoint_id anhand , auf
-  $datapoints = explode(",",$_GET['datapoint_id']);
+  $datapoints = explode(",",$datapoints);
+  
+  //Bei Diagram Collect darf nicht optimiert werden
+  if(!isset($_GET['onlyvalue']))
+  {	  
+    $datapoints = array_unique($datapoints);
+  }
   $ccu_request = "";
   
   // Baue Skript zusammen
@@ -614,11 +742,27 @@ else if (strpos($_SERVER['QUERY_STRING'], "state.cgi") !== false) {
   foreach ($datapoints as $datapoint) {
 	 
 	if( ctype_digit($datapoint) ) {
+
 	  $ccu_request = $ccu_request . "object oDatapoint = dom.GetObject(".$datapoint.");\r\n";
+	  // Wenn es sich um ein Datenpunkt handelt gib value aus	  
 	  $ccu_request = $ccu_request . "if (oDatapoint.IsTypeOf(OT_DP)) {\r\n";
-	   $ccu_request = $ccu_request . "WriteLine(\"*<*datapoint ise_id='".$datapoint."' value='\"#dom.GetObject(".$datapoint.").Value().ToString()#\"'/*>*\");\r\n";
-	 // $ccu_request = $ccu_request . "WriteLine(\"*<*datapoint ise_id='".$datapoint."' value='\"#dom.GetObject(.$datapoint.').Value().ToString().UriEncode()#\"'/>");
+	  $ccu_request = $ccu_request . "WriteLine(\"*<*datapoint ise_id='".$datapoint."' value='\"#dom.GetObject(".$datapoint.").Value().ToString()#\"'/*>*\");\r\n";
 	  $ccu_request = $ccu_request . "}\r\n";
+	  if(!isset($_GET['onlyvalue']))
+	  {
+	    // Wenn es sich um einen Channel handelt gib Timestamp aus
+	    $ccu_request = $ccu_request . "if (oDatapoint.IsTypeOf(OT_CHANNEL)) {\r\n";
+	    $ccu_request = $ccu_request . "WriteLine(\"*<*datapoint ise_id='".$datapoint."t' value='\"#dom.GetObject(".$datapoint.").LastDPActionTime().ToString(\"%m.%d.%Y %H:%M:%S\")#\"'/*>*\");";
+	    $ccu_request = $ccu_request . "}\r\n";
+	    // Wenn es sich um einen Datenpunkt handelt gib Timestamp aus
+	    $ccu_request = $ccu_request . "if (oDatapoint.IsTypeOf(OT_DP)) {\r\n";
+	    $ccu_request = $ccu_request . "WriteLine(\"*<*datapoint ise_id='".$datapoint."t' value='\"#dom.GetObject(".$datapoint.").Timestamp().ToString(\"%m.%d.%Y %H:%M:%S\")#\"'/*>*\");";
+	    $ccu_request = $ccu_request . "}\r\n";
+	    // Wenn es sich um ein Programm handelt gib Timestamp aus
+	    $ccu_request = $ccu_request . "if (oDatapoint.IsTypeOf(OT_PROGRAM)) {\r\n";
+	    $ccu_request = $ccu_request . "WriteLine(\"*<*datapoint ise_id='".$datapoint."t' value='\"#dom.GetObject(".$datapoint.").ProgramLastExecuteTime().ToString(\"%m.%d.%Y %H:%M:%S\")#\"'/*>*\");";
+	    $ccu_request = $ccu_request . "}\r\n";
+	   }
     }
 	
   }

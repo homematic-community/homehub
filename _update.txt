@@ -9,6 +9,11 @@ Kopiere alle neuen Dateien und Ordner über deine HomeHub Installation, mit jedo
 Am besten prüft Ihr euere "config.php" zur "config.template.php" gegen ob neue Parameter hinzugekommen sind.
 
 
+Wer diagramme nutzt, bitte Eintrag ändern auf folgendes:
+
+// Eintrag in Crontab
+*/1 * * * * curl --silent http://localhost/homehub/diagramm_collect.php >/dev/null 2>&1
+
 
 
 Update einer bestehenden Version < Version 4:
@@ -27,3 +32,8 @@ Kopiere folgende Dateien aus dem "config" Ordner deiner alten Version in den Ord
 -> Rufe homehub4 auf
 
 Für weitere Informationen auch bezüglich neuer Komponenten beachte die Datei _install.txt
+
+
+Timestamp Angabe
+----------------
+Bei der Komponente "showtime":"true"

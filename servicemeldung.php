@@ -2,7 +2,7 @@
 include('config/config.php');
 
 // interface Pfad bestimmen
-$interface = $_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].str_replace($_SERVER['DOCUMENT_ROOT'], "", dirname(__FILE__));
+$interface = $_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].str_replace("servicemeldung.php", "",$_SERVER['PHP_SELF']);
 if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
     $interface = "https://".$interface;
 }

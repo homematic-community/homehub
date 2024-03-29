@@ -1,51 +1,45 @@
 <?php
-// php8
 
-$page = $_SERVER['PHP_SELF'];
-$sec = "500";
-//header("Refresh: $sec; url=".$page."?".$_SERVER['QUERY_STRING']);
+error_reporting(E_ALL);
+ini_set("display_errors", 1);
 
-// Prüfe auf custom.json
-if(!file_exists("config/custom.json"))
-{
-	echo "config/custom.json existiert nicht. Kopiere config/custom.template.json nach config/custom.json";
-	echo "Aktualsiere die Seite";
-	if (!copy("config/custom.template.json", "config/custom.json")) {
-		echo "Konnte Datei nicht kopieren. Gibt Schreibreche auf den Ordner 'config'";
-		exit();
-	}
+ini_set('max_execution_time', 180);
 
-}
-// Prüfe auf categories.json
-if(!file_exists("config/categories.json"))
-{
-	echo "config/categories.json existiert nicht. Kopiere config/categories.template.json nach config/categories.json";
-	echo "Aktualsiere die Seite";
-	if (!copy("config/categories.template.json", "config/categories.json")) {
-		echo "Konnte Datei nicht kopieren. Gibt Schreibreche auf den Ordner 'config'";
-		exit();
-	}
+session_cache_limiter(false);
+session_start();
 
+use \Psr\Http\Message\ServerRequestInterface as Request;
+use \Psr\Http\Message\ResponseInterface as Response;
 
-}
+require_once 'app/Config/config.php';
 
+<<<<<<< HEAD
 // definiere Interface
-$interface = $_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].str_replace($_SERVER['DOCUMENT_ROOT'], "", dirname(__FILE__));
+$interface = $_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].str_replace("index.php", "",$_SERVER['PHP_SELF']);
 if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
 	$interface = "https://".$interface;
 }
 else $interface = "http://".$interface; 
+=======
+require_once 'vendor/autoload.php';
+require_once 'app/Components/autoload.php';
+>>>>>>> parent of c7c5bad (Update zu Version 4.1)
 
-// Prüfe auf config.php
-if(!file_exists("config/config.php"))
-{
-	header('Location: setup.php');
-	exit;
-}
+$app = new \Slim\App(
+    array(
+        //'cache' => true,
+        'debug' => true,
+        'templates.path' => 'app/Views'
+    )
+);
+$container = $app->getContainer();
+$container['view'] = new \Slim\Views\PhpRenderer("app/Views/");
 
-// Lade Konfiuration der Homematic
-require("config/config.php");
+// Include routes
+require_once 'app/Routes/import.php';
+require_once 'app/Routes/display.php';
 
+<<<<<<< HEAD
 // Setze Variable selectedCat auf die aktuelle Seite
 if(!isset($_GET['seite']))
 {
@@ -328,7 +322,7 @@ if(count($export) > 0)
 		<header>
 	
             <span id="date" ondblclick="startImport();">&nbsp;</span>
-            <span id="title"><?php echo $title; ?></span>  
+            <span id="title"><a href="index.php"><?php echo $title; ?></a></span>  
             <span id="time">&nbsp;</span>
         </header>
 		<div class="container" id="wrapper">
@@ -616,3 +610,6 @@ if(count($export) > 0)
 	 
 	</body>
 </html>
+=======
+$app->run();
+>>>>>>> parent of c7c5bad (Update zu Version 4.1)
