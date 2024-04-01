@@ -484,7 +484,9 @@ if(count($export) > 0)
 					$functionname = str_replace("-", "_", $entry['component']);
 					if (!function_exists($functionname))
 					{
-					  	if(file_exists("components/".$functionname.".php")) { require("components/".$functionname.".php"); }
+					  	if(file_exists("custom/components/".$functionname.".php"))   { require("custom/components/".$functionname.".php"); }
+					  	elseif (file_exists("components/".$functionname.".php")) { require("components/".$functionname.".php"); }
+						else {  }
 					}
 					echo $functionname($entry);	
 					if(isset($entry['append_divider']))
@@ -504,7 +506,9 @@ if(count($export) > 0)
 					$functionname = str_replace("-", "_", $entry['component']);
 					if (!function_exists($functionname))
 					{
-					  	if(file_exists("components/".$functionname.".php")) { require("components/".$functionname.".php"); }
+						if(file_exists("custom/components/".$functionname.".php"))   { require("custom/components/".$functionname.".php"); }
+					  	elseif (file_exists("components/".$functionname.".php")) { require("components/".$functionname.".php"); }
+						else {  }
 					}
 					echo $functionname($entry);
 					if(isset($entry['append_divider']))
