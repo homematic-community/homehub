@@ -904,7 +904,8 @@ if (aldp_obj.Value()) {
 aldp_obj.AlReceipt();
 }
 }
-} ";  
+} 
+";  
   $ccu_request = $ccu_request ."WriteLine(\"ENDE\");";
 
 
