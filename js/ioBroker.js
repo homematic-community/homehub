@@ -55,6 +55,14 @@ var updateDatapointsioBroker = function ()
 					//console.log(index);
 					var ise_id = $(this).attr('ise_id');
 					var value = $(this).attr('value');
+					var iobshowtime = $(this).attr('ts');
+					//var iobshowtime = iobshowtime.substr(0, 10);
+
+
+					
+				
+
+
 					var component = $('[data-id="' + ise_id + '"]').attr('data-component');
 					var datapoint = $('[data-id="' + ise_id + '"]').attr('data-datapoint');
 					var unit = $('[data-id="' + ise_id + '"]').attr('data-unit');
@@ -66,12 +74,53 @@ var updateDatapointsioBroker = function ()
 					if (!valueList) {
 						valueList = '';
 					}
+					
+					
+	var myEle = document.getElementById(ise_id+"t");
+
+										if(myEle) {
+											
+	var textfarbe = "#ffffff";
+var difference = Date.now() - iobshowtime;
+//console.log(Date.now() + " - " + iobshowtime);
+var daysDifference = Math.floor(difference/1000/60/60/24);
+difference -= daysDifference*1000*60*60*24
+var hoursDifference = Math.floor(difference/1000/60/60);
+difference -= hoursDifference*1000*60*60
+var minutesDifference = Math.floor(difference/1000/60);
+difference -= minutesDifference*1000*60
+var secondsDifference = Math.floor(difference/1000);
+if(daysDifference > "500") {
+	document.getElementById(ise_id+"t").innerHTML = ".";
+} else if(daysDifference>1) {
+	document.getElementById(ise_id+"t").innerHTML = "<span style='font-size: smaller; color: " + textfarbe + ";'> vor " + daysDifference + " Tagen  </span>";
+} else if(daysDifference>0) {
+	document.getElementById(ise_id+"t").innerHTML = "<span style='font-size: smaller; color: " + textfarbe + ";'> vor einem Tag | </span>";
+} else if (hoursDifference>1) {
+	document.getElementById(ise_id+"t").innerHTML = "<span style='font-size: smaller; color: " + textfarbe + ";'> vor " + hoursDifference + " Std.  </span>";
+} else if (hoursDifference>0) {
+	document.getElementById(ise_id+"t").innerHTML = "<span style='font-size: smaller; color: " + textfarbe + ";'> vor " + hoursDifference + " Std.  </span>";		  
+} else if (minutesDifference>1) {
+	document.getElementById(ise_id+"t").innerHTML = "<span style='font-size: smaller; color: " + textfarbe + ";'> vor " + minutesDifference + " Min.  </span>";	  
+} else if (minutesDifference>0) {
+	document.getElementById(ise_id+"t").innerHTML = "<span style='font-size: smaller; color: " + textfarbe + ";'> vor " + minutesDifference + " Min.  </span>";
+} else {
+	document.getElementById(ise_id+"t").innerHTML = "<span style='font-size: smaller; color: " + textfarbe + ";'> vor " + secondsDifference + " Sek.  </span>";
+}
+
+										}
+										
 					//console.log(datapoint);
 					switch (component) {  
 						case 'ioBroker':
 							switch (datapoint) {
+
+
+									
+
 								
 								case 'toggle':
+								//console.log(ise_id+"t");
 									var button = $('[data-id="' + ise_id + '"]').attr('data-button');
 									if (value === 'true') {
 										if (button !== "bulb") { $('[data-id="' + ise_id + '"]').html('<img src="icon/switch_on.png" />'); }
@@ -80,6 +129,7 @@ var updateDatapointsioBroker = function ()
 										$('[data-id="' + ise_id + '"]').removeClass('btn-false');
 										$('[data-id="' + ise_id + '"]').attr('data-set-id', ise_id);
 										$('[data-id="' + ise_id + '"]').attr('data-set-value', '0');
+										
 									} else {
 										if (button !== "bulb") { $('[data-id="' + ise_id + '"]').html('<img src="icon/switch_off.png" />'); }
 										else { $('[data-id="' + ise_id + '"]').html('<img src="icon/light_light_off.png" />'); }
@@ -87,6 +137,8 @@ var updateDatapointsioBroker = function ()
 										$('[data-id="' + ise_id + '"]').removeClass('btn-true');
 										$('[data-id="' + ise_id + '"]').attr('data-set-id', ise_id);
 										$('[data-id="' + ise_id + '"]').attr('data-set-value', '1');
+							
+										
 									}
 									break;
 								case 'color':
@@ -274,8 +326,27 @@ function OBJtoXML(obj,ise) {
 	 {
 		var datapointval = obj[prop];
 	 }	 
+	 if (ise.includes("yeelight"))
+	 {
+		 //console.log("yeelight");
+		 if (prop== "lc")
+		{
+			var datapointts = obj[prop];
+		}
+		 
+		 
+	 }
+	 else  	 
+	 {
+		// console.log("other");
+		if (prop== "ts")
+		{
+			var datapointts = obj[prop];
+		}
+	 }
   }
-  xml += obj[prop] instanceof Array ? '' : "<datapoint ise_id='" + ise + "' value='" + datapointval + "' />\n";
+  //xml += obj[prop] instanceof Array ? '' : "<datapoint ise_id='" + ise + "' value='" + datapointval + "' />\n";
+  xml += obj[prop] instanceof Array ? '' : "<datapoint ise_id='" + ise + "' value='" + datapointval + "' ts='" + datapointts+ "'/>\n";
   xml += "</state>";
   var xml = xml.replace(/<\/?[0-9]{1,}>/g, '');
   return xml

@@ -77,8 +77,13 @@ $ioBrokerComponent = "1";
 
 function ioBroker($component) 
 {
+	
   if ((isset($component['objekt'])) AND (isset($component['api']))) 
   {
+	  
+
+
+	  
 	$Server = explode(":",$component['api']);
 	$Port = $Server[2];
 	$Server = explode("//",$Server[1]);
@@ -137,6 +142,13 @@ function ioBroker($component)
 		   
 		if($iseModus[$i] == "toggle")
 		{
+				 // ShowTime - Uhrzeit der letzten Änderung anzeigen
+			if(isset($component['showtime']))
+			{
+				if($component['showtime'] == "true") { $ShowTime = '<span class="infoioBrokershowtime" id="' . $iseWert  . 't" data-component="iobrokershowtime" data-datapoint="showtime"></span>'; }
+				else { $ShowTime = ''; }
+			}
+			else { $ShowTime = ''; }
 		$Ausgabe = $Ausgabe . ' <span class="infoioBroker '.$operate.'" data-id="' . $iseWert . '" data-component="ioBroker" data-datapoint="'. $iseModus[$i] .'" data-unit="' . $iseUnit[$i] . '" data-valuelist="'.$iseValue[$i].'" data-api="'.$iseAPI.'"></span>';
 		}
 		else if($iseModus[$i] == "color")
@@ -149,10 +161,22 @@ function ioBroker($component)
 		}
 		else if ($iseModus[$i] == "program")
 		{
-			$Ausgabe = $Ausgabe .  ' <span class="runioBroker btn-action" data-component="ioBroker" data-datapoint="'. $iseModus[$i] .'" data-run-id="' . $iseWert . '" data-api="'.$iseAPI.'">'.$iseLabel[$i].'</span>';
+			if(isset($component['showtime']))
+			{
+				if($component['showtime'] == "true") { $ShowTime = '<span class="infoioBrokershowtime" id="' . $iseWert  . 't" data-component="iobrokershowtime" data-datapoint="showtime"></span>'; }
+				else { $ShowTime = ''; }
+			}
+			else { $ShowTime = ''; }
+			$Ausgabe = $Ausgabe .  ' <span class="infoioBroker" data-id="' . $iseWert . '" data-api="'.$iseAPI.'" style="display:none;"></span><span class="runioBroker btn-action" data-component="ioBroker" data-datapoint="'. $iseModus[$i] .'" data-run-id="' . $iseWert . '" data-api="'.$iseAPI.'">'.$iseLabel[$i].'</span>';
 		}
 		else
 		{
+			if(isset($component['showtime']))
+			{
+				if($component['showtime'] == "true") { $ShowTime = '<span class="infoioBrokershowtime" id="' . $iseWert  . 't" data-component="iobrokershowtime" data-datapoint="showtime"></span>'; }
+				else { $ShowTime = ''; }
+			}
+			else { $ShowTime = ''; }
 			$Ausgabe = $Ausgabe .  ' <span class="infoioBroker '.$operate.'" data-id="' . $iseWert . '" data-component="ioBroker" data-datapoint="'. $iseModus[$i] .'" data-unit="' . $iseUnit[$i] . '" data-valuelist="'.$iseValue[$i].'" data-api="'.$iseAPI.'"></span>';
 		}
 		$i++;
@@ -164,6 +188,7 @@ function ioBroker($component)
    return '<div class="hh" style=\'border-left-color: '.$component['color'].'; border-left-style: solid;\'>'
                    . '<div class="pull-left"><img src="icon/' . $component["icon"] . '" class="icon">' . $component['name'] . '</div>'
                     . '<div class="pull-right">'
+						.$ShowTime
 					. $Ausgabe
                     . '</div>'
                     . '<div class="clearfix"></div>'
