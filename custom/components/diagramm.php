@@ -145,7 +145,7 @@ if(isset($_GET["legend"])) {
 }
 
 echo '<script>
-const ctx = document.getElementById("chart_'.$_GET['modalID'].'");
+ctx = document.getElementById("chart_'.$_GET['modalID'].'");
 
 new Chart(ctx, 
 {
