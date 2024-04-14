@@ -12,7 +12,7 @@ if(isset($_GET['ise_id']))
 {
 	if($_GET['ise_id'] == "all")
 	{
-		$xml = simplexml_load_file($interface.'\interface.php?systemNotificationClear.cgi');
+		$xml = simplexml_load_file($interface.'/interface.php?systemNotificationClear.cgi');
 	}
 	else
 	{
