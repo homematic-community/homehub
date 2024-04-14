@@ -289,6 +289,7 @@ if(count($export) > 0)
 	
 
 ?>
+<!doctype html>
 <html lang="de">
     <head>
         <meta charset="utf-8">
