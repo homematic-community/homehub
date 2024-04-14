@@ -603,8 +603,8 @@ if(count($export) > 0)
             var timerMiliseconds = <?php echo $timerPeriod * 1000; ?>;
             //]]>
         </script>
-
-        <script src="js/jquery-2.2.1.min.js"></script>
+        
+		<script src="js/jquery-3.7.1.min.js"></script>
 		<script src="js/chart.js"></script>
 		<script src="js/bootstrap.min.js.php?transition_duration=<?php echo $transition_duration; ?>"></script>
 		<script src='js/sun.js'></script> 		
