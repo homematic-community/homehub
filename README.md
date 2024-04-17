@@ -4,7 +4,7 @@ Systemanforderungen:
 Webserver mit PHP
 Installiertem CURL und PHP-CURL Modul
 
-Anleitung steht im [HomeMatic-Forum](https://homematic-forum.de/forum/viewtopic.php?f=41&t=81476) zur Verfügung. (noch Version 4.0)
+Anleitung steht jetzt im WIKI
 
 ### Oberfläche
 
