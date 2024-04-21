@@ -9,7 +9,7 @@
 },
 */
 
-function Sonnenstand($component) {
+function Sonnenstand2($component) {
 	   if (!isset($component['color'])) $component['color'] = '#595959';
     return '<div class="hh" style=\'border-left-color: '.$component['color'].'; border-left-style: solid;\'>'
         . '<div class="pull-left"><img src="icon/' . $component["icon"] . '" class="icon">' . $component["name"] . '</div>'
