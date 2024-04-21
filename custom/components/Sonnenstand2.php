@@ -1,7 +1,7 @@
 <?php
 /*
 {
- "component": "Sonnenstand",
+ "component": "Sonnenstand2",
  "name": "OK - Sonne",
  "icon": "weather_sun.png",
  "ise_id_azimut":"55945",

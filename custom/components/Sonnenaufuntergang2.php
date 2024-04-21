@@ -3,7 +3,7 @@
 /*
 
 {
- "component": "Sonnenaufuntergang",
+ "component": "Sonnenaufuntergang2",
  "name": "OK - Sonne A/U",
  "icon": "weather_sunrise.png",
  "ise_id_sonnenaufgang":"55907",

@@ -3,7 +3,7 @@
 /*
 
 {
- "component": "Mondphase",
+ "component": "Mondphase2",
  "name": "OK - Mond",
  "icon": "weather_moon_phases_7_half.png",
  "ise_id_mondphase":"55892",
