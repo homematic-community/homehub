@@ -72,7 +72,7 @@ if(file_exists('config/categories.json'))
     $str = file_get_contents('config/categories.json');
     $json = json_decode($str, true);
     $menu = $json['categories'];
-    $Startseite = $menu[0][name];
+    if(isset($menu[0]['name'])) { $Startseite = $menu[0]['name']; }
     // Erstelle Array mit name = aktuelle seite und displayname = aktuele Seite
     $categories[] = array(
         'name' => $selectedCat,
