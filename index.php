@@ -308,8 +308,12 @@ if(count($export) > 0)
 		if($responsive == true) { 
 			echo '<link href="css/responsive.css" rel="stylesheet">';
         }
+		if(file_exists("custom/css/custom.css"))
+		{
+			echo "<link href='custom/css/custom.css' rel='stylesheet'>  ";
+		}
 		?>		
-        <link href="custom/css/custom.css" rel="stylesheet">        
+             
         <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
         <link rel="apple-touch-icon" href="apple-touch-icon.png" />
         <link rel="apple-touch-icon" sizes="57x57" href="apple-touch-icon-57x57.png" />
