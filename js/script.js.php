@@ -687,6 +687,7 @@ var updateDatapoints = function () {
 					case 'HmIP-eTRV-CL':
                     case 'HmIP-eTRV-C':
                     case 'HmIP-eTRV-C-2':
+                    case 'HmIP-eTRV-F':
                         switch (datapoint) {
                             case 'ACTUAL_TEMPERATURE':
                                 $('[data-id="' + ise_id + '"]').html('<img src="icon/ist_temperatur.png" /> ' + (Math.round(value * 10) / 10).toFixed(1) + ' &deg;C&nbsp;&nbsp;&nbsp;&nbsp;');
@@ -1014,6 +1015,7 @@ var updateDatapoints = function () {
                         }
                         break;
                     case 'HmIP-SWSD':
+                    case 'HmIP-SWSD-2':
                         switch (datapoint) {
                             case 'LOW_BAT':
                                 if (value === 'true') {
