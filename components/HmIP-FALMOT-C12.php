@@ -8,7 +8,7 @@ function HmIP_FALMOT_C12($component) {
     if (!isset($component['channels'])) $component['channels'] = "1,2,3,4,5,6,7,8,9,10,11,12";
     $totalchannels = 0;
     $temp_channel = explode(",", $component['channels']);
-    for ($i = 0; $i < count($temp_channel);$i++) {
+    for ($i = 0; $i < count((array)$temp_channel);$i++) {
         $showchannel[$temp_channel[$i]] = 1;
         $totalchannels += 1;
     }
