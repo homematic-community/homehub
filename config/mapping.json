@@ -466,6 +466,10 @@
                 "icon": "sani_heating.png"
             },
             {
+                "name": "HmIP-eTRV-F",
+                "icon": "sani_heating.png"
+            },
+            {
                 "name": "HmIP-eTRV-2I9F",
                 "icon": "sani_heating.png"
             },
@@ -709,6 +713,10 @@
             },			
             {
                 "name": "HmIP-SWSD",
+                "icon": "secur_smoke_detector.png"
+            },			
+            {
+                "name": "HmIP-SWSD-2",
                 "icon": "secur_smoke_detector.png"
             },
             {
