@@ -58,7 +58,7 @@ $statesXml = simplexml_load_string($statelistCgi);
 
 	// Virtuelle Fernbedienung
     $device = $statesXml->xpath('//device[contains(@name, "HM-RCV-50")]');
-    if(count($device) > 0) {
+    if(count((array)$device) > 0) {
         $device = $device[0];
         
         $dummy = array(
@@ -114,7 +114,7 @@ $statesXml = simplexml_load_string($statelistCgi);
     
     // Channels Virtuelle Fernbedienung
     $device = $statesXml->xpath('//device[contains(@name, "HM-RCV-50")]');
-    if(count($device) > 0) {
+    if(count((array)$device) > 0) {
         $device = $device[0];
         
         $channelXml = $statesXml->xpath('//device[@ise_id="' . strval($device['ise_id']) . '"]/channel');

@@ -137,9 +137,9 @@ if(isset($diagramm_change))
       $lines = file("cache/diagramm_change_".$states['ise_id']."_".$history[$historyZaehler].".csv");
 
       // Sortiere alte Einträge aus	
-      if(count($lines)>= $history[$historyZaehler])
+      if(count((array)$lines)>= $history[$historyZaehler])
       {
-        $Startbei = (count($lines) - $history[$historyZaehler]);
+        $Startbei = (count((array)$lines) - $history[$historyZaehler]);
       }
       else
       {
@@ -147,7 +147,7 @@ if(isset($diagramm_change))
       }
       echo "<br>Starte Bereinigung , daher Werte ab: ".$Startbei." - [History -> ".$history[$historyZaehler]."]<br>";
 	
-      for($i=0;$i < count($lines); $i++)
+      for($i=0;$i < count((array)$lines); $i++)
       {
         if($i >= $Startbei)
         {
@@ -231,16 +231,16 @@ echo $xml;
       $lines = file("cache/diagramm_".$states['ise_id']."_".$history[$historyZaehler].".csv");
 
       // Sortiere alte Einträge aus	
-      if(count($lines)>= $history[$historyZaehler])
+      if(count((array)$lines)>= $history[$historyZaehler])
       {
-        $Startbei = (count($lines) - $history[$historyZaehler]);
+        $Startbei = (count((array)$lines) - $history[$historyZaehler]);
       }
       else
       {
         $Startbei = 0;
       }
       echo "<br>Starte Bereinigung , daher Werte ab: ".$Startbei." - [History -> ".$history[$historyZaehler]."]<br>";
-      for($i=0;$i < count($lines); $i++)
+      for($i=0;$i < count((array)$lines); $i++)
       {
         if($i >= $Startbei)
         {
