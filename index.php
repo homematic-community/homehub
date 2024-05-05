@@ -1,4 +1,5 @@
 <?php
+//ini_set('display_errors', 'on');
 // php8
 
 $page = $_SERVER['PHP_SELF'];
@@ -177,7 +178,7 @@ else
 
 // Komponenten einlesen
 $components = array();
-if(count($export) > 0) 
+if(count((array)$export) > 0) 
 {
     foreach($categories as $category) 
 	{
@@ -220,7 +221,7 @@ if(count($export) > 0)
             }
 
             // Alphabetisch sortieren
-            if(isset($mappingComponents) && count($mappingComponents) > 0) 
+            if(isset($mappingComponents) && count((array)$mappingComponents) > 0) 
 			{
                 usort($mappingComponents, function($a, $b) {
                         return strcmp($a['name'], $b['name']);
@@ -431,12 +432,12 @@ if(count($export) > 0)
 						    if(!file_exists('cache/service_'.$notificationentry['ise_id'].'.txt'))
 							{
 								$timestamp = $notificationentry['timestamp'] -1;
-								for($i=0; $i < count($jsondevices['channels']); $i++)
+								for($i=0; $i < count((array)$jsondevices['channels']); $i++)
 								{
 									//echo $jsondevices['channels'][$i]['name']."<br>";
 									if(isset($jsondevices['channels'][$i]['datapoints']))
 									{									
-										for($u=0; $u < count($jsondevices['channels'][$i]['datapoints']); $u++)
+										for($u=0; $u < count((array)$jsondevices['channels'][$i]['datapoints']); $u++)
 										{
 											//echo $jsondevices['channels'][$i]['datapoints'][$u]['ise_id']." - ".$jsondevices['channels'][$i]['datapoints'][$u]['name']."<br>";
 											if($jsondevices['channels'][$i]['datapoints'][$u]['ise_id'] == $notificationentry['ise_id'])
