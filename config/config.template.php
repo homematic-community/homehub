@@ -6,6 +6,7 @@ $homematicIp = '192.168.2.30';
 // Nötig wenn Homematic Skript authentifizierung aktiv - ansonsten leer lassen
 $ccu_user = "";  // in die Anführungsstriche den Benutzernamen
 $ccu_pass = "";  // in die Anführungsstriche das dazugehörige Kennwort
+// $ccu_https = true;  // HTTPS für die Verbindung zur CCU nutzen -> Einkommentieren wenn notwendig
 
 // Time in seconds HomeHub periodically updates the status
 $timerPeriod = 5;

@@ -13,6 +13,11 @@ $ccu_pass = "";  // in die Anführungsstriche das dazugehörige Kennwort
 if(!isset($ccu_user)) { $ccu_user = ""; }
 if(!isset($ccu_pass)) { $ccu_pass = ""; }
 
+
+if(!isset($ccu_https)) { $ccu_https = false; }
+
+$ccu_remoteskript_uri = "http".(!empty($ccu_https) ? 's' : '')."://" . $homematicIp . ":".(!empty($ccu_https) ? '4' : '')."8181/homehub.exe";
+
 // ALLE STATES
 if (strpos($_SERVER['QUERY_STRING'], "statelist.cgi") !== false) {
   $ccu_request = "";
@@ -99,7 +104,7 @@ WriteLine(\"*<*/stateList*>*\");";
 
 // Curl Anfrage bauen
   $curl = curl_init();
-  curl_setopt($curl,CURLOPT_URL, "http://" . $homematicIp . ":8181/hmip.exe");
+  curl_setopt($curl,CURLOPT_URL, $ccu_remoteskript_uri);
   if ($ccu_user != "" && $ccu_pass != "") {
     curl_setopt($curl,CURLOPT_USERPWD, $ccu_user.":".$ccu_pass);	
   }
@@ -108,6 +113,10 @@ WriteLine(\"*<*/stateList*>*\");";
   curl_setopt($curl,CURLOPT_RETURNTRANSFER, true);
   curl_setopt($curl,CURLOPT_CONNECTTIMEOUT ,2);
   curl_setopt($curl,CURLOPT_TIMEOUT, 20);
+  if (!empty($ccu_https)) {
+    curl_setopt($curl,CURLOPT_SSL_VERIFYHOST, false);
+    curl_setopt($curl,CURLOPT_SSL_VERIFYPEER, false);
+  }
   $content = curl_exec($curl);
   curl_close($curl);
  // exit();
@@ -217,7 +226,7 @@ WriteLine(\"*<*/stateList*>*\");";
 
 // Curl Anfrage bauen
   $curl = curl_init();
-  curl_setopt($curl,CURLOPT_URL, "http://" . $homematicIp . ":8181/hmip.exe");
+  curl_setopt($curl,CURLOPT_URL, $ccu_remoteskript_uri);
   if ($ccu_user != "" && $ccu_pass != "") {
     curl_setopt($curl,CURLOPT_USERPWD, $ccu_user.":".$ccu_pass);	
   }
@@ -226,6 +235,10 @@ WriteLine(\"*<*/stateList*>*\");";
   curl_setopt($curl,CURLOPT_RETURNTRANSFER, true);
   curl_setopt($curl,CURLOPT_CONNECTTIMEOUT ,2);
   curl_setopt($curl,CURLOPT_TIMEOUT, 20);
+  if (!empty($ccu_https)) {
+    curl_setopt($curl,CURLOPT_SSL_VERIFYHOST, false);
+    curl_setopt($curl,CURLOPT_SSL_VERIFYPEER, false);
+  }
   $content = curl_exec($curl);
   curl_close($curl);
  // exit();
@@ -333,7 +346,7 @@ WriteLine(\"*<*/deviceList*>*\");";
 
 // Curl Anfrage bauen
   $curl = curl_init();
-  curl_setopt($curl,CURLOPT_URL, "http://" . $homematicIp . ":8181/hmip.exe");
+  curl_setopt($curl,CURLOPT_URL, $ccu_remoteskript_uri);
   if ($ccu_user != "" && $ccu_pass != "") {
     curl_setopt($curl,CURLOPT_USERPWD, $ccu_user.":".$ccu_pass);	
   }
@@ -342,6 +355,10 @@ WriteLine(\"*<*/deviceList*>*\");";
   curl_setopt($curl,CURLOPT_RETURNTRANSFER, true);
   curl_setopt($curl,CURLOPT_CONNECTTIMEOUT ,2);
   curl_setopt($curl,CURLOPT_TIMEOUT, 20);
+  if (!empty($ccu_https)) {
+    curl_setopt($curl,CURLOPT_SSL_VERIFYHOST, false);
+    curl_setopt($curl,CURLOPT_SSL_VERIFYPEER, false);
+  }
   $content = curl_exec($curl);
   curl_close($curl);
  // exit();
@@ -400,7 +417,7 @@ WriteLine(\"*<*/programList*>*\");";
 
 // Curl Anfrage bauen
   $curl = curl_init();
-  curl_setopt($curl,CURLOPT_URL, "http://" . $homematicIp . ":8181/hmip.exe");
+  curl_setopt($curl,CURLOPT_URL, $ccu_remoteskript_uri);
   if ($ccu_user != "" && $ccu_pass != "") {
     curl_setopt($curl,CURLOPT_USERPWD, $ccu_user.":".$ccu_pass);	
   }
@@ -409,6 +426,10 @@ WriteLine(\"*<*/programList*>*\");";
   curl_setopt($curl,CURLOPT_RETURNTRANSFER, true);
   curl_setopt($curl,CURLOPT_CONNECTTIMEOUT ,2);
   curl_setopt($curl,CURLOPT_TIMEOUT, 20);
+  if (!empty($ccu_https)) {
+    curl_setopt($curl,CURLOPT_SSL_VERIFYHOST, false);
+    curl_setopt($curl,CURLOPT_SSL_VERIFYPEER, false);
+  }
   $content = curl_exec($curl);
   curl_close($curl);
  // exit();
@@ -486,7 +507,7 @@ foreach(id, dom.GetObject(ID_SYSTEM_VARIABLES).EnumUsedIDs()){
 
 // Curl Anfrage bauen
   $curl = curl_init();
-  curl_setopt($curl,CURLOPT_URL, "http://" . $homematicIp . ":8181/hmip.exe");
+  curl_setopt($curl,CURLOPT_URL, $ccu_remoteskript_uri);
   if ($ccu_user != "" && $ccu_pass != "") {
     curl_setopt($curl,CURLOPT_USERPWD, $ccu_user.":".$ccu_pass);	
   }
@@ -495,6 +516,10 @@ foreach(id, dom.GetObject(ID_SYSTEM_VARIABLES).EnumUsedIDs()){
   curl_setopt($curl,CURLOPT_RETURNTRANSFER, true);
   curl_setopt($curl,CURLOPT_CONNECTTIMEOUT ,2);
   curl_setopt($curl,CURLOPT_TIMEOUT, 20);
+  if (!empty($ccu_https)) {
+    curl_setopt($curl,CURLOPT_SSL_VERIFYHOST, false);
+    curl_setopt($curl,CURLOPT_SSL_VERIFYPEER, false);
+  }
   $content = curl_exec($curl);
   curl_close($curl);
  // exit();
@@ -548,7 +573,7 @@ if (strpos($_SERVER['QUERY_STRING'], "runprogram.cgi") !== false) {
   
   // Curl Anfrage bauen
   $curl = curl_init();
-  curl_setopt($curl,CURLOPT_URL, "http://" . $homematicIp . ":8181/hmip.exe");
+  curl_setopt($curl,CURLOPT_URL, $ccu_remoteskript_uri);
   if ($ccu_user != "" && $ccu_pass != "") {
     curl_setopt($curl,CURLOPT_USERPWD, $ccu_user.":".$ccu_pass);	
   }
@@ -557,6 +582,10 @@ if (strpos($_SERVER['QUERY_STRING'], "runprogram.cgi") !== false) {
   curl_setopt($curl,CURLOPT_RETURNTRANSFER, true);
   curl_setopt($curl,CURLOPT_CONNECTTIMEOUT ,2);
   curl_setopt($curl,CURLOPT_TIMEOUT, 20);
+  if (!empty($ccu_https)) {
+    curl_setopt($curl,CURLOPT_SSL_VERIFYHOST, false);
+    curl_setopt($curl,CURLOPT_SSL_VERIFYPEER, false);
+  }
   $content = curl_exec($curl);
   curl_close($curl);
 
@@ -617,7 +646,7 @@ if (strpos($_SERVER['QUERY_STRING'], "statechange.cgi") !== false) {
   
   // Curl Anfrage bauen
   $curl = curl_init();
-  curl_setopt($curl,CURLOPT_URL, "http://" . $homematicIp . ":8181/hmip.exe");
+  curl_setopt($curl,CURLOPT_URL, $ccu_remoteskript_uri);
   if ($ccu_user != "" && $ccu_pass != "") {
     curl_setopt($curl,CURLOPT_USERPWD, $ccu_user.":".$ccu_pass);	
   }
@@ -626,6 +655,10 @@ if (strpos($_SERVER['QUERY_STRING'], "statechange.cgi") !== false) {
   curl_setopt($curl,CURLOPT_RETURNTRANSFER, true);
   curl_setopt($curl,CURLOPT_CONNECTTIMEOUT ,2);
   curl_setopt($curl,CURLOPT_TIMEOUT, 20);
+  if (!empty($ccu_https)) {
+    curl_setopt($curl,CURLOPT_SSL_VERIFYHOST, false);
+    curl_setopt($curl,CURLOPT_SSL_VERIFYPEER, false);
+  }
   $content = curl_exec($curl);
   curl_close($curl);
 
@@ -683,7 +716,7 @@ WriteLine(\"*<*/systemVariables*>*\");";
 
 // Curl Anfrage bauen
   $curl = curl_init();
-  curl_setopt($curl,CURLOPT_URL, "http://" . $homematicIp . ":8181/hmip.exe");
+  curl_setopt($curl,CURLOPT_URL, $ccu_remoteskript_uri);
   if ($ccu_user != "" && $ccu_pass != "") {
     curl_setopt($curl,CURLOPT_USERPWD, $ccu_user.":".$ccu_pass);	
   }
@@ -692,6 +725,10 @@ WriteLine(\"*<*/systemVariables*>*\");";
   curl_setopt($curl,CURLOPT_RETURNTRANSFER, true);
   curl_setopt($curl,CURLOPT_CONNECTTIMEOUT ,2);
   curl_setopt($curl,CURLOPT_TIMEOUT, 20);
+  if (!empty($ccu_https)) {
+    curl_setopt($curl,CURLOPT_SSL_VERIFYHOST, false);
+    curl_setopt($curl,CURLOPT_SSL_VERIFYPEER, false);
+  }
   $content = curl_exec($curl);
   curl_close($curl);
  // exit();
@@ -782,7 +819,7 @@ else if (strpos($_SERVER['QUERY_STRING'], "state.cgi") !== false) {
   
   // Curl Anfrage bauen
   $curl = curl_init();
-  curl_setopt($curl,CURLOPT_URL, "http://" . $homematicIp . ":8181/hmip.exe");
+  curl_setopt($curl,CURLOPT_URL, $ccu_remoteskript_uri);
   if ($ccu_user != "" && $ccu_pass != "") {
     curl_setopt($curl,CURLOPT_USERPWD, $ccu_user.":".$ccu_pass);	
   }
@@ -791,6 +828,10 @@ else if (strpos($_SERVER['QUERY_STRING'], "state.cgi") !== false) {
   curl_setopt($curl,CURLOPT_RETURNTRANSFER, true);
   curl_setopt($curl,CURLOPT_CONNECTTIMEOUT ,2);
   curl_setopt($curl,CURLOPT_TIMEOUT, 20);
+  if (!empty($ccu_https)) {
+    curl_setopt($curl,CURLOPT_SSL_VERIFYHOST, false);
+    curl_setopt($curl,CURLOPT_SSL_VERIFYPEER, false);
+  }
   $content = curl_exec($curl);
   curl_close($curl);
   
@@ -854,7 +895,7 @@ if (strpos($_SERVER['QUERY_STRING'], "systemNotification.cgi") !== false) {
 
 // Curl Anfrage bauen
   $curl = curl_init();
-  curl_setopt($curl,CURLOPT_URL, "http://" . $homematicIp . ":8181/hmip.exe");
+  curl_setopt($curl,CURLOPT_URL, $ccu_remoteskript_uri);
   if ($ccu_user != "" && $ccu_pass != "") {
     curl_setopt($curl,CURLOPT_USERPWD, $ccu_user.":".$ccu_pass);	
   }
@@ -863,6 +904,10 @@ if (strpos($_SERVER['QUERY_STRING'], "systemNotification.cgi") !== false) {
   curl_setopt($curl,CURLOPT_RETURNTRANSFER, true);
   curl_setopt($curl,CURLOPT_CONNECTTIMEOUT ,2);
   curl_setopt($curl,CURLOPT_TIMEOUT, 20);
+  if (!empty($ccu_https)) {
+    curl_setopt($curl,CURLOPT_SSL_VERIFYHOST, false);
+    curl_setopt($curl,CURLOPT_SSL_VERIFYPEER, false);
+  }
   $content = curl_exec($curl);
   curl_close($curl);
  // exit();
@@ -922,7 +967,7 @@ aldp_obj.AlReceipt();
   
   // Curl Anfrage bauen
   $curl = curl_init();
-  curl_setopt($curl,CURLOPT_URL, "http://" . $homematicIp . ":8181/hmip.exe");
+  curl_setopt($curl,CURLOPT_URL, $ccu_remoteskript_uri);
   if ($ccu_user != "" && $ccu_pass != "") {
     curl_setopt($curl,CURLOPT_USERPWD, $ccu_user.":".$ccu_pass);	
   }
@@ -931,6 +976,10 @@ aldp_obj.AlReceipt();
   curl_setopt($curl,CURLOPT_RETURNTRANSFER, true);
   curl_setopt($curl,CURLOPT_CONNECTTIMEOUT ,2);
   curl_setopt($curl,CURLOPT_TIMEOUT, 20);
+  if (!empty($ccu_https)) {
+    curl_setopt($curl,CURLOPT_SSL_VERIFYHOST, false);
+    curl_setopt($curl,CURLOPT_SSL_VERIFYPEER, false);
+  }
   $content = curl_exec($curl);
   curl_close($curl);
 
@@ -947,5 +996,3 @@ aldp_obj.AlReceipt();
 }
 
 ?>
-
-
