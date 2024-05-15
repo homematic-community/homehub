@@ -89,8 +89,10 @@ var updateDatapoints = function () {
 					}
 					?>
 					case 'showtime':
-						var difference = new Date() - new Date(value);
-						var daysDifference = Math.floor(difference/1000/60/60/24);
+
+					var difference = new Date() - new Date(value.replace(/\./g, '/'));
+				
+					var daysDifference = Math.floor(difference/1000/60/60/24);
 						difference -= daysDifference*1000*60*60*24
 						var hoursDifference = Math.floor(difference/1000/60/60);
 						difference -= hoursDifference*1000*60*60
