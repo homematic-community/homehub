@@ -211,6 +211,7 @@ var updateDatapoints = function () {
                     case 'HmIP-BROLL-2':
                     case 'HmIP-FROLL':
                     case 'HmIP-BBL':
+                    case 'HmIP-BBL-2':
                     case 'HmIP-FBL':
                     case 'HmIP-DRBLI4':
                     case 'HmIPW-DRBL4':
