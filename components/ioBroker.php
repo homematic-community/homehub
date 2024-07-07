@@ -59,6 +59,15 @@
             "objekt":"yeelight-2.0.Buero.control.active_bright",
 			"modus":"text"
 		 },		 
+		 		 // Midas Mode
+		  {
+			"component":"ioBroker", 
+			"api":"http://10.1.1.4:8087",			
+            "name":"Poolwärmepumpenmodus",
+            "icon":"sani_pool_heat_pump.png",
+            "objekt":"0_userdata.0.Poolheizung.mode,0_userdata.0.Poolheizung.mode",
+			"modus":"text,midasmode"
+		 },		 
 		 
 		 // Werte können kombiniert werden
 		  {
@@ -77,7 +86,7 @@ $ioBrokerComponent = "1";
 
 function ioBroker($component) 
 {
-	
+	$modalId = mt_rand();
   if ((isset($component['objekt'])) AND (isset($component['api']))) 
   {
 	  
@@ -97,6 +106,7 @@ function ioBroker($component)
 	}
 	
 	$Ausgabe = "";
+	$Ausgabe2 = "";
 	$i = 0;
 	$iseWerte = explode(",",$component['objekt']);
 	
@@ -159,6 +169,22 @@ function ioBroker($component)
 		{
 		$Ausgabe = $Ausgabe .  ' <span class="infoioBroker '.$operate.'" data-id="' . $iseWert . '" data-component="ioBroker" data-datapoint="'. $iseModus[$i] .'" data-unit="' . $iseUnit[$i] . '" data-valuelist="'.$iseValue[$i].'" data-api="'.$iseAPI.'"></span>';
 		}
+		else if($iseModus[$i] == "midasmode")
+		{
+			
+					 // ShowTime - Uhrzeit der letzten Änderung anzeigen
+			if(isset($component['showtime']))
+			{
+				if($component['showtime'] == "true") { $ShowTime = '<span class="infoioBrokershowtime" id="' . $iseWert  . 't" data-component="iobrokershowtime" data-datapoint="showtime"></span>'; }
+				else { $ShowTime = ''; }
+			}
+			else { $ShowTime = ''; }
+			
+		$Ausgabe = $Ausgabe .  '<span class="btn-action  infoioBroker setioBroker" data-id="' . $iseWert . '" id="' . $iseWert . '_-1" data-component="ioBroker" data-datapoint="midasmode" data-unit="" data-valuelist="" data-api="'.$iseAPI.'" data-set-id="'.$iseWert.'" data-set-value="-1">Aus</span> '
+		.'<span class="btn-action infoioBroker setioBroker" data-id="' . $iseWert . '" id="' . $iseWert . '_0" data-component="ioBroker" data-datapoint="midasmode" data-unit="" data-valuelist="" data-api="'.$iseAPI.'" data-set-id="'.$iseWert.'" data-set-value="0">Cool</span> '
+		.'<span class="btn-action infoioBroker setioBroker"  data-id="' . $iseWert . '" id="' . $iseWert . '_1" data-component="ioBroker" data-datapoint="midasmode" data-unit="" data-valuelist="" data-api="'.$iseAPI.'" data-set-id="'.$iseWert.'" data-set-value="1">Heizen</span> '
+		.'<span class="btn-action infoioBroker setioBroker"  data-id="' . $iseWert . '" id="' . $iseWert . '_2" data-component="ioBroker" data-datapoint="midasmode" data-unit="" data-valuelist="" data-api="'.$iseAPI.'" data-set-id="'.$iseWert.'" data-set-value="2">Auto</span> ';
+		}
 		else if ($iseModus[$i] == "program")
 		{
 			if(isset($component['showtime']))
@@ -169,6 +195,29 @@ function ioBroker($component)
 			else { $ShowTime = ''; }
 			$Ausgabe = $Ausgabe .  ' <span class="infoioBroker" data-id="' . $iseWert . '" data-api="'.$iseAPI.'" style="display:none;"></span><span class="runioBroker btn-action" data-component="ioBroker" data-datapoint="'. $iseModus[$i] .'" data-run-id="' . $iseWert . '" data-api="'.$iseAPI.'">'.$iseLabel[$i].'</span>';
 		}
+		else if($iseModus[$i] == "text")
+		{
+			if(isset($component['showtime']))
+			{
+				if($component['showtime'] == "true") { $ShowTime = '<span class="infoioBrokershowtime" id="' . $iseWert  . 't" data-component="iobrokershowtime" data-datapoint="showtime"></span>'; }
+				else { $ShowTime = ''; }
+			}
+			else { $ShowTime = ''; }
+			
+			$Ausgabe = $Ausgabe .  ' <span class="infoioBroker '.$operate.'" data-id="' . $iseWert . '" data-component="ioBroker" data-datapoint="'. $iseModus[$i] .'" data-unit="' . $iseUnit[$i] . '" data-valuelist="'.$iseValue[$i].'" data-api="'.$iseAPI.'"></span>';
+			if($iseOperate[$i] != "false")
+			{
+			$Ausgabe2 = '<div class="hh2 collapse" id="'.$modalId.'" aria-expanded="true" style="">'
+			.'<div class="row text-center">'
+			.'<div class="form-inline">'
+			.'<div class="input-group">'
+			.'<input type="text" name="38488" class="form-control" placeholder="Text eingeben"  id="'.$iseWert.'submit">'
+			.'<span class="input-group-btn"><button class="btn btn-primary '.$operate.'" data-datapoint="'. $iseModus[$i] .'" data-set-id="'.$iseWert.'"  data-api="'.$iseAPI.'">OK</button></span>'
+			.'</div></div></div></div>';
+			}
+
+			
+		}		
 		else
 		{
 			if(isset($component['showtime']))
@@ -185,14 +234,19 @@ function ioBroker($component)
 		 
 
    
-   return '<div class="hh" style=\'border-left-color: '.$component['color'].'; border-left-style: solid;\'>'
-                   . '<div class="pull-left"><img src="icon/' . $component["icon"] . '" class="icon">' . $component['name'] . '</div>'
-                    . '<div class="pull-right">'
+   return '<div class="hh"  style=\'border-left-color: '.$component['color'].'; border-left-style: solid;\'>'
+					.'<div data-toggle="collapse" data-target="#'.$modalId.'" class="" aria-expanded="true">'
+					.'<div class="pull-left"><img src="icon/' . $component["icon"] . '" class="icon">' . $component['name'] . '</div>'
+                    .'<div class="pull-right">'
 						.$ShowTime
 					. $Ausgabe
                     . '</div>'
                     . '<div class="clearfix"></div>'
-                . '</div>';
+                . '</div>'
+
+				.$Ausgabe2
+								.'</div>';
+
     }
 }
 
