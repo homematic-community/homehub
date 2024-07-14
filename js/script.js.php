@@ -25,9 +25,15 @@ $(document).ready(function () {
 
         runProgram(id);
     });
+    $('.runmode').click(function () {
+        var id = $(this).attr('data-run-id');
+
+        setProgramMode(id);
+    });	
 });
 
 var updateDatapoints = function () {
+	window.clearTimeout(timer);
     //192.168.2.6/config/xmlapi/state.cgi?datapoint_id=    
     showTitle();
     var id = '';
@@ -117,6 +123,19 @@ var updateDatapoints = function () {
 							$('[data-id="' + ise_id + '"]').html("<span style='font-size: smaller;'>vor " + secondsDifference + " Sek.</span>");
 						}
 						break;
+						
+						
+					case 'showstate':
+
+					 if (value === "true") {
+						$('[data-id="' + ise_id + '"]').html("<img src='icon/green_dot.png'>");
+						
+					 }
+					 else
+					 {
+						$('[data-id="' + ise_id + '"]').html("<img src='icon/red_dot.png'>");
+					 }
+					 break;
                     case 'HMIP-PSM':
                     case 'HMIP-PS':
                     case 'HmIP-PSM-2':
@@ -2492,7 +2511,29 @@ var runProgram = function (id) {
             $('#flash-error').html('Es gab einen Fehler beim Verarbeiten des Requests.').show();
         }
     });
-};                     
+};         
+
+var setProgramMode = function (id) {
+	if (dev == "1") {
+		XMLURL = 'dev/runprogram.php';
+	} else {
+		XMLURL = 'interface.php';
+	}	
+    $.ajax({
+        type: 'GET',
+        url: XMLURL + '?setprogrammode.cgi&program_id=' + id,
+        dataType: 'xml',
+        success: function (xml) {
+            $('#flash-error').hide();
+
+            updateDatapoints();
+        },
+        //other code
+        error: function () {			
+            $('#flash-error').html('Es gab einen Fehler beim Verarbeiten des Requests.').show();
+        }
+    });
+};                
 
 var showTitle = function () {
 

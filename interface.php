@@ -601,6 +601,75 @@ if (strpos($_SERVER['QUERY_STRING'], "runprogram.cgi") !== false) {
 
 }
 
+
+
+// PROGRAMM aktiv inaktiv schalten
+if (strpos($_SERVER['QUERY_STRING'], "setprogrammode.cgi") !== false) {
+
+
+  // Beende wenn keine Program_ID übergeben wird
+  if(!isset($_GET['program_id'])) 
+  {
+	echo "keine program_id";
+	exit();
+  }
+
+
+  $ccu_request = "";
+
+  // Baue Skript zusammen
+  $ccu_request = $ccu_request . "object oDatapoint = dom.GetObject('".$_GET['program_id']."');\r\n"; 
+  $ccu_request = $ccu_request . "if (oDatapoint.IsTypeOf(OT_PROGRAM)) {\r\n";
+  $ccu_request = $ccu_request . "if (oDatapoint.Active()) {\r\noDatapoint.Active(false);}\r\n";
+  $ccu_request = $ccu_request . "else {\r\noDatapoint.Active(true); }\r\n}\r\n}";
+
+
+  // Debug Mode
+  if(isset($_GET["debug"]))
+  {
+    echo $ccu_request;
+    exit();
+  }
+  
+  
+  // Als indikator für die Rückgabe, um den Overhead zu filtern
+  $ccu_request = $ccu_request ."WriteLine(\"ENDE\");";
+  
+  // Curl Anfrage bauen
+  $curl = curl_init();
+  curl_setopt($curl,CURLOPT_URL, $ccu_remoteskript_uri);
+  if ($ccu_user != "" && $ccu_pass != "") {
+    curl_setopt($curl,CURLOPT_USERPWD, $ccu_user.":".$ccu_pass);	
+  }
+  curl_setopt($curl,CURLOPT_POST, 1);
+  curl_setopt($curl,CURLOPT_POSTFIELDS, $ccu_request);
+  curl_setopt($curl,CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($curl,CURLOPT_CONNECTTIMEOUT ,2);
+  curl_setopt($curl,CURLOPT_TIMEOUT, 20);
+  if (!empty($ccu_https)) {
+    curl_setopt($curl,CURLOPT_SSL_VERIFYHOST, false);
+    curl_setopt($curl,CURLOPT_SSL_VERIFYPEER, false);
+  }
+  $content = curl_exec($curl);
+  curl_close($curl);
+
+  // Trenne Rückgabe vom Overhead
+  //$cleancontent = explode("ENDE",$content);
+  //echo $cleancontent[0];
+  exit();
+
+  // Schreibe Ausgabe
+  //header("Content-Type: application/xml; charset=ISO-8859-1");  
+  echo "<?xml version='1.0' encoding='ISO-8859-1' ?><state>"; 
+  //<result><started program_id="55436"/></result>
+
+}
+
+
+
+
+
+
 // WERTÄNDERUNG
 if (strpos($_SERVER['QUERY_STRING'], "statechange.cgi") !== false) {
 
@@ -763,6 +832,7 @@ else if (strpos($_SERVER['QUERY_STRING'], "state.cgi") !== false) {
   
   // suche und ersetze t wegen Timestamp, da es diese einträge nicht gibt
   $datapoints = str_replace("t", "", $_GET['datapoint_id']);
+   $datapoints = str_replace("a", "", $datapoints);
 
   // Trenne datapoint_id anhand , auf
   $datapoints = explode(",",$datapoints);
@@ -785,6 +855,15 @@ else if (strpos($_SERVER['QUERY_STRING'], "state.cgi") !== false) {
 	  $ccu_request = $ccu_request . "if (oDatapoint.IsTypeOf(OT_DP)) {\r\n";
 	  $ccu_request = $ccu_request . "WriteLine(\"*<*datapoint ise_id='".$datapoint."' value='\"#dom.GetObject(".$datapoint.").Value().ToString()#\"'/*>*\");\r\n";
 	  $ccu_request = $ccu_request . "}\r\n";
+	  
+	  // Wenn es sich um ein Programm handelt gibt aus ob aktiv oder inaktiv
+	  $ccu_request = $ccu_request . "if (oDatapoint.IsTypeOf(OT_PROGRAM)) {\r\n";
+	  $ccu_request = $ccu_request . "if (oDatapoint.Active()) {\r\nWriteLine(\"*<*datapoint ise_id='".$datapoint."a' value='true'/*>*\");}\r\n";
+	  $ccu_request = $ccu_request . "else {\r\nWriteLine(\"*<*datapoint ise_id='".$datapoint."a' value='false'/*>*\"); }\r\n";
+	  $ccu_request = $ccu_request . "}\r\n";	  
+		
+
+
 	  if(!isset($_GET['onlyvalue']))
 	  {
 	    // Wenn es sich um einen Channel handelt gib Timestamp aus
