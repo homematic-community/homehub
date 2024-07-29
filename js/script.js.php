@@ -1360,6 +1360,46 @@ var updateDatapoints = function () {
                                 }
                         }
                         break;
+					case 'HmIP-ASIR':
+					case 'HmIP-ASIR-2':					
+                    case 'HmIP-ASIR-O':
+                        switch (datapoint) {
+							case 'OPERATING_VOLTAGE':
+                                $('[data-id="' + ise_id + '"]').html('<img src="icon/measure_battery_75.png" height=19 /> ' + ((Math.round(value * 10) / 10) + ' V'));
+                                break;
+							case 'LOW_BAT':
+                                if (value === 'true') {
+                                    $('[data-id="' + ise_id + '"]').html('<img src="icon/measure_battery_25.png" />');
+                                }
+                                break;
+							  case 'OPTICAL_ALARM_ACTIVE':
+                                switch (value) {
+                                    case 'true':
+                                        $('[data-id="' + ise_id + '"]').html('<img src="icon/red_dot.png" />&nbsp;&nbsp;<img src="icon/light_light_dim_on_100.png" />');
+                                        break;
+                                    case 'false':
+                                        $('[data-id="' + ise_id + '"]').html('<img src="icon/light_light_off.png" />');
+                                        break;
+                                    default:
+                                        $('[data-id="' + ise_id + '"]').html(value);
+                                }
+                                break;
+							  case 'ACOUSTIC_ALARM_ACTIVE':
+                                switch (value) {
+                                    case 'true':
+                                        $('[data-id="' + ise_id + '"]').html('<img src="icon/red_dot.png" />&nbsp;&nbsp;<img src="icon/audio_volume_high.png" />');
+                                        break;
+                                    case 'false':
+                                        $('[data-id="' + ise_id + '"]').html('<img src="icon/audio_volume_mute.png" />');
+                                        break;
+                                    default:
+                                        $('[data-id="' + ise_id + '"]').html(value);
+                                }
+                                break;								
+                            default:
+                                $('[data-id="' + ise_id + '"]').html(value);
+                        }
+                        break;						
                     case 'HM-CC-RT-DN':
                     case 'HmIP-STE2-PCB':
                         switch (datapoint) {

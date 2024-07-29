@@ -651,6 +651,18 @@
             }
         ],
         "Sicherheit": [
+		            {
+                "name": "HmIP-ASIR-O",
+                "icon": "message_bell.png"
+            },
+            {
+                "name": "HmIP-ASIR-2",
+                "icon": "message_bell.png"
+            },
+            {
+                "name": "HmIP-ASIR",
+                "icon": "message_bell.png"
+            },			
             {
                 "name": "HM-CC-SCD",
                 "icon": "homehub_co2.png"
