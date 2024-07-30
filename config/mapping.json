@@ -202,6 +202,14 @@
                 "icon": "message_socket_on_off.png"
             },
             {
+                "name": "HmIP-PS-2 9YM",
+                "icon": "message_socket_on_off.png"
+            },
+            {
+                "name": "HmIP-PS-2-9YM",
+                "icon": "message_socket_on_off.png"
+            },			
+            {
                 "name": "HmIP-BSL",
                 "icon": "light_light_dim_100.png"
             },
