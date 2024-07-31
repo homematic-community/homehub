@@ -534,7 +534,7 @@ function HmIP_SWO_PR($component) {
                  . '</div>'
                  . '<div class="pull-right">'  
 
-                   . '<span class="info" data-id="' . $component['RAIN_COUNTER'] . '" data-component="' . $component['component'] . '" data-datapoint="RAIN_COUNTER"></span>'
+                   //. '<span class="info" data-id="' . $component['RAIN_COUNTER'] . '" data-component="' . $component['component'] . '" data-datapoint="RAIN_COUNTER"></span>'
                    . '<span class="info" data-id="' . $component['WIND_SPEED'] . '" data-component="' . $component['component'] . '" data-datapoint="WIND_SPEED"></span>'
                    . '<span class="info" data-id="' . $component['WIND_DIR'] . '" data-component="' . $component['component'] . '" data-datapoint="WIND_DIR"></span>'
                    . '<span class="info" data-id="' . $component['WIND_DIR_RANGE'] . '" data-component="' . $component['component'] . '" data-datapoint="WIND_DIR_RANGE"></span>'
