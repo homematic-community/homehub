@@ -1,7 +1,6 @@
 <?php
-
-function HmIP_PS_2_9YM($component) {
-    
+ini_set('display_errors', 'on');
+function HmIP_PS_29YM($component) {
     if(!isset($component['button'])) {
         $component['button'] = 'switch';
     }
