@@ -350,8 +350,12 @@ var updateDatapoints = function () {
                             case 'MOTION_DETECTION_ACTIVE':
                                 if (value === 'true') {
                                     $('[data-id="' + ise_id + '"]').html('<img src="icon/message_presence_active.png" />');
+									$('[data-id="' + ise_id + '"]').attr('data-set-id', ise_id);
+                                    $('[data-id="' + ise_id + '"]').attr('data-set-value', '0');
                                 } else {
                                     $('[data-id="' + ise_id + '"]').html('<img src="icon/message_presence_disabled.png" />');
+									$('[data-id="' + ise_id + '"]').attr('data-set-id', ise_id);
+                                    $('[data-id="' + ise_id + '"]').attr('data-set-value', '1');
                                 }
                                 break;
 							case 'LOW_BAT':
