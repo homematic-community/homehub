@@ -330,7 +330,9 @@ var updateDatapoints = function () {
                     case 'HmIP-SMI55-2':
                     case 'HmIPW-SMI55':
                     case 'HmIP-SMO':
+					case 'HmIP-SMO230':
                     case 'HmIP-SMO-A':
+					case 'HmIP-SMO230-A':
                         switch (datapoint) {
                             case 'CURRENT_ILLUMINATION':
                                 $('[data-id="' + ise_id + '"]').html(Math.round(value));

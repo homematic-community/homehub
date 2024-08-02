@@ -792,9 +792,17 @@
                 "icon": "status_man.png"
             },
             {
+                "name": "HmIP-SMO230-A",
+                "icon": "status_man.png"
+            },			
+            {
                 "name": "HmIP-SMO-A",
                 "icon": "status_man.png"
             },
+            {
+                "name": "HmIP-SMO230",
+                "icon": "status_man.png"
+            },				
             {
                 "name": "HmIPW-SMI55",
                 "icon": "status_man.png"
