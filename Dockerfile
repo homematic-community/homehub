@@ -34,6 +34,8 @@ EXPOSE 80
 
 ADD docker-entrypoint.sh /
 
+RUN chmod +x docker-entrypoint.sh
+
 HEALTHCHECK CMD wget -q --no-cache --spider localhost
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
