@@ -9,6 +9,7 @@ RUN apk --no-cache --update \
     php83-xml \
     php83-simplexml \
     php83-mbstring \
+    php83-ctype \
     && mkdir /htdocs
 
 COPY ./ /htdocs/
