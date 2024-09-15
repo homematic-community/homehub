@@ -28,7 +28,7 @@ RUN apk --no-cache --update \
     php83-xml \
     && mkdir /htdocs
 
-COPY ./ /usr/local/apache2/htdocs/
+COPY ./ /htdocs/
 COPY docker-entrypoint.sh /
 RUN chmod +x /docker-entrypoint.sh
 
