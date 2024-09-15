@@ -29,12 +29,10 @@ RUN apk --no-cache --update \
     && mkdir /htdocs
 
 COPY ./ /usr/local/apache2/htdocs/
+COPY docker-entrypoint.sh /
+RUN chmod +x /docker-entrypoint.sh
 
 EXPOSE 80
-
-ADD docker-entrypoint.sh /
-
-RUN chmod +x docker-entrypoint.sh
 
 HEALTHCHECK CMD wget -q --no-cache --spider localhost
 
