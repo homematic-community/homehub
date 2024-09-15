@@ -28,7 +28,7 @@ RUN apk --no-cache --update \
     php83-xml \
     && mkdir /htdocs
 
-COPY . /usr/local/apache2/htdocs/
+COPY / /usr/local/apache2/htdocs/
 
 EXPOSE 80
 
