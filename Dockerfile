@@ -4,6 +4,7 @@ LABEL description="Alpine based image with apache2 and php8 for HomeHub."
 # Setup apache and php
 RUN apk --no-cache --update \
     add apache2 \
+    curl \
     php83-apache2 \
     php83-curl \
     php83-xml \
