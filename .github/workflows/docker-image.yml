@@ -15,5 +15,4 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag homehub_docker:$(date +%s)
-           docker build . --file Dockerfile --tag homehub_docker:latest
+      run: docker build . --file Dockerfile --tag homehub_docker:latest
