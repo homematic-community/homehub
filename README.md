@@ -55,5 +55,31 @@ Bei folgenden Komponenten lässt sich durch Angabe von ``"showtime":"true"`` die
 - Program
 - SysVar
 
+## Docker Integration
+```
+docker run \
+-d \
+--name=HomeHub \
+--restart unless-stopped \
+-p 8080:80 \
+-e TZ=Europe/Berlin \
+-v /FOLDER/OF/YOUR/CONFIG:/htdocs/config \
+ghcr.io/etofi/homehub_docker:master
+```
+
+The available parameters in detail:
+
+| Parameter | Optional | Example | Description |
+| ---- | --- | --- | --- |
+| `TIMEZONE` | yes | Europe/Berlin | Timezone for the container |
+| `-p` | no | 80:8080 | Map Apache2 Listenport inside this Container to Host Device Listen Port (Bridge Mode) |
+
+Volumes:
+
+| Volume | Description |
+| ---- | --- |
+| `/FOLDER/OF/YOUR/CONFIG` | The directory to to persist /htdocs/config of the HomeHub settings |
+
+
 ## Lizenzen
 HomeHub nutzt [jQuery](https://jquery.com/license/), [Chartjs](Chartjs.org), [knx-uf-iconset](https://github.com/OpenAutomationProject/knx-uf-iconset), [Bootstrap](https://getbootstrap.com/)
