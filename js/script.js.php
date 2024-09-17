@@ -368,7 +368,7 @@ var updateDatapoints = function () {
                         }
                         break;
 					case 'HmIP-SLO':
-                        switch (datapoint) {
+                      switch (datapoint) {
                             case 'CURRENT_ILLUMINATION':
                                 $('[data-id="' + ise_id + '"]').html((Math.round(value * 10) / 10) + ' Lux');
                                 break;
@@ -382,6 +382,20 @@ var updateDatapoints = function () {
                                 $('[data-id="' + ise_id + '"]').html('<img src="icon/control_arrow_up.png" /> ' + (Math.round(value * 10) / 10) + ' Lux');
                                 break;									
                             case 'LOW_BAT':
+                                if (value === 'true') {
+                                    $('[data-id="' + ise_id + '"]').html('<img src="icon/measure_battery_25.png" />');
+                                }
+                                break;
+                            default:
+                                $('[data-id="' + ise_id + '"]').html(value);
+                        }
+                        break;					
+					case 'HM-Sen-LI-O':
+                        switch (datapoint) {
+                            case 'LUX':
+                                $('[data-id="' + ise_id + '"]').html((Math.round(value * 10) / 10) + ' Lux');
+                                break;					
+                            case 'LOWBAT':
                                 if (value === 'true') {
                                     $('[data-id="' + ise_id + '"]').html('<img src="icon/measure_battery_25.png" />');
                                 }
@@ -2351,7 +2365,25 @@ var updateDatapoints = function () {
                         $('[data-id="' + ise_id + '"]').html(value);
                         break;
                     case 'CUX2801':
+					case 'CUX2804':
                         switch (datapoint) {
+							   case 'CURRENT':
+                                $('[data-id="' + ise_id + '"]').html((Math.round(value * 10) / 10) + ' mA');
+                                break;
+                            case 'ENERGY_COUNTER':
+                                if (value < 1000) {
+                                   $('[data-id="' + ise_id + '"]').html('Gesamt: ' + (Math.round(value * 10) / 10) + ' Wh');
+                                }
+                                else {
+                                   $('[data-id="' + ise_id + '"]').html('Gesamt: ' + (Math.round(value * 10) / 10000).toFixed(2) + ' kWh');
+                                }
+                                break;
+                            case 'FREQUENCY':
+                                $('[data-id="' + ise_id + '"]').html((Math.round(value * 10) / 10) + ' Hz');
+                                break;
+                            case 'POWER':
+                                $('[data-id="' + ise_id + '"]').html((Math.round(value * 10) / 10) + ' W');
+                                break;
                             case 'BLIND_LEVEL':
                                 value = (Math.round(value * 1000) / 10);
 
