@@ -246,10 +246,14 @@
             {
                 "name": "CUX2801",
                 "icon": "it_net.png"
-            },
+            },     
             {
                 "name": "CUX2803",
                 "icon": "it_internet.png"
+            },
+            {
+                "name": "CUX2804",
+                "icon": "message_socket_on_off.png" 
             },
             {
                 "name": "CUX4000",
@@ -828,7 +832,11 @@
             "icon": "secur_breakage_glass.png"
             }
         ],
-        "Wetter": [
+        "Wetter": [		
+            {
+                "name": "HM-Sen-LI-O",
+                "icon": "weather_sun.png"
+            },		
             {
                 "name": "HmIP-SLO",
                 "icon": "weather_sun.png"
