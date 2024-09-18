@@ -1,5 +1,5 @@
 <?php
-function HmIP_eTRV_F($component) {
+function HmIP_eTRV_3($component) {
 
     global $export;
     $obj = $export;
