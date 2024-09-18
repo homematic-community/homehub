@@ -12,12 +12,13 @@ PHP_MEMORY_LIMIT="${PHP_MEMORY_LIMIT:-256M}"
 
 echo 'Updating configurations'
 
-# Change Server Admin, Name, Document Root
+# Change Server Admin, Name, Document Root and Startpage
 sed -i "s/ServerAdmin\ you@example.com/ServerAdmin\ ${SERVER_ADMIN}/" /etc/apache2/httpd.conf
 sed -i "s/#ServerName\ www.example.com:80/ServerName\ ${HTTP_SERVER_NAME}/" /etc/apache2/httpd.conf
 sed -i 's#^DocumentRoot ".*#DocumentRoot "/htdocs"#g' /etc/apache2/httpd.conf
 sed -i 's#Directory "/var/www/localhost/htdocs"#Directory "/htdocs"#g' /etc/apache2/httpd.conf
 sed -i 's#AllowOverride None#AllowOverride All#' /etc/apache2/httpd.conf
+sed -i 's#DirectoryIndex index.html#ADirectoryIndex index.php#' /etc/apache2/httpd.conf
 
 # Change TransferLog after ErrorLog
 sed -i 's#^ErrorLog .*#ErrorLog "/dev/stderr"\nTransferLog "/dev/stdout"#g' /etc/apache2/httpd.conf
