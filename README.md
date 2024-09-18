@@ -67,18 +67,18 @@ docker run \
 ghcr.io/etofi/homehub_docker:master
 ```
 
-The available parameters in detail:
+Verfügbare Parameters im Detail:
 
-| Parameter | Optional | Example | Description |
+| Parameter | Optional | Beispiel | Erklärung |
 | ---- | --- | --- | --- |
-| `TIMEZONE` | yes | Europe/Berlin | Timezone for the container |
-| `-p` | no | 80:8080 | Map Apache2 Listenport inside this Container to Host Device Listen Port (Bridge Mode) |
+| `TIMEZONE` | yes | Europe/Berlin | Timezone im Container |
+| `-p` | no | 80:8080 | Zuweisung des Apache2 Port innerhalb dieses Containers auf den Docker-Host Port (Bridge Mode). Mit dieser Konfiguration kann HomeHub dann über Port 8080 des Docker-Hosts erreicht werden, z. B. 192.168.178.100:8080|
 
 Volumes:
 
-| Volume | Description |
+| Volume | Erklärung |
 | ---- | --- |
-| `/FOLDER/OF/YOUR/CONFIG` | The directory to to persist /htdocs/config of the HomeHub settings. This folder is located on the PC on which Docker is running and the files from the config directory go into it. They are then automatically passed through to the HomeHub Docker instance. |
+| `/FOLDER/OF/YOUR/CONFIG` | Das Verzeichnis /htdocs/config, in dem die HomeHub-Einstellungen gespeichert werden sollen. Dieser Ordner befindet sich auf dem PC, auf dem Docker ausgeführt wird und die Dateien aus dem Verzeichnis config werden dort abgelegt. Sie werden dann automatisch an die HomeHub-Docker-Instanz weitergeleitet. |
 
 
 ## Lizenzen
