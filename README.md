@@ -78,7 +78,7 @@ Volumes:
 
 | Volume | Description |
 | ---- | --- |
-| `/FOLDER/OF/YOUR/CONFIG` | The directory to to persist /htdocs/config of the HomeHub settings |
+| `/FOLDER/OF/YOUR/CONFIG` | The directory to to persist /htdocs/config of the HomeHub settings. This folder is located on the PC on which Docker is running and the files from the config directory go into it. They are then automatically passed through to the HomeHub Docker instance. |
 
 
 ## Lizenzen
