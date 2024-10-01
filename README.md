@@ -72,7 +72,7 @@ Verfügbare Parameters im Detail:
 
 | Parameter | Optional | Beispiel | Erklärung |
 | ---- | --- | --- | --- |
-| `TIMEZONE` | yes | Europe/Berlin | Timezone im Container |
+| `TIMEZONE` | yes | Europe/Berlin | Zeitzone im Container |
 | `-p` | no | 80:8080 | Zuweisung des Apache2 Port innerhalb dieses Containers auf den Docker-Host Port (Bridge Mode). Mit dieser Konfiguration kann HomeHub dann über Port 8080 des Docker-Hosts erreicht werden, z. B. 192.168.178.100:8080|
 
 Volumes:
