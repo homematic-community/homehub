@@ -63,7 +63,8 @@ docker run \
 --restart unless-stopped \
 -p 8080:80 \
 -e TZ=Europe/Berlin \
--v /FOLDER/OF/YOUR/CONFIG:/htdocs/config \
+-v /FOLDER/OF/YOUR/config:/htdocs/config \
+-v /FOLDER/OF/YOUR/custom/css:/htdocs/custom/css \
 ghcr.io/etofi/homehub_docker:master
 ```
 
@@ -78,7 +79,8 @@ Volumes:
 
 | Volume | Erklärung |
 | ---- | --- |
-| `/FOLDER/OF/YOUR/CONFIG` | Das Verzeichnis /htdocs/config, in dem die HomeHub-Einstellungen gespeichert werden sollen. Dieser Ordner befindet sich auf dem PC, auf dem Docker ausgeführt wird und die Dateien aus dem Verzeichnis config werden dort abgelegt. Sie werden dann automatisch an die HomeHub-Docker-Instanz weitergeleitet. |
+| `/FOLDER/OF/YOUR/config` | Das Verzeichnis /htdocs/config, in dem die HomeHub-Einstellungen gespeichert werden sollen. Dieser Ordner befindet sich auf dem PC, auf dem Docker ausgeführt wird und die Dateien aus dem Verzeichnis config werden dort abgelegt. Sie werden dann automatisch an die HomeHub-Docker-Instanz weitergeleitet. |
+| `/FOLDER/OF/YOUR/custom/css` | Das Verzeichnis /htdocs/custom/css, in dem die custom.css gespeichert ist. Dieser Ordner befindet sich auf dem PC, auf dem Docker ausgeführt wird und die Dateien aus dem Verzeichnis custom/css werden dort abgelegt. Sie werden dann automatisch an die HomeHub-Docker-Instanz weitergeleitet. |
 
 
 ## Lizenzen
