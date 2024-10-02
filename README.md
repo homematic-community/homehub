@@ -64,7 +64,7 @@ docker run \
 -p 8080:80 \
 -e TZ=Europe/Berlin \
 -v /FOLDER/OF/YOUR/CONFIG:/htdocs/config \
-ghcr.io/etofi/homehub_docker:master
+ghcr.io/homematic-community/homehub:master
 ```
 
 Verfügbare Parameters im Detail:
