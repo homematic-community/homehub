@@ -55,5 +55,31 @@ Bei folgenden Komponenten lässt sich durch Angabe von ``"showtime":"true"`` die
 - Program
 - SysVar
 
+## Docker Integration
+```
+docker run \
+-d \
+--name=HomeHub \
+--restart unless-stopped \
+-p 8080:80 \
+-e TZ=Europe/Berlin \
+-v /FOLDER/OF/YOUR/CONFIG:/htdocs/config \
+ghcr.io/etofi/homehub_docker:master
+```
+
+Verfügbare Parameters im Detail:
+
+| Parameter | Optional | Beispiel | Erklärung |
+| ---- | --- | --- | --- |
+| `TIMEZONE` | yes | Europe/Berlin | Timezone im Container |
+| `-p` | no | 80:8080 | Zuweisung des Apache2 Port innerhalb dieses Containers auf den Docker-Host Port (Bridge Mode). Mit dieser Konfiguration kann HomeHub dann über Port 8080 des Docker-Hosts erreicht werden, z. B. 192.168.178.100:8080|
+
+Volumes:
+
+| Volume | Erklärung |
+| ---- | --- |
+| `/FOLDER/OF/YOUR/CONFIG` | Das Verzeichnis /htdocs/config, in dem die HomeHub-Einstellungen gespeichert werden sollen. Dieser Ordner befindet sich auf dem PC, auf dem Docker ausgeführt wird und die Dateien aus dem Verzeichnis config werden dort abgelegt. Sie werden dann automatisch an die HomeHub-Docker-Instanz weitergeleitet. |
+
+
 ## Lizenzen
 HomeHub nutzt [jQuery](https://jquery.com/license/), [Chartjs](Chartjs.org), [knx-uf-iconset](https://github.com/OpenAutomationProject/knx-uf-iconset), [Bootstrap](https://getbootstrap.com/)

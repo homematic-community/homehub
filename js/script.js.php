@@ -729,8 +729,7 @@ var updateDatapoints = function () {
                     case 'HmIP-eTRV-E-S':
 					case 'HmIP-eTRV-CL':
                     case 'HmIP-eTRV-C':
-                    case 'HmIP-eTRV-C-2':
-                    case 'HmIP-eTRV-F':
+                    case 'HmIP-eTRV-C-2':   
                         switch (datapoint) {
                             case 'ACTUAL_TEMPERATURE':
                                 $('[data-id="' + ise_id + '"]').html('<img src="icon/ist_temperatur.png" /> ' + (Math.round(value * 10) / 10).toFixed(1) + ' &deg;C&nbsp;&nbsp;&nbsp;&nbsp;');
@@ -748,6 +747,49 @@ var updateDatapoints = function () {
                                 break;
                             case 'ACTIVE_PROFILE':
                                 $('[data-id="' + ise_id + '"]').html(value);
+                                break;
+                            case 'SET_POINT_TEMPERATURE':
+                                $('[data-id="' + ise_id + '"]').html('<img src="icon/soll_temperatur.png" /> ' + (Math.round(value * 10) / 10).toFixed(1) + ' &deg;C');
+                                break;
+                            case 'LEVEL':
+                                $('[data-id="' + ise_id + '"]').html('&nbsp;&nbsp;&nbsp;&nbsp;<img src="icon/ventil.png" /> ' + (Math.round(value * 1000) / 10) + ' %');
+                                break;
+                            case 'WINDOW_STATE':
+                                if (value === '0') {
+                                    $('[data-id="' + ise_id + '"]').html('<img src="icon/fts_window_1w.png" />');
+                                } else {
+                                    $('[data-id="' + ise_id + '"]').html('<img src="icon/fts_window_1w_open.png" />');
+                                }
+                                break; 
+                            case 'LOW_BAT':
+                                if (value === 'true') {
+                                    $('[data-id="' + ise_id + '"]').html('<img src="icon/measure_battery_25.png" />');
+                                }
+                                break;  
+                            default:
+                                $('[data-id="' + ise_id + '"]').html(value);
+                        }
+                        break;
+                    case 'HmIP-eTRV-F':
+                    case 'HmIP-eTRV-3':    
+                        switch (datapoint) {
+                            case 'ACTUAL_TEMPERATURE':
+                                $('[data-id="' + ise_id + '"]').html('<img src="icon/ist_temperatur.png" /> ' + (Math.round(value * 10) / 10).toFixed(1) + ' &deg;C&nbsp;&nbsp;&nbsp;&nbsp;');
+                                break;
+                            case 'SET_POINT_MODE':
+                                if (value === '0') {
+                                    $('[data-id="' + ise_id + '"]').html('<img src="icon/time_automatic.png" />');
+                                    $('[data-id="' + ise_id + '"]').attr('data-set-id', parseInt(ise_id)-10); //MANU_MODE
+                                    $('[data-id="' + ise_id + '"]').attr('data-set-value', '1');
+                                } else {
+                                    $('[data-id="' + ise_id + '"]').html('<img src="icon/time_manual_mode.png" />');
+                                    $('[data-id="' + ise_id + '"]').attr('data-set-id', parseInt(ise_id)-10); //AUTO_MODE
+                                    $('[data-id="' + ise_id + '"]').attr('data-set-value', '0');
+                                }
+                                break;
+                            case 'ACTIVE_PROFILE':
+                                if (value < 4) $('[data-id="' + ise_id + '"]').html(value + '&nbsp;<img src="icon/heating.png"/>');
+                                else $('[data-id="' + ise_id + '"]').html(value + '&nbsp;<img src="icon/cooling.png"/>');
                                 break;
                             case 'SET_POINT_TEMPERATURE':
                                 $('[data-id="' + ise_id + '"]').html('<img src="icon/soll_temperatur.png" /> ' + (Math.round(value * 10) / 10).toFixed(1) + ' &deg;C');
