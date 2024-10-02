@@ -4,6 +4,9 @@ function HmIP_RGBW($component) {
         $modalId = mt_rand();
         // COMBINED_PARAMETER
         if (!isset($component['color'])) $component['color'] = '#FFCC00';
+		    if(!isset($component['button'])) {
+        $component['button'] = '';
+    }
         return '<div class="hh" style=\'border-left-color: '.$component['color']. '; border-left-style: solid;\'>'
             . '<!--<div data-toggle="collapse" data-target="#' . $modalId . '">-->'
 				. '<div class="pull-left"><img src="icon/' . $component["icon"] . '" class="icon">' . $component['name'] . '</div>'
