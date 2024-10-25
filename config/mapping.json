@@ -906,6 +906,10 @@
                 "icon": "temp_temperature.png"
             },
             {
+                "name": "ELV-SH-CTH",
+                "icon": "temp_temperature.png"
+            },
+            {
                 "name": "HmIP-STE2-PCB",
                 "icon": "temp_temperature.png"
             }
