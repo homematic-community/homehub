@@ -645,6 +645,7 @@ var updateDatapoints = function () {
                         break;
                     case 'HmIP-STHO':
                     case 'HmIP-STHO-A':
+                    case 'ELV-SH-CTH':
                         switch (datapoint) {
                             case 'HUMIDITY':
                                 $('[data-id="' + ise_id + '"]').html('<img src="icon/humidity.png" height=17 /> ' + (Math.round(value * 10) / 10) + ' %');
