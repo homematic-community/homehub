@@ -140,7 +140,8 @@ var updateDatapoints = function () {
                     case 'HMIP-PS':
                     case 'HmIP-PSM-2':
                     case 'HmIP-PS-2':
-					case 'HmIP-PS-2 9YM':
+                    case 'HmIP-PS-2 9YM':
+                    case 'HmIP-PS-2 QHJ':
                     case 'HmIP-BSM':
                     case 'HmIP-BS2':
                     case 'HmIP-FSM':
