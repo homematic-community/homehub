@@ -198,6 +198,14 @@
                 "icon": "message_socket_on_off.png"
             },
             {
+                "name": "HmIP-PSM-2 QHJ",
+                "icon": "message_socket_on_off.png"
+            },
+            {
+                "name": "HmIP-PSM-2-QHJ",
+                "icon": "message_socket_on_off.png"
+            },			
+            {
                 "name": "HmIP-PS-2",
                 "icon": "message_socket_on_off.png"
             },
