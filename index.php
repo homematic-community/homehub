@@ -312,7 +312,7 @@ if(count((array)$export) > 0)
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=<?php echo strip_tags($viewport); ?>, initial-scale=1.0">
+        <meta name="viewport" content="width=<?php echo strip_tags($viewport); ?>">
 		<meta name="format-detection" content="telephone=no"/>
         <title><?php echo strip_tags($title); ?></title>
 		<link href="css/bootstrap.min.css" rel="stylesheet">
