@@ -30,22 +30,8 @@ if(!file_exists("config/categories.json"))
 
 }
 
-// definiere Interface
-$interface = $_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].str_replace("index.php", "",$_SERVER['PHP_SELF']);
-if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
-	$interface = "https://".$interface;
-}
-else $interface = "http://".$interface; 
-
-// Prüfe auf config.php
-if(!file_exists("config/config.php"))
-{
-	header('Location: setup.php');
-	exit;
-}
-
 // Lade Konfiuration der Homematic
-require("config/config.php");
+require_once(__DIR__.'/interface.php');
 
 // Setze Variable selectedCat auf die aktuelle Seite
 if(!isset($_GET['seite']))
@@ -436,8 +422,7 @@ if(count((array)$export) > 0)
 							$str = file_get_contents('dev/export.json');
 						} else {
 						
-							//$xml = simplexml_load_file('http://'.$homematicIp.'/config/xmlapi/systemNotification.cgi?sid='.$apitoken);
-							$xml = simplexml_load_file($interface.'interface.php?systemNotification.cgi');
+							$xml = simplexml_load_string(api_systemNotification($ccu));
 							$str = file_get_contents('config/export.json');
 						}
 						// Für Devices

@@ -1,18 +1,11 @@
 <?php
-include('config/config.php');
-
-// interface Pfad bestimmen
-$interface = $_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].str_replace("servicemeldung.php", "",$_SERVER['PHP_SELF']);
-if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
-    $interface = "https://".$interface;
-}
-else $interface = "http://".$interface;
+require_once(__DIR__.'/interface.php');
 
 if(isset($_GET['ise_id']))
 {
 	if($_GET['ise_id'] == "all")
 	{
-		$xml = simplexml_load_file($interface.'/interface.php?systemNotificationClear.cgi');
+		$xml = simplexml_load_string(api_systemNotificationClear($ccu));
 	}
 	else
 	{
@@ -27,6 +20,6 @@ if(isset($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] != "")
 }
 else
 {
-	header("Location: index.php");
+	header("Location: ./index.php");
 }
-?>  
+?>

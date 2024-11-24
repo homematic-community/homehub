@@ -1,7 +1,11 @@
 <?php
+
+$exportFile = 'config/export.json';
+
 ini_set('display_errors', 'on');
 $beginn = microtime(true);
-$exportFile = 'config/export.json';
+
+require_once(__DIR__.'/interface.php');
 
 // Lösche vorhandene export.json
 if(file_exists($exportFile)) 
@@ -10,33 +14,12 @@ if(file_exists($exportFile))
 }
 touch($exportFile);
 
-
-// Wenn Konfiguration nicht existiert wechsele zum Setup
-if(!file_exists("config/config.php"))
-{
-	header('Location: setup.php');
-	exit;
-}
-else
-{
-	// Lade Konfiuration der Homematic
-	require("config/config.php");
-}
-
 $export = array();
-$interface = $_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].str_replace("import.php", "",$_SERVER['PHP_SELF']);
-if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
-    $interface = "https://".$interface;
-}
-else $interface = "http://".$interface;
-    
+
+
 // Devices und Channels von der CCU laden
-$devicelistCgi = curl_get_content($interface.'/interface.php?devicelist.cgi');
-$devicesXml = simplexml_load_string($devicelistCgi);
-
-$statelistCgi = curl_get_content($interface.'/interface.php?statelist.cgi'); 
-$statesXml = simplexml_load_string($statelistCgi);
-
+$devicesXml = simplexml_load_string(api_devicelist($ccu));
+$statesXml = simplexml_load_string(api_statelist($ccu));
 
    
     // Devices
@@ -148,8 +131,7 @@ $statesXml = simplexml_load_string($statelistCgi);
     unset($statesXml);
     
     // Systemvariablen von der CCU laden
-	$sysvarlistCgi = curl_get_content($interface.'/interface.php?sysvarlist.cgi');
-    $sysvarsXml = simplexml_load_string($sysvarlistCgi);
+    $sysvarsXml = simplexml_load_string(api_sysvarlist($ccu));
 
     // Systemvariablen
     foreach ($sysvarsXml->systemVariable as $sysvar) {
@@ -167,8 +149,7 @@ $statesXml = simplexml_load_string($statelistCgi);
     unset($sysvarsXml);
     
     // Programme von der CCU laden
-	$programlistCgi = curl_get_content($interface.'/interface.php?programlist.cgi');
-    $programsXml = simplexml_load_string($programlistCgi);
+    $programsXml = simplexml_load_string(api_programlist($ccu));
     
     // Programme
     foreach ($programsXml->program as $program) {
@@ -206,17 +187,7 @@ if(isset($_GET['debug']))
 }
 else
 {
-		header('Location: index.php');
+		header('Location: ./index.php');
 }
 
-function curl_get_content( $url ) {
-    $curl_handle=curl_init();
-    curl_setopt($curl_handle, CURLOPT_URL,$url);
-    curl_setopt($curl_handle, CURLOPT_CONNECTTIMEOUT, 2);
-    curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, 1);
-    $content = curl_exec($curl_handle);
-    curl_close($curl_handle);
-    return $content;
-}
 ?>
-

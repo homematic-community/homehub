@@ -1,5 +1,4 @@
 <?php
-require_once 'config/config.php';
 
 //   CCU User -> Falls authentifizierung notwendig, bitte in "config/config.php" wie folgt eintragen:
 /*
@@ -9,24 +8,83 @@ $ccu_pass = "";  // in die Anführungsstriche das dazugehörige Kennwort
 
 */
 
+if (!file_exists(__DIR__.'/config/config.php')) {
+	header('Location: setup.php');
+	exit;
+}
+require_once(__DIR__.'/config/config.php');
 
-if(!isset($ccu_user)) { $ccu_user = ""; }
-if(!isset($ccu_pass)) { $ccu_pass = ""; }
+// Konfiguration als Array aus Config-Variablen zusammenbauen
+if (empty($ccu) or !is_array($ccu)) $ccu = array(
+  'host' => $homematicIp,
+  'https' => !empty($ccu_https),
+  'user' => $ccu_user,
+  'pw' => $ccu_pass
+);
+// --
+
+$ccu['url'] = "http".(!empty($ccu['https']) ? 's' : '')."://" . $ccu['host'] . ":".(!empty($ccu['https']) ? '4' : '')."8181/homehub.exe";
 
 
-if(!isset($ccu_https)) { $ccu_https = false; }
+function ccu_remote($ccu, $ccu_request, $plain_result = false) {
 
-$ccu_remoteskript_uri = "http".(!empty($ccu_https) ? 's' : '')."://" . $homematicIp . ":".(!empty($ccu_https) ? '4' : '')."8181/homehub.exe";
+  // Als indikator für die Rückgabe, um den Overhead zu filtern
+  $delimeter = '---'.uniqid('hm-end').'---';
+  if (!$plain_result) {
+    $ccu_request = str_replace(array('<','>'), array('*<*','*>*'), $ccu_request);
+    $ccu_request = $ccu_request."\nWriteLine(\"".$delimeter."\");";
+  }
+
+  // curl Anfrage bauen
+  $curl = curl_init($ccu['url']);
+  if (!empty($ccu['user']) and !empty($ccu['pw'])) curl_setopt($curl, CURLOPT_USERPWD, $ccu['user'].':'.$ccu['pw']);
+  curl_setopt($curl, CURLOPT_POST, 1);
+  curl_setopt($curl, CURLOPT_POSTFIELDS, $ccu_request);
+  curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 2);
+  curl_setopt($curl, CURLOPT_TIMEOUT, 20);
+  curl_setopt($curl, CURLOPT_FAILONERROR, true);
+  if (!empty($ccu['https'])) {
+    curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+  }
+  $content = curl_exec($curl);
+  if ($content === false) {
+    die(basename(__FILE__) . " - CURL error " . curl_getinfo($curl_handle, CURLINFO_HTTP_CODE) . " " . curl_error($curl_handle));
+  }
+  curl_close($curl);
+  #var_dump("\n\nCCU remote", $content, "\n ---------- \n\n");
+
+  // Trenne Rückgabe vom Overhead
+  if (!$plain_result) $content = strstr($content, $delimeter, true);
+
+  if (!$plain_result) {
+    if (strpos($content, '<') !== false) {
+      // Konvertiere XML kritische Zeichen in HTML-Format     #  Maskierung sollte eigentlich nicht notwendig sein.
+      $content = str_replace('<', '&lt;', $content);          #  Ggf. sollten wir uns eine elegantere Variante überlegen, RegEx oder ähnliches,
+      $content = str_replace('>', '&gt;', $content);          #  oder im HM-Skript mit .replace() maskieren.
+      $content = str_replace('*&lt;*', '<', $content);
+      $content = str_replace('*&gt;*', '>', $content);
+    }
+  }
+
+  return $content;
+}
 
 // ALLE STATES
-if (strpos($_SERVER['QUERY_STRING'], "statelist.cgi") !== false) {
-  $ccu_request = "";
+if (isset($_SERVER['QUERY_STRING']) and (strpos($_SERVER['QUERY_STRING'], "statelist.cgi") !== false)) {
+  header("Content-Type: text/xml; charset=ISO-8859-1");
+  echo api_statelist($ccu, isset($_GET['debug']));
+}
+
+function api_statelist($ccu, $debug = false) {
 
   // Baue Skript zusammen
-  $ccu_request = $ccu_request . "WriteLine(\"*<*stateList*>*\");
+  $ccu_request = <<<EOHM
+WriteLine("<stateList>");
 integer show_remote = 1;
 integer show_internal = 1;
-string id; 
+string id;
 ! Alle Datenpunkte durchlaufen
 
 !foreach(id, dom.GetObject(ID_DEVICES).EnumUsedIDs()) {
@@ -42,9 +100,9 @@ string id;
   string sDevInterface   = oDeviceInterface.Name();
   string sDevType        = oDevice.HssType();
 
-  WriteLine(\"*<*device name='\" # oDevice.Name() #\"' ise_id='\" # oDevice.ID() # \"' unreach='false' sticky_unreach='false' config_pending='false'*>*\");
+  WriteLine("<device name='" # oDevice.Name() #"' ise_id='" # oDevice.ID() # "' unreach='false' sticky_unreach='false' config_pending='false'>");
 
-  string cid; 
+  string cid;
   integer x = 0;
   ! Alle Datenpunkte durchlaufen
   foreach(cid, oDevice.Channels()) {
@@ -52,103 +110,70 @@ string id;
     ! Einzelnen Kanal holen
     var ch = dom.GetObject(cid);
     ! Namen und Wert des Kanals ausgeben
-    Write(\"*<*channel name='\"#ch.Name()#\"' ise_id='\"#ch.ID()#\"' direction='' index='\"# x #\"'\");
+    Write("<channel name='"#ch.Name()#"' ise_id='"#ch.ID()#"' direction='' index='"# x #"'");
 
     if (false == ch.Internal()) {
-      Write(\" visible='\" # ch.Visible() # \"'\");
+      Write(" visible='" # ch.Visible() # "'");
     } else {
-      Write(\" visible=''\");
+      Write(" visible=''");
     }
 
-    Write(\" ready_config='' operate='\");
+    Write(" ready_config='' operate='");
     if (false == ch.Internal()) {
      if( ch.UserAccessRights(iulOtherThanAdmin) == iarFullAccess ) {
-        Write(\"true\");
+        Write("true");
       } else {
-         Write(\"false\");
+         Write("false");
       }
     }
-    Write(\"'*>*\");
-    WriteLine(\"\");
+    Write("'>");
+    WriteLine("");
 
 
-    string did; 
+    string did;
 
     ! Alle Datenpunkte durchlaufen
     foreach(did, ch.DPs().EnumUsedIDs()) {
       var dp = dom.GetObject(did);
-	     string dpA = dp.Name().StrValueByIndex(\".\", 2);
+	     string dpA = dp.Name().StrValueByIndex(".", 2);
 
-                if( (dpA != \"ON_TIME\") && (dpA != \"INHIBIT\") && (dpA != \"CMD_RETS\") && (dpA != \"CMD_RETL\") && (dpA != \"CMD_SETS\") && (dpA != \"CMD_SETL\") ) {
-      WriteLine(\"*<*datapoint name='\"#dp.Name()#\"' type='\" # dp.Name().StrValueByIndex(\".\", 2) #\"' ise_id='\"#dp.ID()#\"' state='\"#dp.Value()#\"' value='\"#dp.Value()#\"' valuetype='\"#dp.ValueType()#\"' valueunit='\" # dp.ValueUnit() # \"' timestamp='\" # dp.Timestamp().ToInteger()# \"' operations='\"#dp.Operations()#\"'/*>*\");
+                if( (dpA != "ON_TIME") && (dpA != "INHIBIT") && (dpA != "CMD_RETS") && (dpA != "CMD_RETL") && (dpA != "CMD_SETS") && (dpA != "CMD_SETL") ) {
+      WriteLine("<datapoint name='"#dp.Name()#"' type='" # dp.Name().StrValueByIndex(".", 2) #"' ise_id='"#dp.ID()#"' state='"#dp.Value()#"' value='"#dp.Value()#"' valuetype='"#dp.ValueType()#"' valueunit='" # dp.ValueUnit() # "' timestamp='" # dp.Timestamp().ToInteger()# "' operations='"#dp.Operations()#"'/>");
 				  }
     }
-    WriteLine(\"*<*/channel*>*\");
+    WriteLine("</channel>");
 	  x=x+1;
   }
- 
 
-  WriteLine(\"*<*/device*>*\");
+
+  WriteLine("</device>");
 }
-WriteLine(\"*<*/stateList*>*\");";
+WriteLine("</stateList>");
+EOHM;
 
   // Debug Mode
-  if(isset($_GET["debug"]))
-  {
-    echo $ccu_request;
-    exit();
-  }
-
-  // Als indikator für die Rückgabe, um den Overhead zu filtern
-  $ccu_request = $ccu_request ."WriteLine(\"ENDE\");";
-
-// Curl Anfrage bauen
-  $curl = curl_init();
-  curl_setopt($curl,CURLOPT_URL, $ccu_remoteskript_uri);
-  if ($ccu_user != "" && $ccu_pass != "") {
-    curl_setopt($curl,CURLOPT_USERPWD, $ccu_user.":".$ccu_pass);	
-  }
-  curl_setopt($curl,CURLOPT_POST, 1);
-  curl_setopt($curl,CURLOPT_POSTFIELDS, $ccu_request);
-  curl_setopt($curl,CURLOPT_RETURNTRANSFER, true);
-  curl_setopt($curl,CURLOPT_CONNECTTIMEOUT ,2);
-  curl_setopt($curl,CURLOPT_TIMEOUT, 20);
-  if (!empty($ccu_https)) {
-    curl_setopt($curl,CURLOPT_SSL_VERIFYHOST, false);
-    curl_setopt($curl,CURLOPT_SSL_VERIFYPEER, false);
-  }
-  $content = curl_exec($curl);
-  curl_close($curl);
- // exit();
-  // Trenne Rückgabe vom Overhead
-  $cleancontent = explode("ENDE",$content);
-  
-  // Konvertiere XML kritische Zeichen in HTML-Format
-  $cleancontent[0] = str_replace("<","&lt;",  $cleancontent[0]);
-  $cleancontent[0] = str_replace( ">","&gt;", $cleancontent[0]);
-  $cleancontent[0] = str_replace("*&lt;*","<",  $cleancontent[0]);
-  $cleancontent[0] = str_replace("*&gt;*", ">", $cleancontent[0]);
- 
+  if ($debug) return($ccu_request);
 
   // Schreibe Ausgabe
-  header("Content-Type: text/xml; charset=ISO-8859-1");  
-  echo "<?xml version='1.0' encoding='ISO-8859-1' ?>"; 
-  echo $cleancontent[0];
-  exit();
+  return "<?xml version='1.0' encoding='ISO-8859-1' ?>\n".ccu_remote($ccu, $ccu_request);
+
 }
-
-
 
 
 // ALLE STATES
-if (strpos($_SERVER['QUERY_STRING'], "statelistall.cgi") !== false) {
-  $ccu_request = "";
+if (isset($_SERVER['QUERY_STRING']) and (strpos($_SERVER['QUERY_STRING'], "statelistall.cgi") !== false)) {
+  header("Content-Type: text/xml; charset=ISO-8859-1");
+  echo api_statelistall($ccu, isset($_GET['debug']));
+}
+
+function api_statelistall($ccu, $debug = false) {
 
   // Baue Skript zusammen
-  $ccu_request = $ccu_request . "WriteLine(\"*<*stateList*>*\");
+  $ccu_request = <<<EOHM
+WriteLine("<stateList>");
 integer show_remote = 1;
 integer show_internal = 1;
-string id; 
+string id;
 ! Alle Datenpunkte durchlaufen
 
 !foreach(id, dom.GetObject(ID_DEVICES).EnumUsedIDs()) {
@@ -164,9 +189,9 @@ string id;
   string sDevInterface   = oDeviceInterface.Name();
   string sDevType        = oDevice.HssType();
 
-  WriteLine(\"*<*device name='\" # oDevice.Name() #\"' ise_id='\" # oDevice.ID() # \"' unreach='false' sticky_unreach='false' config_pending='false'*>*\");
+  WriteLine("<device name='" # oDevice.Name() #"' ise_id='" # oDevice.ID() # "' unreach='false' sticky_unreach='false' config_pending='false'>");
 
-  string cid; 
+  string cid;
   integer x = 0;
   ! Alle Datenpunkte durchlaufen
   foreach(cid, oDevice.Channels()) {
@@ -174,102 +199,72 @@ string id;
     ! Einzelnen Kanal holen
     var ch = dom.GetObject(cid);
     ! Namen und Wert des Kanals ausgeben
-    Write(\"*<*channel name='\"#ch.Name()#\"' ise_id='\"#ch.ID()#\"' direction='' index='\"# x #\"'  timestamp='\" # ch.LastTimestamp().ToInteger()# \"'\");
+    Write("<channel name='"#ch.Name()#"' ise_id='"#ch.ID()#"' direction='' index='"# x #"'  timestamp='" # ch.LastTimestamp().ToInteger()# "'");
 
     if (false == ch.Internal()) {
-      Write(\" visible='\" # ch.Visible() # \"'\");
+      Write(" visible='" # ch.Visible() # "'");
     } else {
-      Write(\" visible=''\");
+      Write(" visible=''");
     }
 
-    Write(\" ready_config='' operate='\");
+    Write(" ready_config='' operate='");
     if (false == ch.Internal()) {
      if( ch.UserAccessRights(iulOtherThanAdmin) == iarFullAccess ) {
-        Write(\"true\");
+        Write("true");
       } else {
-         Write(\"false\");
+         Write("false");
       }
     }
-    Write(\"'*>*\");
-    WriteLine(\"\");
+    Write("'>");
+    WriteLine("");
 
 
-    string did; 
+    string did;
 
     ! Alle Datenpunkte durchlaufen
     foreach(did, ch.DPs()) {
       var dp = dom.GetObject(did);
-	     string dpA = dp.Name().StrValueByIndex(\".\", 2);
+	     string dpA = dp.Name().StrValueByIndex(".", 2);
 
-                if( (dpA != \"ON_TIME\") && (dpA != \"INHIBIT\") && (dpA != \"CMD_RETS\") && (dpA != \"CMD_RETL\") && (dpA != \"CMD_SETS\") && (dpA != \"CMD_SETL\") ) {
-      WriteLine(\"*<*datapoint name='\"#dp.Name()#\"' type='\" # dp.Name().StrValueByIndex(\".\", 2) #\"' ise_id='\"#dp.ID()#\"' state='\"#dp.Value()#\"' value='\"#dp.Value()#\"' valuetype='\"#dp.ValueType()#\"' valueunit='\" # dp.ValueUnit() # \"' timestamp='\" # dp.LastTimestamp().ToInteger()# \"' operations='\"#dp.Operations()#\"'/*>*\");
+                if( (dpA != "ON_TIME") && (dpA != "INHIBIT") && (dpA != "CMD_RETS") && (dpA != "CMD_RETL") && (dpA != "CMD_SETS") && (dpA != "CMD_SETL") ) {
+      WriteLine("<datapoint name='"#dp.Name()#"' type='" # dp.Name().StrValueByIndex(".", 2) #"' ise_id='"#dp.ID()#"' state='"#dp.Value()#"' value='"#dp.Value()#"' valuetype='"#dp.ValueType()#"' valueunit='" # dp.ValueUnit() # "' timestamp='" # dp.LastTimestamp().ToInteger()# "' operations='"#dp.Operations()#"'/>");
 				  }
     }
-    WriteLine(\"*<*/channel*>*\");
+    WriteLine("</channel>");
 	  x=x+1;
   }
- 
 
-  WriteLine(\"*<*/device*>*\");
+
+  WriteLine("</device>");
 }
-WriteLine(\"*<*/stateList*>*\");";
+WriteLine("</stateList>");
+EOHM;
 
   // Debug Mode
-  if(isset($_GET["debug"]))
-  {
-    echo $ccu_request;
-    exit();
-  }
-
-  // Als indikator für die Rückgabe, um den Overhead zu filtern
-  $ccu_request = $ccu_request ."WriteLine(\"ENDE\");";
-
-// Curl Anfrage bauen
-  $curl = curl_init();
-  curl_setopt($curl,CURLOPT_URL, $ccu_remoteskript_uri);
-  if ($ccu_user != "" && $ccu_pass != "") {
-    curl_setopt($curl,CURLOPT_USERPWD, $ccu_user.":".$ccu_pass);	
-  }
-  curl_setopt($curl,CURLOPT_POST, 1);
-  curl_setopt($curl,CURLOPT_POSTFIELDS, $ccu_request);
-  curl_setopt($curl,CURLOPT_RETURNTRANSFER, true);
-  curl_setopt($curl,CURLOPT_CONNECTTIMEOUT ,2);
-  curl_setopt($curl,CURLOPT_TIMEOUT, 20);
-  if (!empty($ccu_https)) {
-    curl_setopt($curl,CURLOPT_SSL_VERIFYHOST, false);
-    curl_setopt($curl,CURLOPT_SSL_VERIFYPEER, false);
-  }
-  $content = curl_exec($curl);
-  curl_close($curl);
- // exit();
-  // Trenne Rückgabe vom Overhead
-  $cleancontent = explode("ENDE",$content);
-  
-  // Konvertiere XML kritische Zeichen in HTML-Format
-  $cleancontent[0] = str_replace("<","&lt;",  $cleancontent[0]);
-  $cleancontent[0] = str_replace( ">","&gt;", $cleancontent[0]);
-  $cleancontent[0] = str_replace("*&lt;*","<",  $cleancontent[0]);
-  $cleancontent[0] = str_replace("*&gt;*", ">", $cleancontent[0]);
- 
+  if ($debug) return($ccu_request);
 
   // Schreibe Ausgabe
-  header("Content-Type: text/xml; charset=ISO-8859-1");  
-  echo "<?xml version='1.0' encoding='ISO-8859-1' ?>"; 
-  echo $cleancontent[0];
-  exit();
+  return "<?xml version='1.0' encoding='ISO-8859-1' ?>\n".ccu_remote($ccu, $ccu_request);
+
 }
 
+
 // ALLE DEVICES
-if (strpos($_SERVER['QUERY_STRING'], "devicelist.cgi") !== false) {
-  $ccu_request = "";
+if (isset($_SERVER['QUERY_STRING']) and (strpos($_SERVER['QUERY_STRING'], "devicelist.cgi") !== false)) {
+  header("Content-Type: text/xml; charset=ISO-8859-1");
+  echo api_devicelist($ccu, isset($_GET['debug']));
+}
+
+function api_devicelist($ccu, $debug = false) {
 
   // Baue Skript zusammen
-  $ccu_request = $ccu_request . " WriteLine(\"\");
-    string  PARTNER_INVALID = \"65535\";
-integer show_internal = \"} 1 {\";
-      integer show_remote = \"} 1 {\";
-  WriteLine(\"*<*deviceList*>*\");
-string id; 
+  $ccu_request = <<<EOHM
+WriteLine("");
+    string  PARTNER_INVALID = "65535";
+integer show_internal = "} 1 {";
+      integer show_remote = "} 1 {";
+  WriteLine("<deviceList>");
+string id;
 ! Alle Datenpunkte durchlaufen
 
 foreach(id, dom.GetObject(ID_DEVICES).EnumUsedIDs()) {
@@ -281,742 +276,442 @@ foreach(id, dom.GetObject(ID_DEVICES).EnumUsedIDs()) {
   object oDeviceInterface = dom.GetObject(iDevInterfaceId);
   ! Namen und Wert des Elements ausgeben - geht nicht -> logged  info
 
-
-
   boolean bDevReady = oDevice.ReadyConfig();
   string sDevInterface   = oDeviceInterface.Name();
   string sDevType        = oDevice.HssType();
-  Write(\"*<*device name='\" # oDevice.Name() #\"' address='\" # oDevice.Address() # \"' ise_id='\" # oDevice.ID() # \"' interface='\" # sDevInterface # \"' device_type='\" # sDevType # \"' ready_config='\" # bDevReady # \"' *>*\");
-  WriteLine(\"\");
+  Write("<device name='" # oDevice.Name() #"' address='" # oDevice.Address() # "' ise_id='" # oDevice.ID() # "' interface='" # sDevInterface # "' device_type='" # sDevType # "' ready_config='" # bDevReady # "' >");
+  WriteLine("");
 
-  string cid; 
+  string cid;
   integer x = 0;
 
   ! Alle Datenpunkte durchlaufen
   foreach(cid, oDevice.Channels()) {
 
-
-
     ! Einzelnen Kanal holen
     var ch = dom.GetObject(cid);
     ! Namen und Wert des Kanals ausgeben
-    !WriteLine(ch.Name() # \": \" # ch.ID());
+    !WriteLine(ch.Name() # ": " # ch.ID());
 	string  sChnPartnerId = ch.ChnGroupPartnerId();
-	if (PARTNER_INVALID == sChnPartnerId) { sChnPartnerId = \"\"; }
-    Write(\"*<*channel name='\"#ch.Name()#\"' type='\"#ch.ChannelType()#\"' address='\"#ch.Address()#\"' ise_id='\"#ch.ID()#\"' direction='' parent_device='\"#ch.Device()#\"' index='\"# x #\"' group_partner='\" # sChnPartnerId # \"' aes_available='' transmission_mode=''\");
+	if (PARTNER_INVALID == sChnPartnerId) { sChnPartnerId = ""; }
+    Write("<channel name='"#ch.Name()#"' type='"#ch.ChannelType()#"' address='"#ch.Address()#"' ise_id='"#ch.ID()#"' direction='' parent_device='"#ch.Device()#"' index='"# x #"' group_partner='" # sChnPartnerId # "' aes_available='' transmission_mode=''");
 
  if (false == ch.Internal()) {
-                Write(\" visible='\" # ch.Visible() # \"'\");
+                Write(" visible='" # ch.Visible() # "'");
               } else {
-                Write(\" visible=''\");
+                Write(" visible=''");
               }
 
- Write(\" ready_config='' operate='\");
+ Write(" ready_config='' operate='");
  if (false == ch.Internal()) {
    if( ch.UserAccessRights(iulOtherThanAdmin) == iarFullAccess ) {
-                  Write(\"true\");
+                  Write("true");
                 } else {
-                  Write(\"false\");
+                  Write("false");
                 }
 }
-Write(\"' /*>*\");
- WriteLine(\"\");
- 
+Write("' />");
+ WriteLine("");
 
  x=x+1;
 
-
-
   }
- WriteLine(\"*<*/device*>*\");
-
+ WriteLine("</device>");
 
 }
-WriteLine(\"*<*/deviceList*>*\");";
+WriteLine("</deviceList>");
+EOHM;
 
   // Debug Mode
-  if(isset($_GET["debug"]))
-  {
-    echo $ccu_request;
-    exit();
-  }
-
-  // Als indikator für die Rückgabe, um den Overhead zu filtern
-  $ccu_request = $ccu_request ."WriteLine(\"ENDE\");";
-
-// Curl Anfrage bauen
-  $curl = curl_init();
-  curl_setopt($curl,CURLOPT_URL, $ccu_remoteskript_uri);
-  if ($ccu_user != "" && $ccu_pass != "") {
-    curl_setopt($curl,CURLOPT_USERPWD, $ccu_user.":".$ccu_pass);	
-  }
-  curl_setopt($curl,CURLOPT_POST, 1);
-  curl_setopt($curl,CURLOPT_POSTFIELDS, $ccu_request);
-  curl_setopt($curl,CURLOPT_RETURNTRANSFER, true);
-  curl_setopt($curl,CURLOPT_CONNECTTIMEOUT ,2);
-  curl_setopt($curl,CURLOPT_TIMEOUT, 20);
-  if (!empty($ccu_https)) {
-    curl_setopt($curl,CURLOPT_SSL_VERIFYHOST, false);
-    curl_setopt($curl,CURLOPT_SSL_VERIFYPEER, false);
-  }
-  $content = curl_exec($curl);
-  curl_close($curl);
- // exit();
-  // Trenne Rückgabe vom Overhead
-  $cleancontent = explode("ENDE",$content);
-  
-  // Konvertiere XML kritische Zeichen in HTML-Format
-  $cleancontent[0] = str_replace("<","&lt;",  $cleancontent[0]);
-  $cleancontent[0] = str_replace( ">","&gt;", $cleancontent[0]);
-  $cleancontent[0] = str_replace("*&lt;*","<",  $cleancontent[0]);
-  $cleancontent[0] = str_replace("*&gt;*", ">", $cleancontent[0]);
- 
+  if ($debug) return($ccu_request);
 
   // Schreibe Ausgabe
-  header("Content-Type: text/xml; charset=ISO-8859-1");  
-  echo "<?xml version='1.0' encoding='ISO-8859-1' ?>"; 
-  echo $cleancontent[0];
-  exit();
-}	
-	
+  return "<?xml version='1.0' encoding='ISO-8859-1' ?>\n".ccu_remote($ccu, $ccu_request);
+
+}
 
 
 // ALLE PROGRAMME
-if (strpos($_SERVER['QUERY_STRING'], "programlist.cgi") !== false) {
-	
-  $ccu_request = "";
+if (isset($_SERVER['QUERY_STRING']) and (strpos($_SERVER['QUERY_STRING'], "programlist.cgi") !== false)) {
+  header("Content-Type: text/xml; charset=ISO-8859-1");
+  echo api_programlist($ccu, isset($_GET['debug']));
+}
+
+function api_programlist($ccu, $debug = false) {
 
   // Baue Skript zusammen
-  $ccu_request = $ccu_request . "WriteLine(\"*<*programList*>*\");
-string id; 
+  $ccu_request = <<<EOHM
+WriteLine("<programList>");
+string id;
 ! Alle Datenpunkte durchlaufen
 foreach(id, dom.GetObject(ID_PROGRAMS).EnumUsedIDs()) {
   ! Einzelnen Datenpunkt holen
   var sysProgram = dom.GetObject(id);
   ! Namen und Wert des Elements ausgeben - speziell -> operate=''
-  Write(\"*<*program id='\" # sysProgram.ID() # \"' active='\" # sysProgram.Active() # \"' timestamp='\" # sysProgram.ProgramLastExecuteTime().ToInteger() # \"' name='\" # sysProgram.Name() # \"' description='\" # sysProgram.PrgInfo() # \"' visible='\" # sysProgram.Visible() # \"' operate='\");
+  Write("<program id='" # sysProgram.ID() # "' active='" # sysProgram.Active() # "' timestamp='" # sysProgram.ProgramLastExecuteTime().ToInteger() # "' name='" # sysProgram.Name() # "' description='" # sysProgram.PrgInfo() # "' visible='" # sysProgram.Visible() # "' operate='");
   object o_sysVar = dom.GetObject(sysProgram.ID());
   if( o_sysVar.UserAccessRights(iulOtherThanAdmin) == iarFullAccess ) {
-    Write(\"true'/*>*\");
+    Write("true'/>");
   } else {
-    Write(\"false'/*>*\");
+    Write("false'/>");
   }
-  WriteLine(\"\");
+  WriteLine("");
 }
-WriteLine(\"*<*/programList*>*\");";
+WriteLine("</programList>");
+EOHM;
 
   // Debug Mode
-  if(isset($_GET["debug"]))
-  {
-    echo $ccu_request;
-    exit();
-  }
-
-  // Als indikator für die Rückgabe, um den Overhead zu filtern
-  $ccu_request = $ccu_request ."WriteLine(\"ENDE\");";
-
-// Curl Anfrage bauen
-  $curl = curl_init();
-  curl_setopt($curl,CURLOPT_URL, $ccu_remoteskript_uri);
-  if ($ccu_user != "" && $ccu_pass != "") {
-    curl_setopt($curl,CURLOPT_USERPWD, $ccu_user.":".$ccu_pass);	
-  }
-  curl_setopt($curl,CURLOPT_POST, 1);
-  curl_setopt($curl,CURLOPT_POSTFIELDS, $ccu_request);
-  curl_setopt($curl,CURLOPT_RETURNTRANSFER, true);
-  curl_setopt($curl,CURLOPT_CONNECTTIMEOUT ,2);
-  curl_setopt($curl,CURLOPT_TIMEOUT, 20);
-  if (!empty($ccu_https)) {
-    curl_setopt($curl,CURLOPT_SSL_VERIFYHOST, false);
-    curl_setopt($curl,CURLOPT_SSL_VERIFYPEER, false);
-  }
-  $content = curl_exec($curl);
-  curl_close($curl);
- // exit();
-  // Trenne Rückgabe vom Overhead
-  $cleancontent = explode("ENDE",$content);
-  
-  // Konvertiere XML kritische Zeichen in HTML-Format
-  $cleancontent[0] = str_replace("<","&lt;",  $cleancontent[0]);
-  $cleancontent[0] = str_replace( ">","&gt;", $cleancontent[0]);
-  $cleancontent[0] = str_replace("*&lt;*","<",  $cleancontent[0]);
-  $cleancontent[0] = str_replace("*&gt;*", ">", $cleancontent[0]);
- 
+  if ($debug) return($ccu_request);
 
   // Schreibe Ausgabe
-  header("Content-Type: text/xml; charset=ISO-8859-1");  
-  echo "<?xml version='1.0' encoding='ISO-8859-1' ?>"; 
-  echo $cleancontent[0];
-  exit();
+  return "<?xml version='1.0' encoding='ISO-8859-1' ?>\n".ccu_remote($ccu, $ccu_request);
+
 }
 
 
 // ALLE SYSTEMVARIABLEN
-if (strpos($_SERVER['QUERY_STRING'], "sysvarlist.cgi") !== false) {
-	
-  $ccu_request = "";
+if (isset($_SERVER['QUERY_STRING']) and (strpos($_SERVER['QUERY_STRING'], "sysvarlist.cgi") !== false)) {
+  header("Content-Type: text/xml; charset=ISO-8859-1");
+  echo api_sysvarlist($ccu, isset($_GET['debug']));
+}
+
+function api_sysvarlist($ccu, $debug = false) {
 
   // Baue Skript zusammen
-  $ccu_request = $ccu_request . "WriteLine(\"*<*systemVariables*>*\n\");
-     
-string id; 
+  $ccu_request = <<<EOHM
+WriteLine("<systemVariables>\n");
+
+string id;
 ! Alle Datenpunkte durchlaufen
 foreach(id, dom.GetObject(ID_SYSTEM_VARIABLES).EnumUsedIDs()){
   ! Einzelnen Datenpunkt holen
   var oSysVar = dom.GetObject(id);
   ! Namen und Wert des Elements ausgeben - fehlt -> visible
-  Write(\"*<*systemVariable name='\" # oSysVar.Name() # \"' \");
+  Write("<systemVariable name='" # oSysVar.Name() # "' ");
     if (oSysVar.ValueSubType() == 6) {
-      Write(\"variable='\" # oSysVar.AlType() # \"' \");
+      Write("variable='" # oSysVar.AlType() # "' ");
     } else {
-      Write(\"variable='\" # oSysVar.Variable() # \"' \");
-    } 
-    Write(\"value='\" # oSysVar.Value() # \"' \");
-    Write(\"value_list='\");
+      Write("variable='" # oSysVar.Variable() # "' ");
+    }
+    Write("value='" # oSysVar.Value() # "' ");
+    Write("value_list='");
     if (oSysVar.ValueType() == 16) {
       Write( oSysVar.ValueList());
     }
-	Write(\"' ise_id='\"#oSysVar.ID()#\"' \");
-    Write(\"  min='\");
+	Write("' ise_id='"#oSysVar.ID()#"' ");
+    Write("  min='");
     if (oSysVar.ValueType() == 4) {
       Write( oSysVar.ValueMin());
     }
-   
-    Write(\"' max='\");
+
+    Write("' max='");
     if (oSysVar.ValueType() == 4) {
       Write( oSysVar.ValueMax());
     }
-	Write(\"' \");
-	Write(\"unit='\" # oSysVar.ValueUnit() # \"' type='\" # oSysVar.ValueType() # \"' subtype='\" # oSysVar.ValueSubType() # \"' logged='\" # oSysVar.DPArchive() # \"' visible='\" # oSysVar.Visible() # \"' timestamp='\" # oSysVar.Timestamp().ToInteger()# \"' value_name_0='\" # oSysVar.ValueName0() # \"' value_name_1='\" # oSysVar.ValueName1() # \"' info='\" # oSysVar.DPInfo() # \"'/*>*\");
+	Write("' ");
+	Write("unit='" # oSysVar.ValueUnit() # "' type='" # oSysVar.ValueType() # "' subtype='" # oSysVar.ValueSubType() # "' logged='" # oSysVar.DPArchive() # "' visible='" # oSysVar.Visible() # "' timestamp='" # oSysVar.Timestamp().ToInteger()# "' value_name_0='" # oSysVar.ValueName0() # "' value_name_1='" # oSysVar.ValueName1() # "' info='" # oSysVar.DPInfo() # "'/>");
   }
-  WriteLine(\"*<*/systemVariables*>*\");";
-
-
- 
-
+  WriteLine("</systemVariables>");
+EOHM;
 
   // Debug Mode
-  if(isset($_GET["debug"]))
-  {
-    echo $ccu_request;
-    exit();
-  }
-
-  // Als indikator für die Rückgabe, um den Overhead zu filtern
-  $ccu_request = $ccu_request ."WriteLine(\"ENDE\");";
-
-// Curl Anfrage bauen
-  $curl = curl_init();
-  curl_setopt($curl,CURLOPT_URL, $ccu_remoteskript_uri);
-  if ($ccu_user != "" && $ccu_pass != "") {
-    curl_setopt($curl,CURLOPT_USERPWD, $ccu_user.":".$ccu_pass);	
-  }
-  curl_setopt($curl,CURLOPT_POST, 1);
-  curl_setopt($curl,CURLOPT_POSTFIELDS, $ccu_request);
-  curl_setopt($curl,CURLOPT_RETURNTRANSFER, true);
-  curl_setopt($curl,CURLOPT_CONNECTTIMEOUT ,2);
-  curl_setopt($curl,CURLOPT_TIMEOUT, 20);
-  if (!empty($ccu_https)) {
-    curl_setopt($curl,CURLOPT_SSL_VERIFYHOST, false);
-    curl_setopt($curl,CURLOPT_SSL_VERIFYPEER, false);
-  }
-  $content = curl_exec($curl);
-  curl_close($curl);
- // exit();
-  // Trenne Rückgabe vom Overhead
-  $cleancontent = explode("ENDE",$content);
-  
-  // Konvertiere XML kritische Zeichen in HTML-Format
-  $cleancontent[0] = str_replace("<","&lt;",  $cleancontent[0]);
-  $cleancontent[0] = str_replace( ">","&gt;", $cleancontent[0]);
-  $cleancontent[0] = str_replace("*&lt;*","<",  $cleancontent[0]);
-  $cleancontent[0] = str_replace("*&gt;*", ">", $cleancontent[0]);
- 
+  if ($debug) return($ccu_request);
 
   // Schreibe Ausgabe
-  header("Content-Type: text/xml; charset=ISO-8859-1");  
-  echo "<?xml version='1.0' encoding='ISO-8859-1' ?>"; 
-  echo $cleancontent[0];
-  exit();
+  return "<?xml version='1.0' encoding='ISO-8859-1' ?>\n".ccu_remote($ccu, $ccu_request);
+
 }
 
 
 // PROGRAMM
-if (strpos($_SERVER['QUERY_STRING'], "runprogram.cgi") !== false) {
-
+if (isset($_SERVER['QUERY_STRING']) and (strpos($_SERVER['QUERY_STRING'], "runprogram.cgi") !== false)) {
+  $prog_id = ( !empty($_GET['program_id']) ? intval($_GET['program_id']) : false );
 
   // Beende wenn keine Program_ID übergeben wird
-  if(!isset($_GET['program_id'])) 
+  if(empty($prog_id))
   {
-	echo "keine program_id";
-	exit();
+	die('Program-ID fehlt');
   }
 
-  $ccu_request = "";
-
-  // Baue Skript zusammen
-  $ccu_request = $ccu_request . ' dom.GetObject("'.$_GET['program_id'].'").ProgramExecute();';
-  $ccu_request = $ccu_request . "\r\n";  
-  $ccu_request = $ccu_request ."WriteLine(\"ENDE\");";
-
-
-  // Debug Mode
-  if(isset($_GET["debug"]))
-  {
-    echo $ccu_request;
-    exit();
-  }
-  
-  
-  // Als indikator für die Rückgabe, um den Overhead zu filtern
-  $ccu_request = $ccu_request ."WriteLine(\"ENDE\");";
-  
-  // Curl Anfrage bauen
-  $curl = curl_init();
-  curl_setopt($curl,CURLOPT_URL, $ccu_remoteskript_uri);
-  if ($ccu_user != "" && $ccu_pass != "") {
-    curl_setopt($curl,CURLOPT_USERPWD, $ccu_user.":".$ccu_pass);	
-  }
-  curl_setopt($curl,CURLOPT_POST, 1);
-  curl_setopt($curl,CURLOPT_POSTFIELDS, $ccu_request);
-  curl_setopt($curl,CURLOPT_RETURNTRANSFER, true);
-  curl_setopt($curl,CURLOPT_CONNECTTIMEOUT ,2);
-  curl_setopt($curl,CURLOPT_TIMEOUT, 20);
-  if (!empty($ccu_https)) {
-    curl_setopt($curl,CURLOPT_SSL_VERIFYHOST, false);
-    curl_setopt($curl,CURLOPT_SSL_VERIFYPEER, false);
-  }
-  $content = curl_exec($curl);
-  curl_close($curl);
-
-  // Trenne Rückgabe vom Overhead
-  //$cleancontent = explode("ENDE",$content);
-  //echo $cleancontent[0];
-  exit();
-
-  // Schreibe Ausgabe
-  //header("Content-Type: application/xml; charset=ISO-8859-1");  
-  echo "<?xml version='1.0' encoding='ISO-8859-1' ?><state>"; 
-  //<result><started program_id="55436"/></result>
-
+  header("Content-Type: text/xml; charset=ISO-8859-1");
+  echo api_runprogram($ccu, $prog_id, isset($_GET['debug']));
 }
 
+function api_runprogram($ccu, int $prog_id, $debug = false) {
+
+  // Baue Skript zusammen
+  $ccu_request = <<<EOHM
+!WriteLine("<runprogram>");
+!Write(dom.GetObject("$prog_id"));
+!WriteLine("</runprogram>");
+dom.GetObject("$prog_id").ProgramExecute();
+EOHM;
+
+  // Debug Mode
+  if ($debug) return($ccu_request);
+
+  // Schreibe Ausgabe
+  return "<?xml version='1.0' encoding='ISO-8859-1' ?>\n".ccu_remote($ccu, $ccu_request, true);
+
+}
 
 
 // PROGRAMM aktiv inaktiv schalten
-if (strpos($_SERVER['QUERY_STRING'], "setprogrammode.cgi") !== false) {
-
+if (isset($_SERVER['QUERY_STRING']) and (strpos($_SERVER['QUERY_STRING'], "setprogrammode.cgi") !== false)) {
+  $prog_id = ( !empty($_GET['program_id']) ? intval($_GET['program_id']) : false );
 
   // Beende wenn keine Program_ID übergeben wird
-  if(!isset($_GET['program_id'])) 
+  if(empty($prog_id))
   {
-	echo "keine program_id";
-	exit();
+	die('Program-ID fehlt');
   }
 
-
-  $ccu_request = "";
-
-  // Baue Skript zusammen
-  $ccu_request = $ccu_request . "object oDatapoint = dom.GetObject('".$_GET['program_id']."');\r\n"; 
-  $ccu_request = $ccu_request . "if (oDatapoint.IsTypeOf(OT_PROGRAM)) {\r\n";
-  $ccu_request = $ccu_request . "if (oDatapoint.Active()) {\r\noDatapoint.Active(false);}\r\n";
-  $ccu_request = $ccu_request . "else {\r\noDatapoint.Active(true); }\r\n}\r\n}";
-
-
-  // Debug Mode
-  if(isset($_GET["debug"]))
-  {
-    echo $ccu_request;
-    exit();
-  }
-  
-  
-  // Als indikator für die Rückgabe, um den Overhead zu filtern
-  $ccu_request = $ccu_request ."WriteLine(\"ENDE\");";
-  
-  // Curl Anfrage bauen
-  $curl = curl_init();
-  curl_setopt($curl,CURLOPT_URL, $ccu_remoteskript_uri);
-  if ($ccu_user != "" && $ccu_pass != "") {
-    curl_setopt($curl,CURLOPT_USERPWD, $ccu_user.":".$ccu_pass);	
-  }
-  curl_setopt($curl,CURLOPT_POST, 1);
-  curl_setopt($curl,CURLOPT_POSTFIELDS, $ccu_request);
-  curl_setopt($curl,CURLOPT_RETURNTRANSFER, true);
-  curl_setopt($curl,CURLOPT_CONNECTTIMEOUT ,2);
-  curl_setopt($curl,CURLOPT_TIMEOUT, 20);
-  if (!empty($ccu_https)) {
-    curl_setopt($curl,CURLOPT_SSL_VERIFYHOST, false);
-    curl_setopt($curl,CURLOPT_SSL_VERIFYPEER, false);
-  }
-  $content = curl_exec($curl);
-  curl_close($curl);
-
-  // Trenne Rückgabe vom Overhead
-  //$cleancontent = explode("ENDE",$content);
-  //echo $cleancontent[0];
-  exit();
-
-  // Schreibe Ausgabe
-  //header("Content-Type: application/xml; charset=ISO-8859-1");  
-  echo "<?xml version='1.0' encoding='ISO-8859-1' ?><state>"; 
-  //<result><started program_id="55436"/></result>
-
+  header("Content-Type: text/xml; charset=ISO-8859-1");
+  echo api_setprogrammode($ccu, $prog_id, isset($_GET['debug']));
 }
 
+function api_setprogrammode($ccu, int $prog_id, $debug = false) {
 
+  // Baue Skript zusammen
+  $ccu_request = <<<EOHM
+!WriteLine("<setprogrammode>");
+!Write(dom.GetObject("$prog_id"));
+!WriteLine("</setprogrammode>");
+object oDatapoint = dom.GetObject("$prog_id");
+if (oDatapoint.IsTypeOf(OT_PROGRAM)) {
+  if (oDatapoint.Active()) { oDatapoint.Active(false); }
+  else { oDatapoint.Active(true); }
+}
+EOHM;
 
+  // Debug Mode
+  if ($debug) return($ccu_request);
 
+  // Schreibe Ausgabe
+  return "<?xml version='1.0' encoding='ISO-8859-1' ?>\n".ccu_remote($ccu, $ccu_request, true);
+
+}
 
 
 // WERTÄNDERUNG
-if (strpos($_SERVER['QUERY_STRING'], "statechange.cgi") !== false) {
+if (isset($_SERVER['QUERY_STRING']) and (strpos($_SERVER['QUERY_STRING'], "statechange.cgi") !== false)) {
 
+  // Beende, wenn keine Ise_ID übergeben wird
+  if (empty($_GET['ise_id'])) die('Ise-ID fehlt');
 
-  // Beende wenn keine Program_ID übergeben wird
-  if((!isset($_GET['ise_id'])) OR (!isset($_GET['new_value'])))
-  {
-	echo "keine ise_id oder new_value gesetzt";
-	exit();
-  }
-  // Trenne ise_id und new_value anhand , auf
-  $iseids = explode(",",$_GET['ise_id']);
-  $newvalues = explode(",",$_GET['new_value']);
-  $ccu_request = "";
-  
-  // Zähler für new_values
-   $i = 0;
-    // Baue Skript zusammen
-   foreach ($iseids as $iseid) {
-	if( ctype_digit($iseid) ) {
-    //  $ccu_request = $ccu_request . 'WriteLine("'.$datapoint.'**Steingarten**" #dom.GetObject('.$datapoint.').Value().ToString().UriEncode()#" ");';
-	  $ccu_request = $ccu_request . ' dom.GetObject("'.$iseid.'").State("'.$newvalues[$i].'");';
-      $ccu_request = $ccu_request . "\r\n";
-	  $i++;
-    }
-  }
-  
+  // Beende, wenn keine Werte übergeben werden
+  if (!isset($_GET['new_value'])) die('Wert fehlt');
 
+  // Trenne ise_id und new_value anhand , auf und setze als assoziatives Array zusammen
+  $iseids = $_GET['ise_id'];
+  $a_iseids = str_getcsv($iseids, ',', '"', '\\');
+  $iseids = ( count($a_iseids) ? $a_iseids : array($iseids) );
+  $newvalues = $_GET['new_value'];
+  $a_newvalues = str_getcsv($newvalues, ',', '"', '\\');
+  $newvalues = ( count($a_newvalues) ? array_map('rawurldecode', $a_newvalues) : array(rawurldecode($newvalues)) );
+  if (count($iseids) != count($newvalues)) die('Anzahl Parameter stimmt nicht überein');
+  $set = array_combine($iseids, $newvalues);
 
-  // Debug Mode
-  if(isset($_GET["debug"]))
-  {
-    echo $ccu_request;
-    exit();
-  }
-  
-  // Als indikator für die Rückgabe, um den Overhead zu filtern
-  $ccu_request = $ccu_request ."WriteLine(\"ENDE\");";
-  
-  
-  // Als indikator für die Rückgabe, um den Overhead zu filtern
-  $ccu_request = $ccu_request ."WriteLine(\"ENDE\");";
-  
-  // Curl Anfrage bauen
-  $curl = curl_init();
-  curl_setopt($curl,CURLOPT_URL, $ccu_remoteskript_uri);
-  if ($ccu_user != "" && $ccu_pass != "") {
-    curl_setopt($curl,CURLOPT_USERPWD, $ccu_user.":".$ccu_pass);	
-  }
-  curl_setopt($curl,CURLOPT_POST, 1);
-  curl_setopt($curl,CURLOPT_POSTFIELDS, $ccu_request);
-  curl_setopt($curl,CURLOPT_RETURNTRANSFER, true);
-  curl_setopt($curl,CURLOPT_CONNECTTIMEOUT ,2);
-  curl_setopt($curl,CURLOPT_TIMEOUT, 20);
-  if (!empty($ccu_https)) {
-    curl_setopt($curl,CURLOPT_SSL_VERIFYHOST, false);
-    curl_setopt($curl,CURLOPT_SSL_VERIFYPEER, false);
-  }
-  $content = curl_exec($curl);
-  curl_close($curl);
-
-  // Trenne Rückgabe vom Overhead
-  //$cleancontent = explode("ENDE",$content);
-  //echo $cleancontent[0];
-  exit();
-
-  // Schreibe Ausgabe
-  //header("Content-Type: application/xml; charset=ISO-8859-1");  
-  echo "<?xml version='1.0' encoding='ISO-8859-1' ?><state>"; 
-  //<result><started program_id="55436"/></result>
+  header("Content-Type: text/xml; charset=ISO-8859-1");
+  echo api_statechange($ccu, $set, isset($_GET['debug']));
 
 }
-//SYSVAR
 
-if (strpos($_SERVER['QUERY_STRING'], "sysvar.cgi") !== false) {
+function api_statechange($ccu, $set, $debug = false) {
 
-
-  // Beende wenn keine Datapoint_ID übergeben wird
-  if(!isset($_GET['ise_id'])) 
-  {
-	echo "keine ise_ids";
-	exit();
-  }
-  
-  $ccu_request = "";
+  // $set : assoziatives Array im Format ["ise_id" => "wert"]
 
   // Baue Skript zusammen
-  $ccu_request = $ccu_request . "WriteLine(\"*<*systemVariables*>*\");
-string id; 
+  $ccu_request = '';
+  #$ccu_request = $ccu_request."WriteLine(\"<statechange>\");\n";
+  foreach ($set as $ise_id => $new_value) {
+	if (ctype_digit($ise_id)) {
+      #$ccu_request = $ccu_request."WriteLine(dom.GetObject(\"".$ise_id."\"));\n";
+	  $ccu_request = $ccu_request."dom.GetObject(\"".$ise_id."\").State(\"".addslashes($new_value)."\");\n";
+    }
+  }
+  #$ccu_request = $ccu_request."WriteLine(\"</statechange>\");\n";
+
+  // Debug Mode
+  if ($debug) return($ccu_request);
+
+  // Schreibe Ausgabe
+  return "<?xml version='1.0' encoding='ISO-8859-1' ?>\n".ccu_remote($ccu, $ccu_request, true);
+
+}
+
+
+//SYSVAR
+
+if (isset($_SERVER['QUERY_STRING']) and (strpos($_SERVER['QUERY_STRING'], "sysvar.cgi") !== false)) {
+
+  // Beende, wenn keine Ise_ID übergeben wird
+  if (empty($_GET['ise_id'])) die('Ise-ID fehlt');
+
+  $ise_id = $_GET['ise_id'];
+
+  header("Content-Type: text/xml; charset=ISO-8859-1");
+  echo api_sysvar($ccu, $ise_id, isset($_GET['debug']));
+
+}
+
+function api_sysvar($ccu, $ise_id, $debug = false) {
+
+  // Baue Skript zusammen                 # Warum braucht man hier eine Schleife? Man könnte doch die SV direkt mit dom.GetObject("ise_id") aufrufen und ggf. den Typ prüfen.
+  $ccu_request = <<<EOHM
+WriteLine("<systemVariables>");
+string id;
 ! Alle Datenpunkte durchlaufen
 foreach(id, dom.GetObject(ID_SYSTEM_VARIABLES).EnumUsedIDs()){
 
- 
   ! Einzelnen Datenpunkt holen
   var sysVar = dom.GetObject(id);
-   if(".$_GET['ise_id']." ==  sysVar.ID()) {
+   if($ise_id == sysVar.ID()) {
   ! Namen und Wert des Elements ausgeben - fehlt -> visible
-  Write(\"*<*systemVariable name='\" # sysVar.Name() # \"' variable='\" # sysVar.Variable() # \"' value='\" # sysVar.Value() # \"' value_list='\" # sysVar.ValueList() # \"' ise_id='\" # sysVar.ID() # \"' min='\" # sysVar.ValueMin() # \"' max='\" # sysVar.ValueMax() # \"' unit='\" # sysVar.ValueUnit() # \"' type='\" # sysVar.ValueType() # \"' subtype='\" # sysVar.ValueSubType() # \"' logged='\" # sysVar.DPArchive() # \"' visible='\" # sysVar.Visible() # \"' timestamp='\" # sysVar.Timestamp().ToInteger()# \"' value_name_0='\" # sysVar.ValueName0() # \"' value_name_1='\" # sysVar.ValueName1() # \"' info='\" # sysVar.DPInfo() # \"'/*>*\");
-  WriteLine(\"\");
+  Write("<systemVariable name='" # sysVar.Name() # "' variable='" # sysVar.Variable() # "' value='" # sysVar.Value() # "' value_list='" # sysVar.ValueList() # "' ise_id='" # sysVar.ID() # "' min='" # sysVar.ValueMin() # "' max='" # sysVar.ValueMax() # "' unit='" # sysVar.ValueUnit() # "' type='" # sysVar.ValueType() # "' subtype='" # sysVar.ValueSubType() # "' logged='" # sysVar.DPArchive() # "' visible='" # sysVar.Visible() # "' timestamp='" # sysVar.Timestamp().ToInteger()# "' value_name_0='" # sysVar.ValueName0() # "' value_name_1='" # sysVar.ValueName1() # "' info='" # sysVar.DPInfo() # "'/>");
+  WriteLine("");
   }
 }
-WriteLine(\"*<*/systemVariables*>*\");";
+WriteLine("</systemVariables>");
+EOHM;
 
   // Debug Mode
-  if(isset($_GET["debug"]))
-  {
-    echo $ccu_request;
-    exit();
-  }
-
-  // Als indikator für die Rückgabe, um den Overhead zu filtern
-  $ccu_request = $ccu_request ."WriteLine(\"ENDE\");";
-
-// Curl Anfrage bauen
-  $curl = curl_init();
-  curl_setopt($curl,CURLOPT_URL, $ccu_remoteskript_uri);
-  if ($ccu_user != "" && $ccu_pass != "") {
-    curl_setopt($curl,CURLOPT_USERPWD, $ccu_user.":".$ccu_pass);	
-  }
-  curl_setopt($curl,CURLOPT_POST, 1);
-  curl_setopt($curl,CURLOPT_POSTFIELDS, $ccu_request);
-  curl_setopt($curl,CURLOPT_RETURNTRANSFER, true);
-  curl_setopt($curl,CURLOPT_CONNECTTIMEOUT ,2);
-  curl_setopt($curl,CURLOPT_TIMEOUT, 20);
-  if (!empty($ccu_https)) {
-    curl_setopt($curl,CURLOPT_SSL_VERIFYHOST, false);
-    curl_setopt($curl,CURLOPT_SSL_VERIFYPEER, false);
-  }
-  $content = curl_exec($curl);
-  curl_close($curl);
- // exit();
-  // Trenne Rückgabe vom Overhead
-  $cleancontent = explode("ENDE",$content);
-  
-  // Konvertiere XML kritische Zeichen in HTML-Format
-  $cleancontent[0] = str_replace("<","&lt;",  $cleancontent[0]);
-  $cleancontent[0] = str_replace( ">","&gt;", $cleancontent[0]);
-  $cleancontent[0] = str_replace("*&lt;*","<",  $cleancontent[0]);
-  $cleancontent[0] = str_replace("*&gt;*", ">", $cleancontent[0]);
- 
+  if ($debug) return($ccu_request);
 
   // Schreibe Ausgabe
-  header("Content-Type: text/xml; charset=ISO-8859-1");  
-  echo "<?xml version='1.0' encoding='ISO-8859-1' ?>"; 
-  echo $cleancontent[0];
-  exit();
+  return "<?xml version='1.0' encoding='ISO-8859-1' ?>\n".ccu_remote($ccu, $ccu_request);
+
 }
 
 
+function strip_a(string $str) {
+  return str_replace('a', '', $str);
+}
+
+function strip_t(string $str) {
+  return str_replace('t', '', $str);
+}
+
 // STATUS
-else if (strpos($_SERVER['QUERY_STRING'], "state.cgi") !== false) {
+if (isset($_SERVER['QUERY_STRING']) and (strpos($_SERVER['QUERY_STRING'], "state.cgi") !== false)) {
 
+  // Beende, wenn keine Program_ID übergeben wird                    # => führt zu Problemen mit nicht-HM Seiten (zB. iframe) !!!
+  # if (empty($_GET['datapoint_id'])) die('Datapoint-ID fehlt');     #    Der fehlerhafte / unnötige Aufruf der state.cgi müsste im dortigen Code korrigiert werden.
+  $datapoints = $_GET['datapoint_id'];
 
-  // Beende wenn keine Datapoint_ID übergeben wird
-  if(!isset($_GET['datapoint_id'])) 
-  {
-	echo "keine datapoint_ids";
-	exit();
+  header("Content-Type: text/xml; charset=ISO-8859-1");
+  echo api_state($ccu, $datapoints, isset($_GET['onlyvalue']), isset($_GET['debug']));
+}
+
+function api_state($ccu, $datapoints, bool $onlyvalue = false, $debug = false) {
+
+  if (!is_array($datapoints)) {
+    if (strpos($datapoints, ',') !== false) $a_datapoints = str_getcsv($datapoints, ',', '"', '\\');
+    else $a_datapoints = array($datapoints);
+  } else {
+    if (array_is_list($datapoints)) $a_datapoints = $datapoints;
+    else $a_datapoints = array_values($datapoints);
   }
-  
-  // suche und ersetze t wegen Timestamp, da es diese einträge nicht gibt
-  $datapoints = str_replace("t", "", $_GET['datapoint_id']);
-   $datapoints = str_replace("a", "", $datapoints);
 
-  // Trenne datapoint_id anhand , auf
-  $datapoints = explode(",",$datapoints);
-  
+  $a_datapoints = array_map('strip_a', $a_datapoints);
+  $a_datapoints = array_map('strip_t', $a_datapoints);
+
   //Bei Diagram Collect darf nicht optimiert werden
-  if(!isset($_GET['onlyvalue']))
-  {	  
-    $datapoints = array_unique($datapoints);
-  }
-  $ccu_request = "";
-  
-  // Baue Skript zusammen
-  $ccu_request = $ccu_request . "WriteLine(\"*<*state*>*\");\r\n";
-  foreach ($datapoints as $datapoint) {
-	 
-	if( ctype_digit($datapoint) ) {
+  if (empty($onlyvalue)) $a_datapoints = array_unique($a_datapoints);
+
+  $ccu_request = "WriteLine(\"<state>\");\r\n";
+  foreach ($a_datapoints as $datapoint) {
+
+	if (ctype_digit($datapoint)) {
 
 	  $ccu_request = $ccu_request . "object oDatapoint = dom.GetObject(".$datapoint.");\r\n";
-	  // Wenn es sich um ein Datenpunkt handelt gib value aus	  
+	  // Wenn es sich um ein Datenpunkt handelt gib value aus
 	  $ccu_request = $ccu_request . "if (oDatapoint.IsTypeOf(OT_DP)) {\r\n";
-	  $ccu_request = $ccu_request . "WriteLine(\"*<*datapoint ise_id='".$datapoint."' value='\"#dom.GetObject(".$datapoint.").Value().ToString()#\"'/*>*\");\r\n";
+	  $ccu_request = $ccu_request . "WriteLine(\"<datapoint ise_id='".$datapoint."' value='\"#dom.GetObject(".$datapoint.").Value().ToString()#\"'/>\");\r\n";
 	  $ccu_request = $ccu_request . "}\r\n";
-	  
+
 	  // Wenn es sich um ein Programm handelt gibt aus ob aktiv oder inaktiv
 	  $ccu_request = $ccu_request . "if (oDatapoint.IsTypeOf(OT_PROGRAM)) {\r\n";
-	  $ccu_request = $ccu_request . "if (oDatapoint.Active()) {\r\nWriteLine(\"*<*datapoint ise_id='".$datapoint."a' value='true'/*>*\");}\r\n";
-	  $ccu_request = $ccu_request . "else {\r\nWriteLine(\"*<*datapoint ise_id='".$datapoint."a' value='false'/*>*\"); }\r\n";
-	  $ccu_request = $ccu_request . "}\r\n";	  
-		
+	  $ccu_request = $ccu_request . "if (oDatapoint.Active()) {\r\nWriteLine(\"<datapoint ise_id='".$datapoint."a' value='true'/>\");}\r\n";
+	  $ccu_request = $ccu_request . "else {\r\nWriteLine(\"<datapoint ise_id='".$datapoint."a' value='false'/>\"); }\r\n";
+	  $ccu_request = $ccu_request . "}\r\n";
 
-
-	  if(!isset($_GET['onlyvalue']))
-	  {
+	  if (empty($onlyvalue)) {
 	    // Wenn es sich um einen Channel handelt gib Timestamp aus
 	    $ccu_request = $ccu_request . "if (oDatapoint.IsTypeOf(OT_CHANNEL)) {\r\n";
-	    $ccu_request = $ccu_request . "WriteLine(\"*<*datapoint ise_id='".$datapoint."t' value='\"#dom.GetObject(".$datapoint.").LastDPActionTime().ToString(\"%m.%d.%Y %H:%M:%S\")#\"'/*>*\");";
+	    $ccu_request = $ccu_request . "WriteLine(\"<datapoint ise_id='".$datapoint."t' value='\"#dom.GetObject(".$datapoint.").LastDPActionTime().ToString(\"%m.%d.%Y %H:%M:%S\")#\"'/>\");";
 	    $ccu_request = $ccu_request . "}\r\n";
 	    // Wenn es sich um einen Datenpunkt handelt gib Timestamp aus
 	    $ccu_request = $ccu_request . "if (oDatapoint.IsTypeOf(OT_DP)) {\r\n";
-	    $ccu_request = $ccu_request . "WriteLine(\"*<*datapoint ise_id='".$datapoint."t' value='\"#dom.GetObject(".$datapoint.").Timestamp().ToString(\"%m.%d.%Y %H:%M:%S\")#\"'/*>*\");";
+	    $ccu_request = $ccu_request . "WriteLine(\"<datapoint ise_id='".$datapoint."t' value='\"#dom.GetObject(".$datapoint.").Timestamp().ToString(\"%m.%d.%Y %H:%M:%S\")#\"'/>\");";
 	    $ccu_request = $ccu_request . "}\r\n";
 	    // Wenn es sich um ein Programm handelt gib Timestamp aus
 	    $ccu_request = $ccu_request . "if (oDatapoint.IsTypeOf(OT_PROGRAM)) {\r\n";
-	    $ccu_request = $ccu_request . "WriteLine(\"*<*datapoint ise_id='".$datapoint."t' value='\"#dom.GetObject(".$datapoint.").ProgramLastExecuteTime().ToString(\"%m.%d.%Y %H:%M:%S\")#\"'/*>*\");";
+	    $ccu_request = $ccu_request . "WriteLine(\"<datapoint ise_id='".$datapoint."t' value='\"#dom.GetObject(".$datapoint.").ProgramLastExecuteTime().ToString(\"%m.%d.%Y %H:%M:%S\")#\"'/>\");";
 	    $ccu_request = $ccu_request . "}\r\n";
-	   }
+	  }
+
     }
-	
+
   }
-   $ccu_request = $ccu_request . "WriteLine(\"*<*/state*>*\");\r\n";
-  
-  
-  
+  $ccu_request = $ccu_request . "WriteLine(\"</state>\");\r\n";
+
   // Debug Mode
-  if(isset($_GET["debug"]))
-  {
-    echo $ccu_request;
-    exit();
-  }
-  
-  // Als indikator für die Rückgabe, um den Overhead zu filtern
-  $ccu_request = $ccu_request ."WriteLine(\"ENDE\");";
-  
-  // Curl Anfrage bauen
-  $curl = curl_init();
-  curl_setopt($curl,CURLOPT_URL, $ccu_remoteskript_uri);
-  if ($ccu_user != "" && $ccu_pass != "") {
-    curl_setopt($curl,CURLOPT_USERPWD, $ccu_user.":".$ccu_pass);	
-  }
-  curl_setopt($curl,CURLOPT_POST, 1);
-  curl_setopt($curl,CURLOPT_POSTFIELDS, $ccu_request);
-  curl_setopt($curl,CURLOPT_RETURNTRANSFER, true);
-  curl_setopt($curl,CURLOPT_CONNECTTIMEOUT ,2);
-  curl_setopt($curl,CURLOPT_TIMEOUT, 20);
-  if (!empty($ccu_https)) {
-    curl_setopt($curl,CURLOPT_SSL_VERIFYHOST, false);
-    curl_setopt($curl,CURLOPT_SSL_VERIFYPEER, false);
-  }
-  $content = curl_exec($curl);
-  curl_close($curl);
-  
-  // Trenne Rückgabe vom Overhead
-  $cleancontent = explode("ENDE",$content);
-  
-  // Konvertiere XML kritische Zeichen in HTML-Format
-  $cleancontent[0] = str_replace("<","&lt;",  $cleancontent[0]);
-  $cleancontent[0] = str_replace( ">","&gt;", $cleancontent[0]);
-  $cleancontent[0] = str_replace("*&lt;*","<",  $cleancontent[0]);
-  $cleancontent[0] = str_replace("*&gt;*", ">", $cleancontent[0]);
- 
+  if ($debug) return($ccu_request);
 
   // Schreibe Ausgabe
-  header("Content-Type: text/xml; charset=ISO-8859-1");  
-  echo "<?xml version='1.0' encoding='ISO-8859-1' ?>"; 
-  echo $cleancontent[0];
-  exit();
+  return "<?xml version='1.0' encoding='ISO-8859-1' ?>\n".ccu_remote($ccu, $ccu_request);
+
 }
 
 
-
-
-
-
 // SYSTEMNOTIFICATION
+if (isset($_SERVER['QUERY_STRING']) and (strpos($_SERVER['QUERY_STRING'], "systemNotification.cgi") !== false)) {
+  header("Content-Type: text/xml; charset=ISO-8859-1");
+  echo api_systemNotification($ccu, $prog_id, isset($_GET['debug']));
+}
 
-if (strpos($_SERVER['QUERY_STRING'], "systemNotification.cgi") !== false) {
-
-
-
-  $ccu_request = "";
+function api_systemNotification($ccu, $debug = false) {
 
   // Baue Skript zusammen
-  $ccu_request = $ccu_request . "WriteLine(\"*<*systemNotification*>*\");
+  $ccu_request = <<<EOHM
+WriteLine("<systemNotification>");
   string id; 
   ! Alle Datenpunkte durchlaufen
   foreach(id, dom.GetObject(ID_SERVICES).EnumUsedIDs()){
 
- 
     ! Einzelnen Datenpunkt holen
     var serviceVar = dom.GetObject(id);
     object trigDP = dom.GetObject(serviceVar.AlTriggerDP());
     if( serviceVar.IsTypeOf( OT_ALARMDP ) && ( serviceVar.AlState() == asOncoming ) ){
       ! Namen und Wert des Elements ausgeben - fehlt -> visible
-      Write(\"*<*notification ise_id='\" # serviceVar.AlTriggerDP() # \"' name='\" # trigDP.Name() # \"' type='\" # trigDP.HssType() # \"' timestamp='\" # serviceVar.LastTriggerTime().ToInteger() # \"'/*>*\");
-      WriteLine(\"\");
+      Write("<notification ise_id='" # serviceVar.AlTriggerDP() # "' name='" # trigDP.Name() # "' type='" # trigDP.HssType() # "' timestamp='" # serviceVar.LastTriggerTime().ToInteger() # "'/>");
+      WriteLine("");
     }
   }
-  WriteLine(\"*<*/systemNotification*>*\");";
+  WriteLine("</systemNotification>");
+EOHM;
 
   // Debug Mode
-  if(isset($_GET["debug"]))
-  {
-    echo $ccu_request;
-    exit();
-  }
-
-  // Als indikator für die Rückgabe, um den Overhead zu filtern
-  $ccu_request = $ccu_request ."WriteLine(\"ENDE\");";
-
-// Curl Anfrage bauen
-  $curl = curl_init();
-  curl_setopt($curl,CURLOPT_URL, $ccu_remoteskript_uri);
-  if ($ccu_user != "" && $ccu_pass != "") {
-    curl_setopt($curl,CURLOPT_USERPWD, $ccu_user.":".$ccu_pass);	
-  }
-  curl_setopt($curl,CURLOPT_POST, 1);
-  curl_setopt($curl,CURLOPT_POSTFIELDS, $ccu_request);
-  curl_setopt($curl,CURLOPT_RETURNTRANSFER, true);
-  curl_setopt($curl,CURLOPT_CONNECTTIMEOUT ,2);
-  curl_setopt($curl,CURLOPT_TIMEOUT, 20);
-  if (!empty($ccu_https)) {
-    curl_setopt($curl,CURLOPT_SSL_VERIFYHOST, false);
-    curl_setopt($curl,CURLOPT_SSL_VERIFYPEER, false);
-  }
-  $content = curl_exec($curl);
-  curl_close($curl);
- // exit();
-  // Trenne Rückgabe vom Overhead
-  $cleancontent = explode("ENDE",$content);
-  
-  // Konvertiere XML kritische Zeichen in HTML-Format
-  $cleancontent[0] = str_replace("<","&lt;",  $cleancontent[0]);
-  $cleancontent[0] = str_replace( ">","&gt;", $cleancontent[0]);
-  $cleancontent[0] = str_replace("*&lt;*","<",  $cleancontent[0]);
-  $cleancontent[0] = str_replace("*&gt;*", ">", $cleancontent[0]);
- 
+  if ($debug) return($ccu_request);
 
   // Schreibe Ausgabe
-  header("Content-Type: text/xml; charset=ISO-8859-1");  
-  echo "<?xml version='1.0' encoding='ISO-8859-1' ?>"; 
-  echo $cleancontent[0];
-  exit();
+  return "<?xml version='1.0' encoding='ISO-8859-1' ?>\n".ccu_remote($ccu, $ccu_request);
+
 }
 
 
 // SYSTEMNOTIFICATIONCLEAR
-if (strpos($_SERVER['QUERY_STRING'], "systemNotificationClear.cgi") !== false) {
+if (isset($_SERVER['QUERY_STRING']) and (strpos($_SERVER['QUERY_STRING'], "systemNotificationClear.cgi") !== false)) {
+  header("Content-Type: text/xml; charset=ISO-8859-1");
+  echo api_systemNotificationClear($ccu, isset($_GET['debug']));
+}
 
-
-
-  $ccu_request = "";
+function api_systemNotificationClear($ccu, $debug = false) {
 
   // Baue Skript zusammen
-  $ccu_request = $ccu_request . "string itemID;
+  $ccu_request = <<<EOHM
+string itemID;
 string address;
 object aldp_obj;
 
@@ -1028,49 +723,14 @@ if (aldp_obj.Value()) {
 aldp_obj.AlReceipt();
 }
 }
-} 
-";  
-  $ccu_request = $ccu_request ."WriteLine(\"ENDE\");";
-
+}
+EOHM;
 
   // Debug Mode
-  if(isset($_GET["debug"]))
-  {
-    echo $ccu_request;
-    exit();
-  }
-  
-  
-  // Als indikator für die Rückgabe, um den Overhead zu filtern
-  $ccu_request = $ccu_request ."WriteLine(\"ENDE\");";
-  
-  // Curl Anfrage bauen
-  $curl = curl_init();
-  curl_setopt($curl,CURLOPT_URL, $ccu_remoteskript_uri);
-  if ($ccu_user != "" && $ccu_pass != "") {
-    curl_setopt($curl,CURLOPT_USERPWD, $ccu_user.":".$ccu_pass);	
-  }
-  curl_setopt($curl,CURLOPT_POST, 1);
-  curl_setopt($curl,CURLOPT_POSTFIELDS, $ccu_request);
-  curl_setopt($curl,CURLOPT_RETURNTRANSFER, true);
-  curl_setopt($curl,CURLOPT_CONNECTTIMEOUT ,2);
-  curl_setopt($curl,CURLOPT_TIMEOUT, 20);
-  if (!empty($ccu_https)) {
-    curl_setopt($curl,CURLOPT_SSL_VERIFYHOST, false);
-    curl_setopt($curl,CURLOPT_SSL_VERIFYPEER, false);
-  }
-  $content = curl_exec($curl);
-  curl_close($curl);
-
-  // Trenne Rückgabe vom Overhead
-  //$cleancontent = explode("ENDE",$content);
-  //echo $cleancontent[0];
-  exit();
+  if ($debug) return($ccu_request);
 
   // Schreibe Ausgabe
-  //header("Content-Type: application/xml; charset=ISO-8859-1");  
-  echo "<?xml version='1.0' encoding='ISO-8859-1' ?><state>"; 
-  //<result><started program_id="55436"/></result>
+  return "<?xml version='1.0' encoding='ISO-8859-1' ?>\n".ccu_remote($ccu, $ccu_request, true);
 
 }
 

@@ -1,24 +1,23 @@
 <?php 
 
 // Eintrag in Crontab
+//
+// Sofern kein PHP-CLI zur Verfügung steht:
 // */1 * * * * curl --silent http://localhost/homehub/diagramm_collect.php >/dev/null 2>&1
+//
+// mit PHP-CLI
+// */1 * * * * /usr/bin/php -f /pfad-zu-homehub/diagramm_collect.php >/dev/null 2>&1
 
-include("config/config.php");
 
-// interface Pfad bestimmen
-$interface = $_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].str_replace("diagramm_collect.php", "",$_SERVER['PHP_SELF']);
-if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
-    $interface = "https://".$interface;
-}
-else $interface = "http://".$interface;
-echo $interface;
+require_once(__DIR__.'/interface.php');
+
 
 date_default_timezone_set("Europe/Berlin");
 $tage = array("So", "Mo", "Di", "Mi", "Do", "Fr", "Sa");
 
 
 // Lese aus custom.json die diagramm ise_id welche geloggt werden sollen
-$data = file_get_contents('config/custom.json');
+$data = file_get_contents(__DIR__.'/config/custom.json');
 $json = json_decode($data, true);
 
 
@@ -113,9 +112,7 @@ if(isset($diagramm_change))
   $historyZaehler = 0;
 	
   // Abfrage an die CCU
-  $xmlFile = $interface.'interface.php?state.cgi&onlyvalue=1&datapoint_id='.$diagramm_change;
-    echo $xmlFile; 
-  $xml = simplexml_load_file($xmlFile);
+  $xml = simplexml_load_string(api_state($ccu, $diagramm_change, true));
 	echo $xml;
   foreach ( $xml->datapoint as $states )  
   {  
@@ -131,10 +128,10 @@ if(isset($diagramm_change))
       $states['value'] = $x[0].'.'.substr($x[1],0,1);
     }
 	
-    if(file_exists("cache/diagramm_change_".$states['ise_id']."_".$history[$historyZaehler].".csv"))
+    if(file_exists(__DIR__."/cache/diagramm_change_".$states['ise_id']."_".$history[$historyZaehler].".csv"))
 	{
       // Lese Datei in Array
-      $lines = file("cache/diagramm_change_".$states['ise_id']."_".$history[$historyZaehler].".csv");
+      $lines = file(__DIR__."/cache/diagramm_change_".$states['ise_id']."_".$history[$historyZaehler].".csv");
 
       // Sortiere alte Einträge aus	
       if(count((array)$lines)>= $history[$historyZaehler])
@@ -165,7 +162,7 @@ if(isset($diagramm_change))
         {
           // Schreiben
           $inhalt = $inhalt.$tage[date("w")]." ".date("H:i",time()).";".$states['value']."\n";
-          $file_handle = fopen("cache/diagramm_change_".$states['ise_id']."_".$history[$historyZaehler].".csv", 'w+');
+          $file_handle = fopen(__DIR__."/cache/diagramm_change_".$states['ise_id']."_".$history[$historyZaehler].".csv", 'w+');
           fwrite($file_handle, $inhalt);
           fclose($file_handle);
         }
@@ -178,7 +175,7 @@ if(isset($diagramm_change))
       {
         // Schreiben
         $inhalt = $inhalt.$tage[date("w")]." ".date("H:i",time()).";".$states['value']."\n";
-        $file_handle = fopen("cache/diagramm_change_".$states['ise_id']."_".$history[$historyZaehler].".csv", 'w+');
+        $file_handle = fopen(__DIR__."/cache/diagramm_change_".$states['ise_id']."_".$history[$historyZaehler].".csv", 'w+');
         fwrite($file_handle, $inhalt);
         fclose($file_handle);
       }
@@ -195,10 +192,8 @@ if(isset($diagramm))
   $historyZaehler = 0;
 	
   // Abfrage an die CCU
-  $xmlFile = $interface.'/interface.php?state.cgi&onlyvalue=1&datapoint_id='.$diagramm;
-  echo $xmlFile; 
-  $xml = simplexml_load_file($xmlFile);
-echo $xml;
+  $xml = simplexml_load_string(api_state($ccu, $diagramm, true));
+  echo $xml;
   foreach ($xml->datapoint as $states)  
   {  
     $inhalt = "";
@@ -225,10 +220,10 @@ echo $xml;
     
 	
 	
-    if(file_exists("cache/diagramm_".$states['ise_id']."_".$history[$historyZaehler].".csv"))
+    if(file_exists(__DIR__."/cache/diagramm_".$states['ise_id']."_".$history[$historyZaehler].".csv"))
 	{
       // Lese Datei in Array
-      $lines = file("cache/diagramm_".$states['ise_id']."_".$history[$historyZaehler].".csv");
+      $lines = file(__DIR__."/cache/diagramm_".$states['ise_id']."_".$history[$historyZaehler].".csv");
 
       // Sortiere alte Einträge aus	
       if(count((array)$lines)>= $history[$historyZaehler])
@@ -256,7 +251,7 @@ echo $xml;
     {
       $inhalt = $inhalt.date("H:i",time()).";".$states['value']."\n";	
     }
-    $file_handle = fopen("cache/diagramm_".$states['ise_id']."_".$history[$historyZaehler].".csv", 'w+');
+    $file_handle = fopen(__DIR__."/cache/diagramm_".$states['ise_id']."_".$history[$historyZaehler].".csv", 'w+');
     fwrite($file_handle, $inhalt);
     fclose($file_handle);
     $historyZaehler++;
@@ -264,13 +259,4 @@ echo $xml;
 }
 echo "Ende";
 
-function curl_get_content( $url ) {
-    $curl_handle=curl_init();
-    curl_setopt($curl_handle, CURLOPT_URL,$url);
-    curl_setopt($curl_handle, CURLOPT_CONNECTTIMEOUT, 2);
-    curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, 1);
-    $content = curl_exec($curl_handle);
-    curl_close($curl_handle);
-    return $content;
-}
 ?>
