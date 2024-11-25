@@ -10,41 +10,26 @@
   "pinvalue":"true,false"
 },		 
 
-
-
 */
 
 
 ini_set('display_errors', 'on');
 
+// Lade Interface zur Homematic
+require_once('interface.php');
 
 function sysvarpin($component) {
-// definiere Interface
-
-	global $_SERVER;
-	global $ccu;
+global $ccu;
 	
-	$interface = $_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].str_replace("index.php", "",$_SERVER['PHP_SELF']);
-if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
-	$interface = "https://".$interface;
-}
-else $interface = "http://".$interface; 
-
-
-//echo "###".$interface."###";
-    if (isset($component['ise_id'])) {
+	if (isset($component['ise_id'])) {
 		$modalId = mt_rand();
-		require("config/config.php");
 		if(file_exists("dev/e5xport.json")) {
 			$xmlFile = 'dev/sysvar.php?ise_id='.$component['ise_id'];
+			$xml = simplexml_load_file($xmlFile);
 		} else {
-			$xmlFile = $interface.'/interface.php?sysvar.cgi&ise_id='.$component['ise_id'];
-			//$xmlFile = 'interface.php?sysvar.cgi&ise_id='.$component['ise_id'];
-			//echo $xmlFile;
+			$xml = simplexml_load_string(api_sysvar($ccu, $component['ise_id']));
 		}
 		
-		$xml = simplexml_load_file($xmlFile);
-		// $xml = simplexml_load_string(api_state($ccu, $component['ise_id'], true));
 		//print_r($xml);
 		
 		foreach ($xml->systemVariable as $states)  
