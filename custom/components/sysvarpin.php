@@ -19,7 +19,19 @@ ini_set('display_errors', 'on');
 
 
 function sysvarpin($component) {
-	global $interface;
+// definiere Interface
+
+	global $_SERVER;
+	global $ccu;
+	
+	$interface = $_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].str_replace("index.php", "",$_SERVER['PHP_SELF']);
+if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
+	$interface = "https://".$interface;
+}
+else $interface = "http://".$interface; 
+
+
+//echo "###".$interface."###";
     if (isset($component['ise_id'])) {
 		$modalId = mt_rand();
 		require("config/config.php");
@@ -27,9 +39,14 @@ function sysvarpin($component) {
 			$xmlFile = 'dev/sysvar.php?ise_id='.$component['ise_id'];
 		} else {
 			$xmlFile = $interface.'/interface.php?sysvar.cgi&ise_id='.$component['ise_id'];
+			//$xmlFile = 'interface.php?sysvar.cgi&ise_id='.$component['ise_id'];
+			//echo $xmlFile;
 		}
 		
 		$xml = simplexml_load_file($xmlFile);
+		// $xml = simplexml_load_string(api_state($ccu, $component['ise_id'], true));
+		//print_r($xml);
+		
 		foreach ($xml->systemVariable as $states)  
 		{  
 
