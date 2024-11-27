@@ -59,11 +59,13 @@ if(file_exists('config/categories.json'))
     $str = file_get_contents('config/categories.json');
 	
 	// Prüfe UTF-8
-	if (!mb_check_encoding($str, 'UTF-8')) 
-	{
-		echo "Datei 'config/categories.json' entspricht nicht dem UTF-8 Format. Bitte als UTF-8 speichern.";
-		exit();
-	}	
+	if (extension_loaded("mbstring")) {
+		if (!mb_check_encoding($str, 'UTF-8')) 
+		{
+			echo "Datei 'config/categories.json' entspricht nicht dem UTF-8 Format. Bitte als UTF-8 speichern.";
+			exit();
+		}	
+	}
 	
     $json = json_decode($str, true);
     $menu = $json['categories'];
@@ -125,11 +127,13 @@ if(file_exists('config/custom.json'))
     $str = file_get_contents('config/custom.json');
 	
 	// Prüfe UTF-8
-	if (!mb_check_encoding($str, 'UTF-8')) 
-	{
-		echo "Datei 'config/custom.json' entspricht nicht dem UTF-8 Format. Bitte als UTF-8 speichern.";
-		exit();
-	}	
+	if (extension_loaded("mbstring")) {
+		if (!mb_check_encoding($str, 'UTF-8')) 
+		{
+			echo "Datei 'config/config/custom.json' entspricht nicht dem UTF-8 Format. Bitte als UTF-8 speichern.";
+			exit();
+		}	
+	}
 	
 	
     $json = json_decode($str, true);
