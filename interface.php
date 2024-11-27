@@ -18,8 +18,8 @@ require_once(__DIR__.'/config/config.php');
 if (empty($ccu) or !is_array($ccu)) $ccu = array(
   'host' => $homematicIp,
   'https' => !empty($ccu_https),
-  'user' => $ccu_user,
-  'pw' => $ccu_pass
+  'user' => ( isset($ccu_user) ? $ccu_user : false ),
+  'pw' => ( isset($ccu_pass) ? $ccu_pass : false ),
 );
 // --
 
