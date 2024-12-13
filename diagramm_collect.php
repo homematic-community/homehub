@@ -9,6 +9,24 @@
 // */1 * * * * /usr/bin/php -f /pfad-zu-homehub/diagramm_collect.php >/dev/null 2>&1
 
 
+function read_config($file) {
+	if (!is_file($file)) return false;
+	$config = file_get_contents($file);
+
+	// BOM erkennen und entfernen
+	if (strncmp($config, pack("CCC", 0xef, 0xbb, 0xbf), 3) === 0) $config = substr($config, 3);
+
+	// nicht-UTF8 Inhalt zu UTF8 konvertieren
+	if (extension_loaded('mbstring')) return mb_convert_encoding($config, 'UTF-8', mb_detect_encoding($config, 'UTF-8, ISO-8859-1', true));
+	else {
+		if (!preg_match('/(*UTF8)[äöüÄÖÜß]/', $config)) {
+			return html_entity_decode(htmlentities($config, ENT_QUOTES, 'ISO-8859-1'), ENT_QUOTES , 'UTF-8');
+		} else {
+			return $config;
+		}
+	}
+}
+
 require_once(__DIR__.'/interface.php');
 
 
@@ -17,7 +35,8 @@ $tage = array("So", "Mo", "Di", "Mi", "Do", "Fr", "Sa");
 
 
 // Lese aus custom.json die diagramm ise_id welche geloggt werden sollen
-$data = file_get_contents(__DIR__.'/config/custom.json');
+#$data = file_get_contents(__DIR__.'/config/custom.json');
+$data = read_config(__DIR__.'/config/custom.json');
 $json = json_decode($data, true);
 
 
