@@ -2409,6 +2409,7 @@ var updateDatapoints = function () {
                         $('[data-id="' + ise_id + '"]').html(value);
                         break;
                     case 'CUX2801':
+					case 'CUX2802':
 					case 'CUX2804':
                         switch (datapoint) {
 							   case 'CURRENT':

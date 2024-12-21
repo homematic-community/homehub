@@ -248,6 +248,10 @@
             {
                 "name": "HmIPW-DRD3",
                 "icon": "light_light_dim_100.png"
+            },		
+			{
+                "name": "VIR-LG-RGBW-DIM",
+                "icon": "light_light_dim_100.png"
             }
         ],
         "CUxD": [
@@ -255,6 +259,10 @@
                 "name": "CUX2801",
                 "icon": "it_net.png"
             },     
+            {
+                "name": "CUX2802",
+                "icon": "it_net.png"
+            },     			
             {
                 "name": "CUX2803",
                 "icon": "it_internet.png"
