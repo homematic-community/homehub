@@ -97,8 +97,16 @@ string id;
   ! Namen und Wert des Elements ausgeben - geht nicht -> logged  info
 
   boolean bDevReady = oDevice.ReadyConfig();
+
+  boolean isRemote = ( ("#HMW-RCV-50" == oDevice.HssType()) || ("#HM-RCV-50" == oDevice.HssType()) || ("#HmIP-RCV-50" == oDevice.HssType()) );
+		
+  if( (oDeviceInterface) && (true == bDevReady) && ( ( isRemote == false ) || ( show_remote == 1 ) ) ) {
+  
+  
   string sDevInterface   = oDeviceInterface.Name();
   string sDevType        = oDevice.HssType();
+
+
 
   WriteLine("<device name='" # oDevice.Name() #"' ise_id='" # oDevice.ID() # "' unreach='false' sticky_unreach='false' config_pending='false'>");
 
@@ -147,6 +155,7 @@ string id;
 
 
   WriteLine("</device>");
+  }
 }
 WriteLine("</stateList>");
 EOHM;
@@ -260,64 +269,67 @@ function api_devicelist($ccu, $debug = false) {
   // Baue Skript zusammen
   $ccu_request = <<<EOHM
 WriteLine("");
-    string  PARTNER_INVALID = "65535";
+string  PARTNER_INVALID = "65535";
 integer show_internal = "} 1 {";
-      integer show_remote = "} 1 {";
-  WriteLine("<deviceList>");
+integer show_remote = "} 1 {";
+ WriteLine("<deviceList>");
 string id;
 ! Alle Datenpunkte durchlaufen
 
+!foreach(id, root.Devices().EnumUsedIDs()) {
 foreach(id, dom.GetObject(ID_DEVICES).EnumUsedIDs()) {
-!	foreach(id, root.Devices().EnumUsedIDs()) {
   ! Einzelnen Datenpunkt holen
   object oDevice = dom.GetObject(id);
 
   integer iDevInterfaceId = oDevice.Interface();
   object oDeviceInterface = dom.GetObject(iDevInterfaceId);
-  ! Namen und Wert des Elements ausgeben - geht nicht -> logged  info
-
   boolean bDevReady = oDevice.ReadyConfig();
-  string sDevInterface   = oDeviceInterface.Name();
-  string sDevType        = oDevice.HssType();
-  Write("<device name='" # oDevice.Name() #"' address='" # oDevice.Address() # "' ise_id='" # oDevice.ID() # "' interface='" # sDevInterface # "' device_type='" # sDevType # "' ready_config='" # bDevReady # "' >");
-  WriteLine("");
+  boolean isRemote = ( ("#HMW-RCV-50" == oDevice.HssType()) || ("#HM-RCV-50" == oDevice.HssType()) || ("#HmIP-RCV-50" == oDevice.HssType()) );
+		
+  if( (oDeviceInterface) && (true == bDevReady) && ( ( isRemote == false ) || ( show_remote == 1 ) ) ) {
+    ! Namen und Wert des Elements ausgeben - geht nicht -> logged  info
 
-  string cid;
-  integer x = 0;
+    boolean bDevReady = oDevice.ReadyConfig();
 
-  ! Alle Datenpunkte durchlaufen
-  foreach(cid, oDevice.Channels()) {
+    string sDevInterface   = oDeviceInterface.Name();
+    string sDevType        = oDevice.HssType();
+    Write("<device name='" # oDevice.Name() #"' address='" # oDevice.Address() # "' ise_id='" # oDevice.ID() # "' interface='" # sDevInterface # "' device_type='" # sDevType # "' ready_config='" # bDevReady # "' >");
+    WriteLine("");
 
-    ! Einzelnen Kanal holen
-    var ch = dom.GetObject(cid);
-    ! Namen und Wert des Kanals ausgeben
-    !WriteLine(ch.Name() # ": " # ch.ID());
-	string  sChnPartnerId = ch.ChnGroupPartnerId();
-	if (PARTNER_INVALID == sChnPartnerId) { sChnPartnerId = ""; }
-    Write("<channel name='"#ch.Name()#"' type='"#ch.ChannelType()#"' address='"#ch.Address()#"' ise_id='"#ch.ID()#"' direction='' parent_device='"#ch.Device()#"' index='"# x #"' group_partner='" # sChnPartnerId # "' aes_available='' transmission_mode=''");
+    string cid;
+    integer x = 0;
 
- if (false == ch.Internal()) {
-                Write(" visible='" # ch.Visible() # "'");
-              } else {
-                Write(" visible=''");
-              }
+    ! Alle Datenpunkte durchlaufen
+    foreach(cid, oDevice.Channels()) {
 
- Write(" ready_config='' operate='");
- if (false == ch.Internal()) {
-   if( ch.UserAccessRights(iulOtherThanAdmin) == iarFullAccess ) {
-                  Write("true");
-                } else {
-                  Write("false");
-                }
-}
-Write("' />");
- WriteLine("");
+      ! Einzelnen Kanal holen
+      var ch = dom.GetObject(cid);
+      ! Namen und Wert des Kanals ausgeben
+      !WriteLine(ch.Name() # ": " # ch.ID());
+	  string  sChnPartnerId = ch.ChnGroupPartnerId();
+	  if (PARTNER_INVALID == sChnPartnerId) { sChnPartnerId = ""; }
+      Write("<channel name='"#ch.Name()#"' type='"#ch.ChannelType()#"' address='"#ch.Address()#"' ise_id='"#ch.ID()#"' direction='' parent_device='"#ch.Device()#"' index='"# x #"' group_partner='" # sChnPartnerId # "' aes_available='' transmission_mode=''");
 
- x=x+1;
+      if (false == ch.Internal()) {
+        Write(" visible='" # ch.Visible() # "'");
+      } else {
+        Write(" visible=''");
+      }
 
+      Write(" ready_config='' operate='");
+      if (false == ch.Internal()) {
+        if( ch.UserAccessRights(iulOtherThanAdmin) == iarFullAccess ) {
+          Write("true");
+        } else {
+          Write("false");
+        }
+      }
+      Write("' />");
+      WriteLine("");
+      x=x+1;
+    }
+    WriteLine("</device>");
   }
- WriteLine("</device>");
-
 }
 WriteLine("</deviceList>");
 EOHM;
