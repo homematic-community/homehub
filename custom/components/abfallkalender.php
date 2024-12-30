@@ -73,7 +73,8 @@ if(isset($_GET['lade']))
 	      if(isset($dataentryDetailZeile[1]))
 	      {
 			  if ($debug==1) { echo "<br>ÜÜÜÜÜ".$dataentryDetailZeile[0]." - ".$dataentryDetailZeile[1]; }	  
-		      $text4 = $dataentryDetailZeile[1];
+			  // entferne Zeichen für Landkreis Kusel
+		      $text4 = str_replace("()", "", $dataentryDetailZeile[1]);;
 		  }
 		}
 		   
