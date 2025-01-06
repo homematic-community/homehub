@@ -526,6 +526,10 @@
         ],    
         "Sender": [
             {
+                "name": "HmIP-CCU3",
+                "icon": "ccu.png"
+            },
+            {
                 "name": "HmIP-STV",
                 "icon": "it_remote.png"
             },

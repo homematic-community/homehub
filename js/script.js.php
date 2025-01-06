@@ -2575,6 +2575,9 @@ var updateDatapoints = function () {
                                 $('[data-id="' + ise_id + '"]').html(value);
                         }
                         break;
+                    case 'HmIP-CCU3':
+                        $('[data-id="' + ise_id + '"]').html((Math.round(value * 10) / 10) + ' &percnt;');
+                        break;						
                     default:
                         $('[data-id="' + ise_id + '"]').html(value);
                 }
