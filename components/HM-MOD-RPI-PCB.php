@@ -1,5 +1,5 @@
 <?php   
-function RPI_RF_MOD_PCB($component) {
+function HM_MOD_RPI_PCB($component) {
    // if ($component['parent_device_interface'] == 'HmIP-RF' ) {
         $modalId = mt_rand();        
         if (!isset($component['color'])) $component['color'] = '#00CC33';
