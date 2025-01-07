@@ -684,6 +684,10 @@ var updateDatapoints = function () {
                                     $('[data-id="' + ise_id + '"]').html('<img src="icon/time_automatic.png" />');
                                     $('[data-id="' + ise_id + '"]').attr('data-set-id', parseInt(ise_id)-10); //MANU_MODE
                                     $('[data-id="' + ise_id + '"]').attr('data-set-value', '1');
+                                } else if (value === '2') {
+                                    $('[data-id="' + ise_id + '"]').html('<img src="icon/scene_party.png" />');
+                                    $('[data-id="' + ise_id + '"]').attr('data-set-id', parseInt(ise_id)-10); //PARTY_MODE
+                                    $('[data-id="' + ise_id + '"]').attr('data-set-value', '1');
                                 } else {
                                     $('[data-id="' + ise_id + '"]').html('<img src="icon/time_manual_mode.png" />');
                                     $('[data-id="' + ise_id + '"]').attr('data-set-id', parseInt(ise_id)-10); //AUTO_MODE
@@ -716,6 +720,53 @@ var updateDatapoints = function () {
 									$('[data-id="' + ise_id + '"]').html('<img src="icon/sani_valve_100.png" />');
                                 }
                                 break;
+							case 'PARTY_TIME_START':
+                                if (value != "") {									
+									var date = new Date();
+									y = ( date.getFullYear() + ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2) + ("0" + date.getHours() ).slice(-2) + ("0" + date.getMinutes()).slice(-2));
+									
+									x = value.replaceAll('_','-');
+									x = x.replaceAll('-','');
+									x = x.replaceAll(' ','');
+									x = x.replaceAll(':','');
+									
+									//console.log(x + " - " + y);
+					
+									if (y <= x) {	
+										if (document.getElementById(ise_id))	
+										{ 					
+											document.getElementById(ise_id).style.display = "inline";
+										}
+										x = value.replaceAll('_','-');
+										x = x.replaceAll(' ',' <img src="icon/time_clock.png" style="height:18px;" /> ');
+										$('[data-id="' + ise_id + '"]').html('Party-/Urlaubsmodus: <img src="icon/time_calendar.png" style="height:18px;" /> ' + x);									
+									}									
+                                }
+                                break;
+							case 'PARTY_TIME_END':
+                                if (value != "") {									
+									var date = new Date();
+									y = ( date.getFullYear() + ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2) + ("0" + date.getHours() ).slice(-2) + ("0" + date.getMinutes()).slice(-2));
+									
+									x = value.replaceAll('_','-');
+									x = x.replaceAll('-','');
+									x = x.replaceAll(' ','');
+									x = x.replaceAll(':','');
+									
+									//console.log(x + " - " + y);
+									
+									if (y <= x) {		
+										if (document.getElementById(ise_id))	
+										{ 					
+											document.getElementById(ise_id).style.display = "inline";
+										}
+										x = value.replaceAll('_','-');
+										x = x.replaceAll(' ',' <img src="icon/time_clock.png" style="height:18px;" /> ');
+										$('[data-id="' + ise_id + '"]').html('<img src="icon/time_calendar.png" style="height:18px;" /> ' + x);							
+									}									
+                                }
+									
+                                break;					 
                             default:
                                 $('[data-id="' + ise_id + '"]').html(value);
                         }
@@ -740,6 +791,10 @@ var updateDatapoints = function () {
                                 if (value === '0') {
                                     $('[data-id="' + ise_id + '"]').html('<img src="icon/time_automatic.png" />');
                                     $('[data-id="' + ise_id + '"]').attr('data-set-id', parseInt(ise_id)-10); //MANU_MODE
+                                    $('[data-id="' + ise_id + '"]').attr('data-set-value', '1');
+                                } else if (value === '2') {
+                                    $('[data-id="' + ise_id + '"]').html('<img src="icon/scene_party.png" />');
+                                    $('[data-id="' + ise_id + '"]').attr('data-set-id', parseInt(ise_id)-10); //PARTY_MODE
                                     $('[data-id="' + ise_id + '"]').attr('data-set-value', '1');
                                 } else {
                                     $('[data-id="' + ise_id + '"]').html('<img src="icon/time_manual_mode.png" />');
@@ -768,6 +823,53 @@ var updateDatapoints = function () {
                                     $('[data-id="' + ise_id + '"]').html('<img src="icon/measure_battery_25.png" />');
                                 }
                                 break;  
+							case 'PARTY_TIME_START':
+                                if (value != "") {									
+									var date = new Date();
+									y = ( date.getFullYear() + ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2) + ("0" + date.getHours() ).slice(-2) + ("0" + date.getMinutes()).slice(-2));
+									
+									x = value.replaceAll('_','-');
+									x = x.replaceAll('-','');
+									x = x.replaceAll(' ','');
+									x = x.replaceAll(':','');
+									
+									//console.log(x + " - " + y);
+					
+									if (y <= x) {	
+										if (document.getElementById(ise_id))	
+										{ 					
+											document.getElementById(ise_id).style.display = "inline";
+										}
+										x = value.replaceAll('_','-');
+										x = x.replaceAll(' ',' <img src="icon/time_clock.png" style="height:18px;" /> ');
+										$('[data-id="' + ise_id + '"]').html('Party-/Urlaubsmodus: <img src="icon/time_calendar.png" style="height:18px;" /> ' + x);									
+									}									
+                                }
+                                break;
+							case 'PARTY_TIME_END':
+                                if (value != "") {									
+									var date = new Date();
+									y = ( date.getFullYear() + ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2) + ("0" + date.getHours() ).slice(-2) + ("0" + date.getMinutes()).slice(-2));
+									
+									x = value.replaceAll('_','-');
+									x = x.replaceAll('-','');
+									x = x.replaceAll(' ','');
+									x = x.replaceAll(':','');
+									
+									//console.log(x + " - " + y);
+									
+									if (y <= x) {		
+										if (document.getElementById(ise_id))	
+										{ 					
+											document.getElementById(ise_id).style.display = "inline";
+										}
+										x = value.replaceAll('_','-');
+										x = x.replaceAll(' ',' <img src="icon/time_clock.png" style="height:18px;" /> ');
+										$('[data-id="' + ise_id + '"]').html('<img src="icon/time_calendar.png" style="height:18px;" /> ' + x);							
+									}									
+                                }
+									
+                                break;									
                             default:
                                 $('[data-id="' + ise_id + '"]').html(value);
                         }
@@ -782,6 +884,10 @@ var updateDatapoints = function () {
                                 if (value === '0') {
                                     $('[data-id="' + ise_id + '"]').html('<img src="icon/time_automatic.png" />');
                                     $('[data-id="' + ise_id + '"]').attr('data-set-id', parseInt(ise_id)-10); //MANU_MODE
+                                    $('[data-id="' + ise_id + '"]').attr('data-set-value', '1');
+                                } else if (value === '2') {
+                                    $('[data-id="' + ise_id + '"]').html('<img src="icon/scene_party.png" />');
+                                    $('[data-id="' + ise_id + '"]').attr('data-set-id', parseInt(ise_id)-10); //PARTY_MODE
                                     $('[data-id="' + ise_id + '"]').attr('data-set-value', '1');
                                 } else {
                                     $('[data-id="' + ise_id + '"]').html('<img src="icon/time_manual_mode.png" />');
@@ -811,6 +917,53 @@ var updateDatapoints = function () {
                                     $('[data-id="' + ise_id + '"]').html('<img src="icon/measure_battery_25.png" />');
                                 }
                                 break;  
+							case 'PARTY_TIME_START':
+                                if (value != "") {									
+									var date = new Date();
+									y = ( date.getFullYear() + ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2) + ("0" + date.getHours() ).slice(-2) + ("0" + date.getMinutes()).slice(-2));
+									
+									x = value.replaceAll('_','-');
+									x = x.replaceAll('-','');
+									x = x.replaceAll(' ','');
+									x = x.replaceAll(':','');
+									
+									//console.log(x + " - " + y);
+					
+									if (y <= x) {	
+										if (document.getElementById(ise_id))	
+										{ 					
+											document.getElementById(ise_id).style.display = "inline";
+										}
+										x = value.replaceAll('_','-');
+										x = x.replaceAll(' ',' <img src="icon/time_clock.png" style="height:18px;" /> ');
+										$('[data-id="' + ise_id + '"]').html('Party-/Urlaubsmodus: <img src="icon/time_calendar.png" style="height:18px;" /> ' + x);									
+									}									
+                                }
+                                break;
+							case 'PARTY_TIME_END':
+                                if (value != "") {									
+									var date = new Date();
+									y = ( date.getFullYear() + ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2) + ("0" + date.getHours() ).slice(-2) + ("0" + date.getMinutes()).slice(-2));
+									
+									x = value.replaceAll('_','-');
+									x = x.replaceAll('-','');
+									x = x.replaceAll(' ','');
+									x = x.replaceAll(':','');
+									
+									//console.log(x + " - " + y);
+									
+									if (y <= x) {		
+										if (document.getElementById(ise_id))	
+										{ 					
+											document.getElementById(ise_id).style.display = "inline";
+										}
+										x = value.replaceAll('_','-');
+										x = x.replaceAll(' ',' <img src="icon/time_clock.png" style="height:18px;" /> ');
+										$('[data-id="' + ise_id + '"]').html('<img src="icon/time_calendar.png" style="height:18px;" /> ' + x);							
+									}									
+                                }
+									
+                                break;									
                             default:
                                 $('[data-id="' + ise_id + '"]').html(value);
                         }
@@ -1504,6 +1657,53 @@ var updateDatapoints = function () {
                             case 'VALVE_STATE':
                                 $('[data-id="' + ise_id + '"]').html('<img src="icon/sani_valve_50.png" height=19 /> ' + (Math.round(value * 10) / 10) + ' %');
                                 break;
+							case 'PARTY_TIME_START':
+                                if (value != "") {									
+									var date = new Date();
+									y = ( date.getFullYear() + ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2) + ("0" + date.getHours() ).slice(-2) + ("0" + date.getMinutes()).slice(-2));
+									
+									x = value.replaceAll('_','-');
+									x = x.replaceAll('-','');
+									x = x.replaceAll(' ','');
+									x = x.replaceAll(':','');
+									
+									//console.log(x + " - " + y);
+					
+									if (y <= x) {	
+										if (document.getElementById(ise_id))	
+										{ 					
+											document.getElementById(ise_id).style.display = "inline";
+										}
+										x = value.replaceAll('_','-');
+										x = x.replaceAll(' ',' <img src="icon/time_clock.png" style="height:18px;" /> ');
+										$('[data-id="' + ise_id + '"]').html('Party-/Urlaubsmodus: <img src="icon/time_calendar.png" style="height:18px;" /> ' + x);									
+									}									
+                                }
+                                break;
+							case 'PARTY_TIME_END':
+                                if (value != "") {									
+									var date = new Date();
+									y = ( date.getFullYear() + ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2) + ("0" + date.getHours() ).slice(-2) + ("0" + date.getMinutes()).slice(-2));
+									
+									x = value.replaceAll('_','-');
+									x = x.replaceAll('-','');
+									x = x.replaceAll(' ','');
+									x = x.replaceAll(':','');
+									
+									//console.log(x + " - " + y);
+									
+									if (y <= x) {		
+										if (document.getElementById(ise_id))	
+										{ 					
+											document.getElementById(ise_id).style.display = "inline";
+										}
+										x = value.replaceAll('_','-');
+										x = x.replaceAll(' ',' <img src="icon/time_clock.png" style="height:18px;" /> ');
+										$('[data-id="' + ise_id + '"]').html('<img src="icon/time_calendar.png" style="height:18px;" /> ' + x);							
+									}									
+                                }
+									
+                                break;									
                             default:
                                 $('[data-id="' + ise_id + '"]').html(value);
                         }
