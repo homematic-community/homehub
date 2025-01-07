@@ -530,6 +530,18 @@
                 "icon": "ccu.png"
             },
             {
+                "name": "RPI-RF-MOD",
+                "icon": "ccu.png"
+            },	
+            {
+                "name": "RPI-RF-MOD-PCB",
+                "icon": "ccu.png"
+            },	
+            {
+                "name": "HmIP-RFUSB",
+                "icon": "ccu.png"
+            },				
+            {
                 "name": "HmIP-STV",
                 "icon": "it_remote.png"
             },
