@@ -222,6 +222,10 @@
                 "icon": "light_light_dim_100.png"
             },
             {
+                "name": "HmIP-PCBS2",
+                "icon": "control_switch_m_4.png"
+            },			
+            {
                 "name": "HmIPW-DRS8",
                 "icon": "light_light_dim_100.png"
             },

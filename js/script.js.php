@@ -144,6 +144,7 @@ var updateDatapoints = function () {
                     case 'HmIP-PSM-2 QHJ':
                     case 'HmIP-BSM':
                     case 'HmIP-BS2':
+					case 'HmIP-PCBS2':
                     case 'HmIP-FSM':
                     case 'HmIP-FSM16':
                     case 'HmIP-BSL':
@@ -445,6 +446,11 @@ var updateDatapoints = function () {
                                     $('[data-id="' + ise_id + '"]').html('<img src="icon/measure_battery_25.png" />');
                                 }
                                 break;
+                            case 'LOW_BAT':
+                                if (value === 'true') {
+                                    $('[data-id="' + ise_id + '"]').html('<img src="icon/measure_battery_25.png" />');
+                                }
+                                break;								
                             case 'STATE':
 							
                                 if (value === 'true') {

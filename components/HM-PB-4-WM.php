@@ -1,5 +1,5 @@
 <?php
-function HM_PB_4_FM($component) {
+function HM_PB_4_WM($component) {
     if ($component['parent_device_interface'] == 'BidCos-RF' && $component['visible'] == 'true' && isset($component['PRESS_SHORT'])) {
         if (!isset($component['color'])) $component['color'] = '#595959';
             return '<div class="hh" style=\'border-left-color: '.$component['color'].'; border-left-style: solid;\'>'

@@ -13,10 +13,14 @@ function Webcam($component) {
 		if($component["autorefresh"] == "1") {
 			$AutoRefresh = 'timeoutHandle_'.$modalId.' = window.setTimeout(webcam_'.$modalId.', 3000);';
 		}
+		else
+		{
+			$AutoRefresh = "";
+		}
 	}
 	else
 	{
-		$AutoResfresh = "";
+		$AutoRefresh = "";
 	}
 	
 	
