@@ -369,9 +369,6 @@ if(count((array)$export) > 0)
 		<script src='js/sun.js'></script> 		
         <script src='js/script.js.php?<?php echo "id=".rand(1,100); ?>'></script>
 		
-		<?php if(file_exists("custom/js/custom.js")) { echo "<script src='custom/js/custom.js?id=".rand(1,100)."'></script>"; } ?>
-        <?php if(isset($ioBrokerComponent)) { echo "<script src='js/ioBroker.js?id=".rand(1,100)."'></script>"; } ?>
-
     </head>
     <body name="top">
 
@@ -643,7 +640,8 @@ if(count((array)$export) > 0)
 
 		</div>
 
-
+		<?php if(file_exists("custom/js/custom.js")) { echo "<script src='custom/js/custom.js?id=".rand(1,100)."'></script>"; } ?>
+        <?php if(isset($ioBrokerComponent)) { echo "<script src='js/ioBroker.js?id=".rand(1,100)."'></script>"; } ?>
 	 
 	</body>
 </html>
