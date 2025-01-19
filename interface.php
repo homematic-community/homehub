@@ -71,6 +71,17 @@ function ccu_remote($ccu, $ccu_request, $plain_result = false) {
   return $content;
 }
 
+if (!function_exists("array_is_list")) {
+  function array_is_list(array $array): bool {
+    $i = -1;
+      foreach ($array as $k => $v) {
+        ++$i;
+        if ($k !== $i) return false;
+      }
+    return true;
+  }
+}
+
 // ALLE STATES
 if (isset($_SERVER['QUERY_STRING']) and (strpos($_SERVER['QUERY_STRING'], "statelist.cgi") !== false)) {
   header("Content-Type: text/xml; charset=ISO-8859-1");

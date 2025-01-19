@@ -352,7 +352,25 @@ if(count((array)$export) > 0)
         <link rel="apple-touch-icon" sizes="152x152" href="apple-touch-icon-152x152.png" />
         <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-180x180.png" />
 
+	    <script type="text/javascript">
+            //<![CDATA[
+            var homematicIp = '<?php echo $homematicIp; ?>';
+			<?php if(file_exists("dev/export.json")) { echo "var dev = 1;\n"; } else { echo "var dev = 0;\n"; }?>
+            var logo = '<?php echo $logo; ?>';
+            var latitude = '<?php echo $latitude; ?>';
+            var longitude = '<?php echo $longitude; ?>';       
+            var timerMiliseconds = <?php echo $timerPeriod * 1000; ?>;
+            //]]>
+        </script>
+        
+		<script src="js/jquery-3.7.1.min.js"></script>
+		<script src="js/chart.js"></script>
+		<script src="js/bootstrap.min.js.php?transition_duration=<?php echo $transition_duration; ?>"></script>
+		<script src='js/sun.js'></script> 		
+        <script src='js/script.js.php?<?php echo "id=".rand(1,100); ?>'></script>
 		
+		<?php if(file_exists("custom/js/custom.js")) { echo "<script src='custom/js/custom.js?id=".rand(1,100)."'></script>"; } ?>
+        <?php if(isset($ioBrokerComponent)) { echo "<script src='js/ioBroker.js?id=".rand(1,100)."'></script>"; } ?>
 
     </head>
     <body name="top">
@@ -625,25 +643,7 @@ if(count((array)$export) > 0)
 
 		</div>
 
-	    <script type="text/javascript">
-            //<![CDATA[
-            var homematicIp = '<?php echo $homematicIp; ?>';
-			<?php if(file_exists("dev/export.json")) { echo "var dev = 1;\n"; } else { echo "var dev = 0;\n"; }?>
-            var logo = '<?php echo $logo; ?>';
-            var latitude = '<?php echo $latitude; ?>';
-            var longitude = '<?php echo $longitude; ?>';       
-            var timerMiliseconds = <?php echo $timerPeriod * 1000; ?>;
-            //]]>
-        </script>
-        
-		<script src="js/jquery-3.7.1.min.js"></script>
-		<script src="js/chart.js"></script>
-		<script src="js/bootstrap.min.js.php?transition_duration=<?php echo $transition_duration; ?>"></script>
-		<script src='js/sun.js'></script> 		
-        <script src='js/script.js.php?<?php echo "id=".rand(1,100); ?>'></script>
-		
-		<?php if(file_exists("custom/js/custom.js")) { echo "<script src='custom/js/custom.js?id=".rand(1,100)."'></script>"; } ?>
-        <?php if(isset($ioBrokerComponent)) { echo "<script src='js/ioBroker.js?id=".rand(1,100)."'></script>"; } ?>
+
 	 
 	</body>
 </html>
