@@ -5,6 +5,13 @@
 //SysVar|Waschmaschine Status||ISE_ID=7284|VARIABLE=2|VALUE=2|VALUE_LIST=aus;läuft;fertig|MIN=|MAX=|UNIT=|TYPE=16|SUBTYPE=29|LOGGED=false|VISIBLE=true|TIMESTAMP=1443709817|VALUE_NAME_0=|VALUE_NAME_1=|
 //SysVar|CCU Boot Zeit||ISE_ID=5580|VARIABLE=14.09.2015 21:17:46 Uhr|VALUE=14.09.2015 21:17:46 Uhr|VALUE_LIST=|MIN=|MAX=|UNIT=|TYPE=20|SUBTYPE=11|LOGGED=false|VISIBLE=true|TIMESTAMP=1442258266|VALUE_NAME_0=|VALUE_NAME_1=|
 
+
+/*
+2025-02-02 -  Schappert:
+Systemvariablen als Nummern unterstützen den Parameter "kommastellen":"x"
+Damit wird die Zahl auf die Kommastellen reduziert bzw. aufgefüllt.
+*/
+
 function SysVar($component) {
     if ($component['visible'] == 'true' && isset($component['ise_id'])) {
         if (!isset($component['operate'])) $component['operate'] = 'true';
@@ -46,6 +53,18 @@ function SysVar($component) {
             case '4':
                 // Number
                 $modalId = mt_rand();
+				
+				if(isset($component['kommastellen'])) 
+				{ 
+					if(is_numeric($component['kommastellen']))
+					{
+						$kommastellen = ' data-kommastellen="'.$component['kommastellen'].'" ';
+					}
+				}
+				else
+				{
+					$kommastellen = "";
+				}
         
                 // Indikator anzeigen?
                 if(!isset($component['indicator'])) {
@@ -60,7 +79,7 @@ function SysVar($component) {
 						.$ShowTime
                             . '<span class="info';
                             if ($component['indicator'] == '-1') $content = $content.' lheight';
-                            $content = $content.'" data-id="' . $component['ise_id'] . '" data-component="' . $component['component'] . '" data-datapoint="4" data-unit="' . htmlentities($component['unit']) . '" data-indicator="' . $component['indicator'] . '"></span>'
+                            $content = $content.'" data-id="' . $component['ise_id'] . '" data-component="' . $component['component'] . '" data-datapoint="4" data-unit="' . htmlentities($component['unit']) . '" data-indicator="' . $component['indicator'] . '" '.$kommastellen.'></span>'
                         . '</div>';
                     if ($component['operate'] == 'true') $content = $content.'<div class="clearfix"></div></div><div class="hh2 collapse" id="' . $modalId . '">'
                         . '<div class="row text-center">'

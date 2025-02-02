@@ -1427,10 +1427,21 @@ var updateDatapoints = function () {
                                   }
                                                                    
                                 }   
+								var kommastellen = $('[data-id="' + ise_id + '"]').attr('data-kommastellen');
+								if (kommastellen) 
+								{
+									value = value.replace(",",".");
+									value = parseFloat(value)
+									value = value.toFixed(kommastellen) ;
+								}
+								else
+								{
+									value = parseFloat(value);
+								}
                                 if (unit !== '') {
-                                    $('[data-id="' + ise_id + '"]').html(parseFloat(value) + ' ' + unit);
+                                    $('[data-id="' + ise_id + '"]').html(value + ' ' + unit);
                                 } else {
-                                    $('[data-id="' + ise_id + '"]').html(parseFloat(value));
+                                    $('[data-id="' + ise_id + '"]').html(value);
                                 }      
                                 break;
                             case '16':
