@@ -8,7 +8,7 @@
 
 /*
 2025-02-02 -  Schappert:
-Systemvariablen als Nummern unterstützen den Parameter "kommastellen":"x"
+Systemvariablen als Nummern unterstützen den Parameter "precision":"x"
 Damit wird die Zahl auf die Kommastellen reduziert bzw. aufgefüllt.
 */
 
@@ -54,16 +54,16 @@ function SysVar($component) {
                 // Number
                 $modalId = mt_rand();
 				
-				if(isset($component['kommastellen'])) 
+				if(isset($component['precision'])) 
 				{ 
-					if(is_numeric($component['kommastellen']))
+					if(is_numeric($component['precision']))
 					{
-						$kommastellen = ' data-kommastellen="'.$component['kommastellen'].'" ';
+						$precision = ' data-precision="'.$component['precision'].'" ';
 					}
 				}
 				else
 				{
-					$kommastellen = "";
+					$precision = "";
 				}
         
                 // Indikator anzeigen?
@@ -79,7 +79,7 @@ function SysVar($component) {
 						.$ShowTime
                             . '<span class="info';
                             if ($component['indicator'] == '-1') $content = $content.' lheight';
-                            $content = $content.'" data-id="' . $component['ise_id'] . '" data-component="' . $component['component'] . '" data-datapoint="4" data-unit="' . htmlentities($component['unit']) . '" data-indicator="' . $component['indicator'] . '" '.$kommastellen.'></span>'
+                            $content = $content.'" data-id="' . $component['ise_id'] . '" data-component="' . $component['component'] . '" data-datapoint="4" data-unit="' . htmlentities($component['unit']) . '" data-indicator="' . $component['indicator'] . '" '.$precision.'></span>'
                         . '</div>';
                     if ($component['operate'] == 'true') $content = $content.'<div class="clearfix"></div></div><div class="hh2 collapse" id="' . $modalId . '">'
                         . '<div class="row text-center">'

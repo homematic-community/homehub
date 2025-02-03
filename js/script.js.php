@@ -1427,12 +1427,12 @@ var updateDatapoints = function () {
                                   }
                                                                    
                                 }   
-								var kommastellen = $('[data-id="' + ise_id + '"]').attr('data-kommastellen');
-								if (kommastellen) 
+								var precision = $('[data-id="' + ise_id + '"]').attr('data-precision');
+								if (precision) 
 								{
 									value = value.replace(",",".");
 									value = parseFloat(value)
-									value = value.toFixed(kommastellen) ;
+									value = value.toFixed(precision) ;
 								}
 								else
 								{
