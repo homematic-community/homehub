@@ -1,40 +1,44 @@
 <?php
-// php8
 
 /***********************************************
 Diagramm Addon
 ***********************************************/
 
-// Parameter
-// aufgeklappt	= 0 zugeklappt 1 aufgeklappt - standard 0
+// Parameter (config/custom.json)
+//
+// component: diagramm
+// ise_id: eine oder mehrere (durch Komma getrennte) ISE_ID des/der zu sammelnden Datenpunkte(s)
+// collect: Abstand der Speicherung in Minuten, oder feste Uhrzeit(en) im Format HH:MM[,HH:MM[,...]]
+// history (optional): maximale Anzahl gespeicherter Werte, 1...5000. Standard 200.
+// size (optional): Höhe des Diagramms 0...3. Standard 100% Fensterhöhe.
+// precision (optional): Anzahl Dezimalstellen bei numerischen Werten. Standard 1.
+// only_changed (optional): 1/true/yes: nur speichern, wenn sich der Wert geändert hat. Standard false.
+// aufgeklappt (optional): 1/true/yes: Diagramm wird beim laden aufgeklappt. Standard false.
+// 
+////////////////////////////////////////////////////
 
 if(isset($_GET['lade']))
 {
   if($_GET['lade']== "content")
   {
-    if(isset($_GET['history']))
-    {
-	  $history = $_GET['history'];
-    }
-    else
-    {
-	  $history = "200";
-    }
 
-    // Datei definieren
-    $datei = "../../cache/diagramm_".$_GET['ise_id']."_".$history.".csv";
+    $collect = ( isset($_GET['collect']) ? $_GET['collect'] : 0 );
+
+    // history auf ganzzahlige Werte zwischen 1 und 5000 begrenzen, Standard 200
+    $history = ( isset($_GET['history']) ? max(1, min(intval($_GET['history']), 5000)) : 200 );
+
+    // Dateiname der cache Datei diagramm_<ise_id>_<collect>_<history>.csv
+    $datei = '../../cache/diagramm_'.preg_replace('/\D/', '-', $_GET['ise_id']).'_'.preg_replace('/\D/', '-', $collect).'_'.$history.'.csv';
 
     // Daten zeilenweise in ein Array einlesen
     if(!file_exists($datei))
     {
       echo "Cache-Datei existiert nicht";
-	  exit();
+      exit();
     }
 
     // Daten zeilenweise in ein Array einlesen
     $array = file($datei);
- 
- 
 
     $p = 0;
     $Ch = -1000;
@@ -48,11 +52,6 @@ if(isset($_GET['lade']))
 	foreach($array AS $arrayinhalt) 
 	{
  
- 
-
-		
-		
-		
 		$p++;
 		$diaexplode = explode(";", trim($arrayinhalt));
 		/*
@@ -109,27 +108,8 @@ if(isset($_GET['lade']))
   }
 
 
+echo '<canvas id="chart_'.$_GET['modalID'].'" style="position: relative; width: 100vw; height: '.( isset($_GET['size']) ? strval(30 + 20 * intval($_GET['size'])) : '100' ).'vh"></canvas>';
 
-
-	if($_GET['size'] == "klein")
-	{
-		//echo '<div class="ct-chart ct-golden-section" id="chart_'.$_GET['modalID'].'" style="height:120px;position: absolute;bottom: -30px;"></div>';
-		echo '<canvas id="chart_'.$_GET['modalID'].'" width="100%" ></canvas>';
-	}
-	elseif($_GET['size'] == "2")
-	{
-	//	echo '<div class="ct-chart ct-golden-section" id="chart_'.$_GET['modalID'].'" style="height:100px;position: absolute;bottom: 20px;"></div>';
-	echo '<canvas id="chart_'.$_GET['modalID'].'" width="100%" ></canvas>';
-	}
-	elseif($_GET['size'] == "3")
-	{
-	//	echo '<div class="ct-chart ct-golden-section" id="chart_'.$_GET['modalID'].'" style="height:100px;position: absolute;bottom: 120px;border:0px solid;"></div>';
-	echo '<canvas id="chart_'.$_GET['modalID'].'" width="100%" height="70%"></canvas>';
-	}
-	else
-	{
-		echo '<canvas id="chart_'.$_GET['modalID'].'" style="padding:0px;margin:5px;height:80%;width:100%;"></canvas>';
-	}
 
 $tCh = ($Cl + 0.5) - $Ch;
 if($tCh > 0) { $Ch = $Ch + $tCh; }
@@ -292,79 +272,62 @@ color:"grey"
 function diagramm($component) {
     $modalId = mt_rand();
 	
-	 $dateilink  = "cache/diagramm_".$component['ise_id']."_".$component['history'].".csv";
-	  
-	  
-	if(!isset($component["refresh"]))
-	{
-		$refresh = "";
-	}
-    else
-	{
-		//	$component["refresh"] = "900"; 
-		$refresh = 'setInterval(execute_diagramm_'. $modalId.',('.$component["refresh"].'*1000));';
-	}
-	// Legend
-	 if(isset($component['legend']))
-	 {
-		 $legend = "&legend=".$component['legend'];
-	 }
-	 else
-	 {
-		 $legend = "";
-	 }
+    $collect = ( isset($component['collect']) ? $component['collect'] : 0 );
 
-	$Groesse = "hhdouble";
-    if(isset($component['size']))
-	{
-		if($component['size'] == "klein")
-		{
-			$Groesse = "";
-		}
-	}
-	else
-	{
-		$component['size'] = "";
-	}
+	// history auf ganzzahlige Werte zwischen 1 und 5000 begrenzen, Standard 200
+    $history = ( isset($component['history']) ? max(1, min(intval($component['history']), 5000)) : 200 );
 
-	
+	// Dateiname der cache Datei diagramm_<ise_id>_<collect>_<history>.csv
+	$dateilink  = 'cache/diagramm_'.preg_replace('/\D/', '-', $component['ise_id']).'_'.preg_replace('/\D/', '-', $collect).'_'.$history.'.csv';
+
+	$refresh = ( !empty($component["refresh"]) ? 'setInterval(execute_diagramm_'. $modalId.',('.$component['refresh'].'*1000));' : '' );
+
+	$legend = ( !empty($component['legend']) ? '&legend='.$component['legend'] : '' );
+
+    if (!isset($component['size'])) $component['size'] = '';
+
 	//style="display:flow-root;
 	
-		if(isset($component["aufgeklappt"])) {
-		if($component["aufgeklappt"] == "1") {
-			$aufgeklappt = '$("#'.$modalId.'").collapse("toggle");';
-		}
-		else {
-			$aufgeklappt = "";
-		}
+	//$aufgeklappt = ( (isset($component['aufgeklappt']) and in_array(strtolower($component['aufgeklappt']), array('1', 'yes', 'true'))) ? '$("#'.$modalId.'").collapse("toggle");' : '' );
+	
+	if(isset($component['aufgeklappt']) and in_array(strtolower($component['aufgeklappt']), array('1', 'yes', 'true')))
+	{
+		$aufgeklapptA = "collapse in";
+		$aufgeklapptB = "true";
+		$aufgeklapptC = "collapse collapsed in";
 	}
 	else
 	{
-		$aufgeklappt = "";
+		$aufgeklapptA = "collapse collapsed";
+		$aufgeklapptB = "false";
+		$aufgeklapptC = "collapse collapsed";
 	}
 	
-	 return '<div class="hh">'
-        . '<div data-toggle="collapse" data-target="#' . $modalId . '" style="display:flow-root;" class="collapsed">'
+	
+	if (!isset($component['color'])) $component['color'] = 'transparent';  
+	if(isset($component['link'])) { $link = '<a href="'.$component['link'].'" target="_blank"><img src="icon/' . $component["icon"] . '" class="icon">' . $component['name'].'</a>'; }
+	else { $link = '<img src="icon/' . $component["icon"] . '" class="icon">' . $component['name'];}
+	
+    return '<div class="hh" style=\'border-left-color: '.$component['color'].'; border-left-style: solid;\'>'
+        . '<div data-toggle="collapse" data-target="#' . $modalId . '" style="display:flow-root;" class="'.$aufgeklapptA.'" aria-expanded="'.$aufgeklapptB.'">'
             . '<a href="'.$dateilink .'"><img src="icon/' . $component["icon"] . '" class="icon">'.$component['name'].'</a>'
         . '</div>'
-        . '<div class="hh2 collapse" id="'.$modalId.'">'
+        . '<div class="hh2 '.$aufgeklapptA.'" id="'.$modalId.'" aria-expanded="'.$aufgeklapptB.'">'
         .' ...'
         . '</div><div class="clearfix"></div></div>'
     . '
 <script type="text/javascript">
+$(window).bind("load", execute_diagramm_'. $modalId.');
 function execute_diagramm_'. $modalId.'() {
   $.ajax({
-    url: "custom/components/diagramm.php?lade=content&modalID='.$modalId.'&ise_id='.$component['ise_id'].'&size='.$component['size'].'&history='.$component['history'].$legend.'",
+    url: "custom/components/diagramm.php?lade=content&modalID='.$modalId.'&ise_id='.$component['ise_id'].'&history='.$history.'&size='.$component['size'].'&collect='.$collect.$legend.'",
     success: function(data) {
 	  $("#'. $modalId.'").html("" + data);
-	  '.$aufgeklappt.'
+	 // '.$aufgeklappt.'
 	   
     }
   });
 }
-
-setTimeout(execute_diagramm_'. $modalId.',500);
-'. $refresh.'
 </script>
 ';
 }
