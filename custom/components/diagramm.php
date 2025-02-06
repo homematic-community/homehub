@@ -108,8 +108,7 @@ if(isset($_GET['lade']))
   }
 
 
-echo '<canvas id="chart_'.$_GET['modalID'].'" style="position: relative; width: 100vw; height: '.( isset($_GET['size']) ? strval(30 + 20 * intval($_GET['size'])) : '100' ).'vh"></canvas>';
-
+echo '<canvas id="chart_'.$_GET['modalID'].'" style="position: relative; width: 100vw; height: '.( (isset($_GET['size']) and is_numeric($_GET['size'])) ? strval(30 + 20 * intval($_GET['size'])) : '100' ).'vh"></canvas>';
 
 $tCh = ($Cl + 0.5) - $Ch;
 if($tCh > 0) { $Ch = $Ch + $tCh; }
