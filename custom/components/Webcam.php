@@ -8,7 +8,7 @@
 
 function Webcam($component) {
     $modalId = mt_rand();
-
+	if (!isset($component['color'])) $component['color'] = '#595959';
 	if(isset($component["autorefresh"])) {
 		if($component["autorefresh"] == "1") {
 			$AutoRefresh = 'timeoutHandle_'.$modalId.' = window.setTimeout(webcam_'.$modalId.', 3000);';
@@ -51,7 +51,7 @@ if(isset($component["url"])) { $url = $component["url"]; }
 		$url = $url."?";
 	}
 
-    return '<div class="hh">'
+    return '<div class="hh" style=\'border-left-color: '.$component['color'].'; border-left-style: solid;\'>'
 	
         . '<div data-toggle="collapse" data-target="#' . $modalId . '">'
             . '<img src="icon/' . $component["icon"] . '" class="icon">'.$component["name"]
