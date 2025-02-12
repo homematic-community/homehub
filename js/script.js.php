@@ -136,6 +136,7 @@ var updateDatapoints = function () {
 						$('[data-id="' + ise_id + '"]').html("<img src='icon/red_dot.png'>");
 					 }
 					 break;
+                    case 'ELV-SH-BS2':
                     case 'HMIP-PSM':
                     case 'HMIP-PS':
                     case 'HmIP-PSM-2':
@@ -153,6 +154,7 @@ var updateDatapoints = function () {
                     case 'HmIPW-DRS4':
                     case 'HmIP-DRSI4':
                     case 'HmIP-FWI':
+					case 'HmIP-WHS2':
                     case 'HM-LC-Sw1-Ba-PCB':
                     case 'HM-LC-Sw1-DR':
                     case 'HM-LC-Sw1-FM':
