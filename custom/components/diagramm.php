@@ -171,7 +171,7 @@ function diagramm($component) {
 	$history = ( isset($component['history']) ? max(1, min(intval($component['history']), 5000)) : 200 );
 
 	// Dateiname der cache Datei diagramm_<ise_id>_<collect>_<history>.csv
-	$chart_id = preg_replace('/\D/', '-', $component['ise_id']).'_'.preg_replace('/\W/', '-', $collect).'_'.$history;
+	$chart_id = preg_replace('/\D+/', '-', $component['ise_id']).'_'.preg_replace('/\W/', '-', $collect).'_'.$history;
 	$cfilelink	= 'cache/diagramm_'.$chart_id.'.csv';
 
 	// dom Diagramm-ID

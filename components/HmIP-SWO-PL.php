@@ -1,11 +1,21 @@
 <?php
 
-// Validated by Gerti
-
 function HmIP_SWO_PL($component) {
 
     global $export;
     $obj = $export;
+
+    if (isset($component['RAIN_COUNTER'])) {
+        if (isset($obj['systemvariablesinternal'])) {
+            foreach ($obj['systemvariablesinternal'] as $sv_int) {
+                if (strpos($sv_int['name'], 'RainCounter_'.$component['ise_id']) !== false) {
+                    // echo PHP_EOL.$component['ise_id'].': ersetze RAIN_COUNTER '.$component['RAIN_COUNTER'].' durch Systemvariable '.$sv_int['ise_id'].' '.$sv_int['name'].PHP_EOL;
+                    $component['RAIN_COUNTER'] = $sv_int['ise_id'];
+                }
+            }
+        }
+    }
+
     $key = array_search(substr($component['address'], 0, -1)."0", array_column($obj['channels'], 'address'));
     foreach($obj['channels'][$key]['datapoints'] as $datapoint)
     { $status_component[$datapoint['type']] = $datapoint['ise_id']; }

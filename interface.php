@@ -395,20 +395,27 @@ EOHM;
 // ALLE SYSTEMVARIABLEN
 if (isset($_SERVER['QUERY_STRING']) and (strpos($_SERVER['QUERY_STRING'], "sysvarlist.cgi") !== false)) {
   header("Content-Type: text/xml; charset=ISO-8859-1");
-  echo api_sysvarlist($ccu, isset($_GET['debug']));
+  echo api_sysvarlist($ccu, isset($_GET['internal']), isset($_GET['debug']));
 }
 
-function api_sysvarlist($ccu, $debug = false) {
+function api_sysvarlist($ccu, $internal = false, $debug = false) {
 
   // Baue Skript zusammen
-  $ccu_request = <<<EOHM
-WriteLine("<systemVariables>\n");
+  $ccu_request = "
+WriteLine(\"<systemVariables>\");
 
 string id;
 ! Alle Datenpunkte durchlaufen
-foreach(id, dom.GetObject(ID_SYSTEM_VARIABLES).EnumUsedIDs()){
+";
+  $ccu_request .= "
+foreach(id, dom.GetObject(ID_SYSTEM_VARIABLES).Enum".( !empty($internal) ? '' : 'Used' )."IDs()){
   ! Einzelnen Datenpunkt holen
   var oSysVar = dom.GetObject(id);
+";
+  if (!empty($internal)) $ccu_request .= "
+  if (!oSysVar.Internal()) { continue; }
+";
+  $ccu_request .= <<<EOHM
   ! Namen und Wert des Elements ausgeben - fehlt -> visible
   Write("<systemVariable name='" # oSysVar.Name() # "' ");
     if (oSysVar.ValueSubType() == 6) {

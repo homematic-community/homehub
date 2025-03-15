@@ -130,23 +130,37 @@ $statesXml = simplexml_load_string(api_statelist($ccu));
     unset($statelistCgi);
     unset($statesXml);
     
-    // Systemvariablen von der CCU laden
-    $sysvarsXml = simplexml_load_string(api_sysvarlist($ccu));
+// Systemvariablen von der CCU laden
+$sysvarsXml = simplexml_load_string(api_sysvarlist($ccu));
 
-    // Systemvariablen
-    foreach ($sysvarsXml->systemVariable as $sysvar) {
-        $dummy = array();
-        $dummy['component'] = 'SysVar';
-        
-        foreach($sysvar->attributes() as $attribute => $value) {
-            $dummy[strval($attribute)] = strval($value);
-        }
-        $export['systemvariables'][] = $dummy;
-    }
-    
-    // Aufräumen
-    unset($sysvarlistCgi);
-    unset($sysvarsXml);
+foreach ($sysvarsXml->systemVariable as $sysvar) {
+	$dummy = array();
+	$dummy['component'] = 'SysVar';
+
+	foreach($sysvar->attributes() as $attribute => $value) {
+		$dummy[strval($attribute)] = strval($value);
+	}
+	$export['systemvariables'][] = $dummy;
+}
+
+// Aufräumen
+unset($sysvarsXml);
+
+// interne Systemvariablen von der CCU laden
+$sysvarsXml = simplexml_load_string(api_sysvarlist($ccu, true));
+
+foreach ($sysvarsXml->systemVariable as $sysvar) {
+	$dummy = array();
+	$dummy['component'] = 'SysVarInt';
+
+	foreach($sysvar->attributes() as $attribute => $value) {
+		$dummy[strval($attribute)] = strval($value);
+	}
+	$export['systemvariablesinternal'][] = $dummy;
+}
+
+// Aufräumen
+unset($sysvarsXml);
     
     // Programme von der CCU laden
     $programsXml = simplexml_load_string(api_programlist($ccu));
