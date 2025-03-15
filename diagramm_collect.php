@@ -60,6 +60,9 @@ if (!$json = json_decode($data, true)) {
 	exit(0);
 }
 
+$combine = array();
+$datapoints = array();
+
 foreach ($json['custom'] as $customs) {
 	foreach ($customs as $custom) {
 		if (!empty($custom['component'])) {
@@ -90,8 +93,10 @@ foreach ($json['custom'] as $customs) {
 					// Minute des Tages ist glatt durch <collect> teilbar
 						$diagramm[$custom['ise_id']][$collect][$history] = add_diagramm($custom);
 						echo '- sammle '.$custom['ise_id'].' '.$history.' alle '.$custom['collect'].' Minuten'.PHP_EOL;
+					} else {
+						echo '- überspringe '.$custom['ise_id'].' '.$history.', fällig in '.($custom['collect'] - ($minute % $custom['collect'])).' Minuten (alle '.$custom['collect'].' Minuten)'.PHP_EOL;
+						continue;
 					}
-					else echo '- überspringe '.$custom['ise_id'].' '.$history.', fällig in '.($custom['collect'] - ($minute % $custom['collect'])).' Minuten (alle '.$custom['collect'].' Minuten)'.PHP_EOL;
 				}
 				elseif (preg_match('/^(\d+):(\d+)$/', $custom['collect'], $col)) {
 				// <collect> sieht nach Uhrzeit aus, zu dieser Uhrzeit sammeln (1x täglich)
@@ -99,8 +104,10 @@ foreach ($json['custom'] as $customs) {
 					// Stunden und Minuten auf zweistellig ergänzen und mit aktueller Uhrzeit vergleichen
 						$diagramm[$custom['ise_id']][$custom['collect']][$history] = add_diagramm($custom);
 						echo '- sammle '.$custom['ise_id'].' '.[$custom['collect']].' '.$history.PHP_EOL;
+					} else {
+						echo '- überspringe '.$custom['ise_id'].' '.$history.', fällig um '.$custom['collect'].PHP_EOL;
+						continue;
 					}
-					else echo '- überspringe '.$custom['ise_id'].' '.$history.', fällig um '.$custom['collect'].PHP_EOL;
 				}
 				elseif (preg_match('/^(\d+:\d+\D*)+$/', $custom['collect'], $col)) {
 				// <collect> sieht nach mehreren Uhrzeiten aus, zu diesen Uhrzeiten sammeln
@@ -113,7 +120,10 @@ foreach ($json['custom'] as $customs) {
 							echo '- sammle '.$custom['ise_id'].' '.$custom['collect'].' '.$history.PHP_EOL;
 						}
 					}
-					if (!isset($diagramm[$custom['ise_id']][$custom['collect']][$history])) echo '- überspringe '.$custom['ise_id'].' '.$history.', fällig um '.$custom['collect'].PHP_EOL;
+					if (!isset($diagramm[$custom['ise_id']][$custom['collect']][$history])) {
+						echo '- überspringe '.$custom['ise_id'].' '.$history.', fällig um '.$custom['collect'].PHP_EOL;
+						continue;
+					}
 				}
 				elseif (preg_match('/(min|max)/i', $custom['collect'])) {
 				// Tagesniederst- und/oder -höchstwert
@@ -123,6 +133,19 @@ foreach ($json['custom'] as $customs) {
 				}
 				else {
 					echo '- '.$custom['collect'].' für '.$custom['ise_id'].' '.$history.' kann nicht interpretiert werden'.PHP_EOL;
+					continue;
+				}
+
+				// Datenpunkte sammeln
+				// Mehrere ise_id einer Definition vereinzeln, damit alle Werte bei der CCU abgefragt werden
+				// Erklärung: Wenn Datenpunkte als Array an die api_state in der interface.php übergeben, trennt diese nicht mehr nach Trennzeichen.
+				if (strpos($custom['ise_id'], '-')) {
+					$split = explode('-', $custom['ise_id']);
+					if (!empty($_verbose)) echo 'v  trenne '.$custom['ise_id'].', '.count($split).' Datenpunkte: '.implode(' ', $split).PHP_EOL;
+					$combine[$custom['ise_id']] = $split;		// damit nachher wieder zusammengesetzt werden kann
+					$datapoints = array_merge($datapoints, $split);
+				} else {
+					$datapoints[] = $custom['ise_id'];
 				}
 
 			}
@@ -130,26 +153,9 @@ foreach ($json['custom'] as $customs) {
 	}
 }
 
-$datapoints = array_keys($diagramm);
-if (!empty($_verbose)) echo 'v  gefundene Indizes "'.implode('", "', $datapoints).'"'.PHP_EOL;
+if (!empty($_verbose)) echo 'v  gefundene Indizes "'.implode('", "', array_keys($diagramm)).'"'.PHP_EOL;
 
-// Mehrere ise_id einer Definition vereinzeln, damit alle Werte bei der CCU abgefragt werden
-// Erklärung: Wenn Datenpunkte als Array an die api_state in der interface.php übergeben, trennt diese nicht mehr nach Trennzeichen.
-$combine = array();
-$a_datapoints = array();
-foreach ($datapoints as $ise_id) {
-	if (strpos($ise_id, '-')) {
-		$split = explode('-', $ise_id);
-		if (!empty($_verbose)) echo 'v  trenne '.$ise_id.', '.count($split).' Datenpunkte: '.implode(' ', $split).PHP_EOL;
-		$combine[$ise_id] = $split;		// damit nachher wieder zusammengesetzt werden kann
-		$a_datapoints = array_merge($a_datapoints, $split);
-	} else {
-		$a_datapoints[] = $ise_id;
-	}
-}
-
-$datapoints = array_unique($a_datapoints);
-unset($a_datapoints);
+$datapoints = array_unique($datapoints);
 if (!empty($_verbose)) echo 'v  abzufragende Datenpunkte '.implode(', ', $datapoints).PHP_EOL;
 
 if (!count($datapoints)) {
@@ -181,6 +187,7 @@ if (count($combine)) {
 			$join[] = $values[$datapoint];
 		}
 		$values[$ise_id] = $join;
+		if (!empty($_verbose)) echo 'v  '.implode(', ', $values[$ise_id]).PHP_EOL;
 	}
 }
 
