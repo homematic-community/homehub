@@ -60,6 +60,13 @@ if (!$json = json_decode($data, true)) {
 	exit(0);
 }
 
+if (empty($_test) and empty($_dryrun)) {
+	$startdelay = rand(8, 18);
+	echo '- warte '.$startdelay.' Sekunden...'.PHP_EOL;
+	sleep($startdelay);
+	unset($startdelay);
+}
+
 $combine = array();
 $datapoints = array();
 
