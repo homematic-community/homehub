@@ -24,6 +24,8 @@ echo "Es ist ".$tage[date('w')].' '.date('d.m.Y H:i:s').', die '.$minute.'. Minu
 if (isset($_GET['dryrun']) or (!empty($argv[1]) and $argv[1]=='dryrun')) { echo '--- SIMULATION ---'.PHP_EOL; $_dryrun=true; $_verbose=true; }
 elseif (isset($_GET['test']) or (!empty($argv[1]) and $argv[1]=='test')) { echo '--- TEST ---'.PHP_EOL; $_test=true; $_verbose=true; }
 elseif (isset($_GET['verbose']) or (!empty($argv[1]) and $argv[1]=='verbose')) { $_verbose=true; }
+if (isset($_GET['minute'])) $minute = intval($_GET['minute']);
+elseif (!empty($argv[1]) and is_numeric(trim($argv[1]))) { $minute = intval(trim($argv[1])); $_verbose=true; }
 
 function read_config($file) {
 	if (!is_file($file)) return false;
@@ -326,11 +328,7 @@ foreach ($diagramm as $ise_id => $collects) {
 				} else {
 				// cache Datei nicht vorhanden, anlegen und Schreirechte setzen
 
-					echo '- '.basename($cfile).' nicht vorhanden, lege neu an'.PHP_EOL;
-					if (empty($_dryrun)) {
-						touch($cfile);
-						if (!chmod($cfile, 0666)) echo 'Fehler beim setzen der Schreibrechte für '.$cfile.PHP_EOL;
-					}
+					echo '- '.basename($cfile).' nicht vorhanden'.PHP_EOL;
 
 					// Prüfen, ob es eine cache Datei in altem Dateinamenformat (diagramm_<ise_id>_<history>.csv) gibt
 					$oldfile = __DIR__.'/cache/diagramm_'.$ise_id.'_'.$history.'.csv';
@@ -352,7 +350,7 @@ foreach ($diagramm as $ise_id => $collects) {
 									foreach ($active_histories as $active_history => $active_array) {
 										echo '- aktives Diagramm für '.$ise_id.': collect '.$active_collect.', history '.$active_history.PHP_EOL;
 										if (($old[1] == preg_replace('/\W/', '-', $active_collect)) and ($old[2] == $active_history)) {
-											echo '- '.basename($oldfile[0]).' wird noch verwendet.'.PHP_EOL;
+											echo '- '.basename($oldfile[0]).' wird noch verwendet'.PHP_EOL;
 											unset($oldfile[0]);
 											break;
 										}
@@ -363,6 +361,7 @@ foreach ($diagramm as $ise_id => $collects) {
 									// keine Verwendung mehr, Inhalt einlesen und Datei löschen
 									echo '- Verschiebe Daten von '.basename($oldfile[0]).' nach '.basename($cfile).PHP_EOL;
 									$csv = file($oldfile[0], FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+									if (!empty($_verbose)) echo 'v  '.count($csv).' Zeilen übertragen'.PHP_EOL;
 									if (empty($_dryrun)) unlink($oldfile[0]);
 								}
 							}
@@ -370,8 +369,14 @@ foreach ($diagramm as $ise_id => $collects) {
 
 					}
 
-					// keine Daten, leeres Array erzeugen
+					// keine Daten, leeres Array erzeugen und Datei anlegen
 					if (empty($csv)) $csv = array();
+
+					// Datei anlegen
+					if (empty($_dryrun)) {
+						touch($cfile);
+						if (!chmod($cfile, 0666)) echo 'Fehler beim setzen der Schreibrechte für '.$cfile.PHP_EOL;
+					}
 
 					// Wert doppeln bei min+max, damit die neue Datei zwei Werte hat
 					if (preg_match('/min/i', $collect) and preg_match('/max/i', $collect)) {
