@@ -343,8 +343,9 @@ foreach ($diagramm as $ise_id => $collects) {
 					else {
 
 						// Prüfen, ob es eine cache Datei mit anderem collect/history gibt, die nicht mehr verwendet wird
-						$oldfile = glob(__DIR__.'/cache/diagramm_'.$ise_id.'_*_*.csv');
+						$oldfile = glob(__DIR__.'/cache/diagramm_'.$ise_id.'_*.csv');
 						if (count($oldfile) == 1) {
+						// genau eine alte Datei gefunden
 							if (preg_match('/diagramm_[\d\-]+_([\w\-]+)_(\d+)/', basename($oldfile[0]), $old)) {
 								echo '- alte cache Datei gefunden mit collect '.$old[1].', history '.$old[2].PHP_EOL;
 								foreach ($diagramm_custom[$ise_id] as $active_collect => $active_histories) {
@@ -359,7 +360,7 @@ foreach ($diagramm as $ise_id => $collects) {
 									if (empty($oldfile[0])) break;
 								}
 								if (!empty($oldfile[0])) {
-									// genau eine alte Datei gefunden, keine Verwendung mehr, Inhalt einlesen und Datei löschen
+									// keine Verwendung mehr, Inhalt einlesen und Datei löschen
 									echo '- Verschiebe Daten von '.basename($oldfile[0]).' nach '.basename($cfile).PHP_EOL;
 									$csv = file($oldfile[0], FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 									if (empty($_dryrun)) unlink($oldfile[0]);
