@@ -24,6 +24,8 @@ echo "Es ist ".$tage[date('w')].' '.date('d.m.Y H:i:s').', die '.$minute.'. Minu
 if (isset($_GET['dryrun']) or (!empty($argv[1]) and $argv[1]=='dryrun')) { echo '--- SIMULATION ---'.PHP_EOL; $_dryrun=true; $_verbose=true; }
 elseif (isset($_GET['test']) or (!empty($argv[1]) and $argv[1]=='test')) { echo '--- TEST ---'.PHP_EOL; $_test=true; $_verbose=true; }
 elseif (isset($_GET['verbose']) or (!empty($argv[1]) and $argv[1]=='verbose')) { $_verbose=true; }
+if (isset($_GET['minute'])) $minute = intval($_GET['minute']);
+elseif (!empty($argv[1]) and is_numeric(trim($argv[1]))) { $minute = intval(trim($argv[1])); $_verbose=true; }
 
 function read_config($file) {
 	if (!is_file($file)) return false;
@@ -60,6 +62,13 @@ if (!$json = json_decode($data, true)) {
 	exit(0);
 }
 
+if (empty($_test) and empty($_dryrun)) {
+	$startdelay = rand(2, 8);
+	echo '- warte '.$startdelay.' Sekunden...'.PHP_EOL;
+	sleep($startdelay);
+	unset($startdelay);
+}
+
 $combine = array();
 $datapoints = array();
 
@@ -76,9 +85,12 @@ foreach ($json['custom'] as $customs) {
 				}
 
 				// <historyY auf ganzzahlige Werte zwischen 1 und 5000 begrenzen, Standard 200
-				$history = ( empty($custom['history']) ? 200 : max(1, min(intval($custom['history']), 5000)) );
+				$history = intval( empty($custom['history']) ? 200 : max(1, min(intval($custom['history']), 5000)) );
 
 				if (isset($custom['collect'])) $custom['collect'] = trim($custom['collect']);
+
+				// alle Definitionen zwischenspeichern
+				$diagramm_custom[$custom['ise_id']][( empty($custom['collect']) ? 0 : $custom['collect'] )][$history] = true;
 
 				if (empty($custom['collect'])) {
 				// <collect> nicht definiert => immer sammeln
@@ -228,7 +240,6 @@ foreach ($diagramm as $ise_id => $collects) {
 				if (preg_match('/^\d+:\d+/', $collect)) $prefix = $tage[date('w')].' '.date('d.m.');
 				elseif (preg_match('/(min|max)/i', $collect)) $prefix = $tage[date('w')].' '.date('d.m.');
 				else $prefix = $tage[date('w')].' '.date('H:i');
-				# todo: Tag nur schreiben, wenn neuer Tag seit letztem Wert. Sollte mit $last[0] machbar sein #
 				if (!empty($_verbose)) echo 'v  Datensatz-Prefix '.($prefix).PHP_EOL;
 
 				$cfile = __DIR__.'/cache/diagramm_'.( $arr['type']=='diagramm_test' ? 'test_' : '' ).$ise_id.'_'.preg_replace('/\W/', '-', $collect).'_'.$history.'.csv';
@@ -309,14 +320,15 @@ foreach ($diagramm as $ise_id => $collects) {
 						}
 					}
 
+					// Tagesdatum statt Uhrzeit schreiben bei <collect> größer als 2h und Aufbewahrung länger als 7 Tage, wenn erster Wert eines neuen Tages
+					if (preg_match('/^\d+$/',$collect) and ($collect >= 120) and ($history * $collect >= 7 * 24 * 60)) {
+						if (date('Ymd', filemtime($cfile)) < date('Ymd')) $prefix = $tage[date('w')].' '.date('d.m.');
+					}
+
 				} else {
 				// cache Datei nicht vorhanden, anlegen und Schreirechte setzen
 
-					echo '- '.basename($cfile).' nicht vorhanden, lege neu an'.PHP_EOL;
-					if (empty($_dryrun)) {
-						touch($cfile);
-						if (!chmod($cfile, 0666)) echo 'Fehler beim setzen der Schreibrechte für '.$cfile.PHP_EOL;
-					}
+					echo '- '.basename($cfile).' nicht vorhanden'.PHP_EOL;
 
 					// Prüfen, ob es eine cache Datei in altem Dateinamenformat (diagramm_<ise_id>_<history>.csv) gibt
 					$oldfile = __DIR__.'/cache/diagramm_'.$ise_id.'_'.$history.'.csv';
@@ -324,11 +336,47 @@ foreach ($diagramm as $ise_id => $collects) {
 					// alte Datei vorhanden, Inhalt einlesen und Datei löschen
 						echo '- Verschiebe Daten von '.basename($oldfile).' nach '.basename($cfile).PHP_EOL;
 						$csv = file($oldfile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-						unlink($oldfile);
+						if (empty($_dryrun)) unlink($oldfile);
+					}
+					else {
+
+						// Prüfen, ob es eine cache Datei mit anderem collect/history gibt, die nicht mehr verwendet wird
+						$oldfile = glob(__DIR__.'/cache/diagramm_'.$ise_id.'_*.csv');
+						if (count($oldfile) == 1) {
+						// genau eine alte Datei gefunden
+							if (preg_match('/diagramm_[\d\-]+_([\w\-]+)_(\d+)/', basename($oldfile[0]), $old)) {
+								echo '- alte cache Datei gefunden mit collect '.$old[1].', history '.$old[2].PHP_EOL;
+								foreach ($diagramm_custom[$ise_id] as $active_collect => $active_histories) {
+									foreach ($active_histories as $active_history => $active_array) {
+										echo '- aktives Diagramm für '.$ise_id.': collect '.$active_collect.', history '.$active_history.PHP_EOL;
+										if (($old[1] == preg_replace('/\W/', '-', $active_collect)) and ($old[2] == $active_history)) {
+											echo '- '.basename($oldfile[0]).' wird noch verwendet'.PHP_EOL;
+											unset($oldfile[0]);
+											break;
+										}
+									}
+									if (empty($oldfile[0])) break;
+								}
+								if (!empty($oldfile[0])) {
+									// keine Verwendung mehr, Inhalt einlesen und Datei löschen
+									echo '- Verschiebe Daten von '.basename($oldfile[0]).' nach '.basename($cfile).PHP_EOL;
+									$csv = file($oldfile[0], FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+									if (!empty($_verbose)) echo 'v  '.count($csv).' Zeilen übertragen'.PHP_EOL;
+									if (empty($_dryrun)) unlink($oldfile[0]);
+								}
+							}
+						}
+
 					}
 
-					// keine Daten, leeres Array erzeugen
-					else $csv = array();
+					// keine Daten, leeres Array erzeugen und Datei anlegen
+					if (empty($csv)) $csv = array();
+
+					// Datei anlegen
+					if (empty($_dryrun)) {
+						touch($cfile);
+						if (!chmod($cfile, 0666)) echo 'Fehler beim setzen der Schreibrechte für '.$cfile.PHP_EOL;
+					}
 
 					// Wert doppeln bei min+max, damit die neue Datei zwei Werte hat
 					if (preg_match('/min/i', $collect) and preg_match('/max/i', $collect)) {
@@ -339,11 +387,17 @@ foreach ($diagramm as $ise_id => $collects) {
 						$write[$ise_id] = rtrim($m_value, ';');
 					}
 
+					// Tagesdatum statt Uhrzeit schreiben bei <collect> größer als 2h und Aufbewahrung länger als 7 Tage, wenn erster Wert eines neuen Tages
+					if (preg_match('/^\d+$/',$collect) and ($collect > 120) and ($history * $collect > 7 * 24 * 60)) {
+						$prefix = $tage[date('w')].' '.date('d.m.');
+					}
+
 				}
 
 				$csv[] = $prefix.';'.$write[$ise_id].';';
 				echo '- schreibe '.$prefix.' = '.$write[$ise_id].' nach '.basename($cfile).PHP_EOL;
 				if (empty($_dryrun)) file_put_contents($cfile, implode("\n", $csv));
+				unset($csv);
 
 			}
 		}
