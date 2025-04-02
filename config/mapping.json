@@ -228,6 +228,10 @@
             {
                 "name": "HmIP-BSL",
                 "icon": "light_light_dim_100.png"
+            },			
+            {
+                "name": "HmIP-WGS",
+                "icon": "light_light_dim_100.png"
             },
             {
                 "name": "HmIP-PCBS2",
@@ -427,6 +431,10 @@
             },
             {
                 "name": "HmIP-BWTH",
+                "icon": "sani_heating.png"
+            },
+            {
+                "name": "HmIP-WGT",
                 "icon": "sani_heating.png"
             },
             {
