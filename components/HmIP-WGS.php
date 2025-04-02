@@ -1,6 +1,7 @@
 <?php
 
 // Validated by Gerti
+//
 
 function HmIP_WGS($component) {
     
