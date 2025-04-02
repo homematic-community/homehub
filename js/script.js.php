@@ -182,6 +182,7 @@ var updateDatapoints = function () {
                     case 'HMW-IO-4-FM':
                     case 'HMW-LC-Sw2-DR':
                     case 'HM-Dis-TD-T':
+                    case 'HmIP-WGS':
                         var button = $('[data-id="' + ise_id + '"]').attr('data-button');
                         switch (datapoint) {
                             case 'STATE':
@@ -680,6 +681,7 @@ var updateDatapoints = function () {
                     case 'HmIP-WTH-B':
                     case 'HmIPW-WTH':
                     case 'HmIPW-STHD':
+                    case 'HmIP-WGT':   
                         switch (datapoint) {
                             case 'HUMIDITY':
                                 $('[data-id="' + ise_id + '"]').html('<img src="icon/humidity.png" height=17/> ' + (Math.round(value * 10) / 10) + ' %');
