@@ -852,6 +852,10 @@
                 "icon": "status_man.png"
             },
             {
+                "name": "HmIP-SMO-2",
+                "icon": "status_man.png"
+            },			
+            {
                 "name": "HmIP-SMO230-A",
                 "icon": "status_man.png"
             },			
