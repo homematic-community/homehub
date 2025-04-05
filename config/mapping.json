@@ -220,11 +220,19 @@
             {
                 "name": "HmIP-PS-2 9YM",
                 "icon": "message_socket_on_off.png"
-            },
+            },	
             {
                 "name": "HmIP-PS-2-9YM",
                 "icon": "message_socket_on_off.png"
-            },			
+            },		
+            {
+                "name": "HmIP-PS-2 QHJ",
+                "icon": "message_socket_on_off.png"
+            },	
+            {
+                "name": "HmIP-PS-2-QHJ",
+                "icon": "message_socket_on_off.png"
+            },				
             {
                 "name": "HmIP-BSL",
                 "icon": "light_light_dim_100.png"
@@ -326,6 +334,10 @@
                 "icon": "fts_shutter_40.png"
             },
             {
+                "name": "HmIP-BBL-2",
+                "icon": "fts_shutter_40.png"
+            },			
+            {
                 "name": "HmIP-FBL",
                 "icon": "fts_shutter_40.png"
             },
@@ -396,11 +408,11 @@
                 "icon": "fts_window_2w_open_l.png"
             },
             {
-                "name": "HmIPW_DRI16",
+                "name": "HmIPW-DRI16",
                 "icon": "fts_window_2w_open_l.png"
             },
             {
-                "name": "HmIPW_DRI32",
+                "name": "HmIPW-DRI32",
                 "icon": "fts_window_2w_open_l.png"
             }
         ],
