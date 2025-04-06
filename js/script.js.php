@@ -682,6 +682,7 @@ var updateDatapoints = function () {
                     case 'HmIP-WTH-B':
                     case 'HmIPW-WTH':
                     case 'HmIPW-STHD':
+                    case 'HmIPW-STH':
                     case 'HmIP-WGT':   
                         switch (datapoint) {
                             case 'HUMIDITY':
