@@ -1000,6 +1000,26 @@ var updateDatapoints = function () {
                                   $('[data-id="' + ise_id + '"]').html(value);
                         }
                         break;
+					case 'HmIPW-FALMOT-C12': 
+                        switch (datapoint) {
+                            case 'LEVEL':
+                                var channel = $('[data-id="' + ise_id + '"]').attr('data-channel');
+                                var channelpos = $('[data-id="' + ise_id + '"]').attr('data-channel-pos');
+                                var totalchannels = $('[data-id="' + ise_id + '"]').attr('data-channel-total');
+                                var offset = (12-totalchannels)*20;
+                                if (value) {
+                                  value = (Math.round(value * 1000) / 10);
+                                  var iconvalue = ((Math.ceil(value/10))*10).toString();
+                                  $('[data-id="' + ise_id + '"]').html(channel + '<br><img src="icon/level_' + iconvalue + '.png" style="height:28px;"/><br>' + value + '%');
+                                }
+                                else {                                
+								  $('[data-id="' + ise_id + '"]').html(channel + '<br><img src="icon/level_off.png" style="height:28px;"/><br>- . -');
+                                }
+                                break; 
+                              default:
+                                  $('[data-id="' + ise_id + '"]').html(value);
+                        }
+                        break;
                     case 'HmIP-SWO-B':
                     case 'HmIP-SWO-PL':
                     case 'HmIP-SWO-PR':
