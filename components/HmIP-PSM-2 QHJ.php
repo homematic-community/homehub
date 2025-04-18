@@ -17,9 +17,12 @@ function HmIP_PSM_2QHJ($component) {
         if (isset($power_component['ENERGY_COUNTER'])) {
             if (isset($obj['systemvariablesinternal'])) {
                 foreach ($obj['systemvariablesinternal'] as $sv_int) {
-                    if (strpos($sv_int['name'], 'svEnergyCounter_'.$power_component['ise_id']) !== false) {
-                        // echo PHP_EOL.$power_component['ise_id'].': ersetze ENERGY_COUNTER '.$power_component['ENERGY_COUNTER'].' durch Systemvariable '.$sv_int['ise_id'].' '.$sv_int['name'].PHP_EOL;
-                        $power_component['ENERGY_COUNTER'] = $sv_int['ise_id'];
+					if(isset($power_component['ise_id']))
+					{
+						if (strpos($sv_int['name'], 'svEnergyCounter_'.$power_component['ise_id']) !== false) {
+							// echo PHP_EOL.$power_component['ise_id'].': ersetze ENERGY_COUNTER '.$power_component['ENERGY_COUNTER'].' durch Systemvariable '.$sv_int['ise_id'].' '.$sv_int['name'].PHP_EOL;
+							$power_component['ENERGY_COUNTER'] = $sv_int['ise_id'];
+						}
                     }
                 }
             }
