@@ -1,5 +1,10 @@
 <?php
 
+// Parameter (config/custom.json)
+//
+// Einstellungen
+// use_device_counter (optional): wenn leer nutze CCU-Zähler, ansonsten Geräteinternen Zähler ("use_device_counter":"true")
+
 function HMIP_PSM($component) {
 
     global $export;
@@ -8,7 +13,20 @@ function HMIP_PSM($component) {
     foreach($obj['channels'][$key]['datapoints'] as $datapoint)
     { $power_component[$datapoint['type']] = $datapoint['ise_id']; }
     
-    if(!isset($component['button'])) {
+    if (empty($component['use_device_counter'])) {
+        if (isset($power_component['ENERGY_COUNTER'])) {
+            if (isset($obj['systemvariablesinternal'])) {
+                foreach ($obj['systemvariablesinternal'] as $sv_int) {
+                    if (strpos($sv_int['name'], 'svEnergyCounter_'.$power_component['ise_id']) !== false) {
+                        // echo PHP_EOL.$power_component['ise_id'].': ersetze ENERGY_COUNTER '.$power_component['ENERGY_COUNTER'].' durch Systemvariable '.$sv_int['ise_id'].' '.$sv_int['name'].PHP_EOL;
+                        $power_component['ENERGY_COUNTER'] = $sv_int['ise_id'];
+                    }
+                }
+            }
+        }
+    }
+	
+	if(!isset($component['button'])) {
         $component['button'] = 'switch';
     }
     
