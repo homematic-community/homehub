@@ -1,5 +1,10 @@
 <?php
 
+// Parameter (config/custom.json)
+//
+// Einstellungen
+// use_device_counter (optional): wenn leer nutze CCU-Zähler, ansonsten Geräteinternen Zähler ("use_device_counter":"true")
+
 function HmIP_FSM($component) {
 
     global $export;
