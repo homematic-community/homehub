@@ -534,11 +534,16 @@ if (isset($_SERVER['QUERY_STRING']) and (strpos($_SERVER['QUERY_STRING'], "state
 
   // Trenne ise_id und new_value anhand , auf und setze als assoziatives Array zusammen
   $iseids = $_GET['ise_id'];
-  $a_iseids = str_getcsv($iseids, ',', '"', '\\');
-  $iseids = ( count($a_iseids) ? $a_iseids : array($iseids) );
   $newvalues = $_GET['new_value'];
-  $a_newvalues = str_getcsv($newvalues, ',', '"', '\\');
-  $newvalues = ( count($a_newvalues) ? array_map('rawurldecode', $a_newvalues) : array(rawurldecode($newvalues)) );
+  if (strpos($iseids, ',') !== false) {
+    $a_iseids = str_getcsv($iseids, ',', '"', '\\');
+    $iseids = ( count($a_iseids) ? $a_iseids : array($iseids) );
+    $a_newvalues = str_getcsv($newvalues, ',', '"', '\\');
+    $newvalues = ( count($a_newvalues) ? array_map('rawurldecode', $a_newvalues) : array(rawurldecode($newvalues)) );
+  } else {
+    $iseids = array($iseids);
+    $newvalues = array(rawurldecode($newvalues));
+  }
   if (count($iseids) != count($newvalues)) die('Anzahl Parameter stimmt nicht überein');
   $set = array_combine($iseids, $newvalues);
 
