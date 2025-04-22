@@ -183,7 +183,7 @@ function diagramm($component) {
 	$param = array('chart' => $chart_id);
 	foreach ($component as $key => $val) {
 		// Parameter ausschließen, die nicht an das Diagramm übergeben werden sollen. Alle anderen stehen dann im Array param zur Verfügung.
-		if (in_array($option, ['component', 'name', 'ise_id', 'collect', 'history', 'color', 'link', 'icon', 'aufgeklappt', 'precision', 'only_changed'])) continue;
+		if (in_array($key, ['component', 'name', 'ise_id', 'collect', 'history', 'color', 'link', 'icon', 'aufgeklappt', 'precision', 'only_changed'])) continue;
 		$param[$key] = $val;
 	}
 
