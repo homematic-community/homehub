@@ -144,7 +144,7 @@ new Chart(ctx, {
 				'.( isset($param['min-y']) ? 'min: '.intval($param['min-y']).',' : '' ).'
 				'.( isset($param['max-y']) ? 'max: '.intval($param['max-y']).',' : '' ).'
 				ticks: {
-					precision: 0,
+					precision: '.( isset($param['precision']) ? intval($param['precision']) : 0 ).',
 					color: "white",
 				},
 				grid: {
@@ -183,7 +183,7 @@ function diagramm($component) {
 	$param = array('chart' => $chart_id);
 	foreach ($component as $key => $val) {
 		// Parameter ausschließen, die nicht an das Diagramm übergeben werden sollen. Alle anderen stehen dann im Array param zur Verfügung.
-		if (in_array($key, ['component', 'name', 'ise_id', 'collect', 'history', 'color', 'link', 'icon', 'aufgeklappt', 'precision', 'only_changed'])) continue;
+		if (in_array($key, ['component', 'name', 'ise_id', 'collect', 'history', 'color', 'link', 'icon', 'aufgeklappt', 'only_changed'])) continue;
 		$param[$key] = $val;
 	}
 
