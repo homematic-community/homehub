@@ -11,11 +11,11 @@ function HmIP_RGBW($component) {
             . '<!--<div data-toggle="collapse" data-target="#' . $modalId . '">-->'
 				. '<div class="pull-left"><img src="icon/' . $component["icon"] . '" class="icon">' . $component['name'] . '</div>'
 				. '<div class="pull-right">'
-				. '<span class="info" data-id="' . $component['LEVEL'] . '_level " data-component="' . $component['component'] . '" id ="dim'.$component['LEVEL']. 'rahmen" data-datapoint="LEVEL"></span>&nbsp;&nbsp;|&nbsp;&nbsp;'
+				. '<span class="info" data-id="' . $component['LEVEL'] . '" data-component="' . $component['component'] . '" id ="dim'.$component['LEVEL']. 'rahmen" data-datapoint="LEVEL"></span>&nbsp;&nbsp;|&nbsp;&nbsp;'
 				. '<input class="info" data-id="' . $component['HUE']. '" data-component="' . $component['component'] . '" id="hue_'.$component['HUE']. '" data-datapoint="HUE" style="display:none;">'
 				. '<input class="info" data-id="' . $component['SATURATION'] . '" data-component="' . $component['component'] . '" id="hue_'.$component['SATURATION']. '" data-datapoint="SATURATION" style="display:none;">'
 				. '<input type="color"  id="color_'.$component['HUE']. '"  onchange="hue'.$component['HUE']. 'change();">&nbsp;&nbsp;|'
-				. '<span class="info set" data-button="bulb" data-id="' . $component['LEVEL'] . '" data-component="' . $component['component'] . '" data-datapoint="LEVEL" data-set-id="' . $component['LEVEL'] . '" data-button="' . $component['button'] . '" data-set-value=""></span>'
+				. '<span class="info set"  data-id="' . $component['LEVEL'] . '" data-component="' . $component['component'] . '" data-datapoint="LEVEL" data-set-id="' . $component['LEVEL'] . '" data-button="' . $component['button'] . '" data-set-value=""></span>'
 				. '<script type="text/javascript">'."\n"
 				. 'function hue'.$component['HUE']. '() {'." \n"
 					. 'let  hue'.$component['HUE']. ' = document.getElementById("hue_'.$component['HUE']. '").value;'	
@@ -110,16 +110,25 @@ function HmIP_RGBW($component) {
   . 'l = +(l * 100).toFixed(1);'." \n"
 
 
-					.'console.log("Neuer Wert -> "+ h + "," + s + "%," + l + "%");'	."\n"
+					.'// console.log("Neuer Wert -> "+ h + "," + s + "%," + l + "%");'	."\n"
 
-					.'setDatapoint("'.$component['COMBINED_PARAMETER'].'", "L=50,RT=1,H="+Math.ceil(h)+",SAT="+Math.ceil(s)+",OT=0,RTTDV=0,RTTDU=0");'."\n"
+					.'setDatapoint("'.$component['COMBINED_PARAMETER'].'", "\"L=50,RT=1,H="+Math.ceil(h)+",SAT="+Math.ceil(s)+",OT=0,RTTDV=0,RTTDU=0\"");'."\n"
 				. '}'."\n"
 
 
 				. '</script>'."\n"
                 . '</div>'
                 . '<div class="clearfix"></div>'
-            . '</div>'
+            . '</div>';
+    }
+}
+
+
+
+/*
+
+
+
             . '<!--<div class="hh2 collapse" id="' . $modalId . '">'
                 . '<div class="row text-center">'
                     . '<div class="form-inline">'
@@ -178,6 +187,6 @@ function HmIP_RGBW($component) {
                     . '</div>'
                 . '</div>'               
             . '</div>'
-        . '</div>-->';
-    }
-}
+        . '</div>-->'
+		
+		*/
