@@ -107,7 +107,7 @@ function HM_LC_Sw1PBU_FM($component) {
             . '<div class="pull-left"><img src="icon/' . $component["icon"] . '" class="icon">' . $component['name'] . '</div>'
             . '<div class="pull-right">'
 			. $ShowTime
-                . '<span class="info set" data-id="' . $component['STATE'] . '" data-component="' . $component['component'] . '" data-datapoint="STATE" data-set-id="' . $component['STATE'] . '" data-button="' . $component['button'] . '" data-set-value=""></span>'
+                . '<span class="info set" data-id="' . $component['STATE'] . '" data-component="' . $component['component'] . '" data-datapoint="STATE" data-set-id="' . $component['STATE'] . '" data-button="' . $component['button'] . '" data-set-value="" data-state-icons=""></span>'
             . '</div>'
             . '<div class="clearfix"></div>'
         . '</div>';
@@ -152,7 +152,7 @@ function HM_LC_Sw1PBU_FM($component) {
             . '<div class="pull-left"><img src="icon/' . $component["icon"] . '" class="icon">' . $component['name'] . '</div>'
             . '<div class="pull-right">'
 			. $ShowTime
-                . '<span class="info set" data-id="' . $component[$component['ccujack_value']] . '" data-component="' . $component['ccujack_component'] . '" data-datapoint="'.$component['ccujack_datapoint'].'" data-set-id="' . $component['ccujack_value'] . '" data-button="' . $component['button'] . '"  data-set-value=""></span>'
+                . '<span class="info set" data-id="' . $component[$component['ccujack_value']] . '" data-component="' . $component['ccujack_component'] . '" data-datapoint="'.$component['ccujack_datapoint'].'" data-set-id="' . $component['ccujack_value'] . '" data-button="' . $component['button'] . '"  data-set-value="" data-state-icons=""></span>'
             . '</div>'
             . '<div class="clearfix"></div>'
         . '</div>';

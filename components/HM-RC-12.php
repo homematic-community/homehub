@@ -1,5 +1,6 @@
 <?php
 
+
 // Parameter (config/custom.json)
  //
 // Einstellungen
@@ -62,11 +63,53 @@
 // ccujack_datapoint(optional): Der Datenpunkt der obigen Komponente - ACTUAL_TEMPERATURE -> "ccujack_datapoint":"ACTUAL_TEMPERATURE"
 
  
-function HM_LC_Sw2_FM($component) {
-    
-    if ($component['parent_device_interface'] == 'BidCos-RF' && $component['visible'] == 'true' && isset($component['STATE'])) {
+ 
+function HM_RC_12($component) {
+    if ($component['parent_device_interface'] == 'BidCos-RF' && $component['visible'] == 'true' && isset($component['PRESS_SHORT'])) {
+		
+		// ShowTime - Uhrzeit der letzten Änderung anzeigen
+		if(isset($component['showtime'])) {
+			if($component['showtime'] == "true") { $ShowTime = '<span class="info" data-id="' . $component['ise_id']  . 't" data-component="showtime" data-datapoint="showtime"></span>'		; }
+			else { $ShowTime = ''; }
+		}
+		else { $ShowTime = ''; }
+		
+        if (!isset($component['color'])) $component['color'] = '#595959';
+            return '<div class="hh" style=\'border-left-color: '.$component['color'].'; border-left-style: solid;\'>'
+            . '<div class="pull-left"><img src="icon/' . $component["icon"] . '" class="icon">' . $component['name'] . '</div>'
+            . '<div class="pull-right">'
+			. $ShowTime
+                . '<span class="set btn-text" data-set-id="' . $component['PRESS_SHORT'] . '" data-set-value="1">Kurz</span>'
+                . '<span class="set btn-text" data-set-id="' . $component['PRESS_LONG'] . '" data-set-value="1">Lang</span>'
+            . '</div>'
+            . '<div class="clearfix"></div>'
+        . '</div>';
+    }
+	
+	 if ($component['parent_device_interface'] == 'CCU-Jack' && $component['visible'] == 'true' && isset($component['PRESS_SHORT'])) {
 
-		// Setze Button wenn Parameter nicht gesetzt ist
+		// ShowTime - Uhrzeit der letzten Änderung anzeigen
+		if(isset($component['showtime'])) {
+			if($component['showtime'] == "true") { $ShowTime = '<span class="info" data-id="' . $component['ise_id']  . 't" data-component="showtime" data-datapoint="showtime"></span>'		; }
+			else { $ShowTime = ''; }
+		}
+		else { $ShowTime = ''; }
+		
+        if (!isset($component['color'])) $component['color'] = '#595959';
+            return '<div class="hh" style=\'border-left-color: '.$component['color'].'; border-left-style: solid;\'>'
+            . '<div class="pull-left"><img src="icon/' . $component["icon"] . '" class="icon">' . $component['name'] . '</div>'
+            . '<div class="pull-right">'
+			. $ShowTime
+                . '<span class="set btn-text" data-set-id="' . $component['PRESS_SHORT'] . '" data-set-value="1">Kurz</span>'
+                . '<span class="set btn-text" data-set-id="' . $component['PRESS_LONG'] . '" data-set-value="1">Lang</span>'
+            . '</div>'
+            . '<div class="clearfix"></div>'
+        . '</div>';
+    }
+	
+	if ($component['parent_device_interface'] == 'CCU-Jack' && $component['visible'] == 'true' && isset($component['STATE'])) {
+
+		// Setze KEIN !!!! Button wenn Parameter nicht gesetzt ist
 		if(!isset($component['button'])) $component['button'] = 'switch';
 
 		// ShowTime - Uhrzeit der letzten Änderung anzeigen
@@ -76,44 +119,40 @@ function HM_LC_Sw2_FM($component) {
 			else { $ShowTime = ''; }
 		}
 		else { $ShowTime = ''; }
+				
+
+
 		
-		// Setze Standard-Farbe wenn keine gesetzt ist
-        if (!isset($component['color'])) $component['color'] = '#FFCC00';
-        return '<div class="hh" style=\'border-left-color: '.$component['color'].'; border-left-style: solid;\'>'
-            . '<div class="pull-left"><img src="icon/' . $component["icon"] . '" class="icon">' . $component['name'] . '</div>'
-            . '<div class="pull-right">'
-			. $ShowTime
-                . '<span class="info set" data-id="' . $component['STATE'] . '" data-component="' . $component['component'] . '" data-datapoint="STATE" data-set-id="' . $component['STATE'] . '" data-button="' . $component['button'] . '" data-set-value=""></span>'
-            . '</div>'
-            . '<div class="clearfix"></div>'
-        . '</div>';
-    }
-	
-    if ($component['parent_device_interface'] == 'CCU-Jack' && $component['visible'] == 'true' && isset($component['STATE'])) {
 
-		// Setze Button wenn Parameter nicht gesetzt ist
-		if(!isset($component['button'])) $component['button'] = 'switch';
-
-		// ShowTime - Uhrzeit der letzten Änderung anzeigen
-		if(isset($component['showtime'])) {
-			if($component['showtime'] == "true") { $ShowTime = '<span class="info" data-id="' . $component['ise_id']  . 't" data-component="showtime" data-datapoint="showtime"></span>'		; }
-			else { $ShowTime = ''; }
+		
+		if(!isset($component['ccujack_value'])) {
+			// Nimm den ersten Wert der GROSS geschrieben wird
+			foreach (array_keys($component) as $test_case) {
+				if (ctype_upper($test_case)) {
+					$component['ccujack_value'] = $test_case;
+					break;
+				}
+			}	
 		}
-		else { $ShowTime = ''; }
+		if(!isset($component['ccujack_component'])) { $component['ccujack_component'] = "HM-LC-Sw1-FM"; }
+		if(!isset($component['ccujack_datapoint'])) { $component['ccujack_datapoint'] = "STATE"; }
+		
+
 		
 		// Setze Standard-Farbe wenn keine gesetzt ist
         if (!isset($component['color'])) $component['color'] = '#FFCC00';
+		
         return '<div class="hh" style=\'border-left-color: '.$component['color'].'; border-left-style: solid;\'>'
             . '<div class="pull-left"><img src="icon/' . $component["icon"] . '" class="icon">' . $component['name'] . '</div>'
             . '<div class="pull-right">'
 			. $ShowTime
-                . '<span class="info set" data-id="' . $component['STATE'] . '" data-component="' . $component['component'] . '" data-datapoint="STATE" data-set-id="' . $component['STATE'] . '" data-button="' . $component['button'] . '" data-set-value="" data-state-icons=""></span>'
+                . '<span class="info set" data-id="' . $component[$component['ccujack_value']] . '" data-component="' . $component['ccujack_component'] . '" data-datapoint="'.$component['ccujack_datapoint'].'" data-set-id="' . $component['ccujack_value'] . '" data-button="' . $component['button'] . '"  data-set-value="" data-state-icons=""></span>'
             . '</div>'
             . '<div class="clearfix"></div>'
         . '</div>';
-    }
+    }		
 	
-	if ($component['parent_device_interface'] == 'CCU-Jack' && $component['visible'] == 'true' && !isset($component['STATE'])) {
+	if ($component['parent_device_interface'] == 'CCU-Jack' && $component['visible'] == 'true' && !isset($component['PRESS_SHORT'])) {
 
 		// Setze KEIN !!!! Button wenn Parameter nicht gesetzt ist
 		if(!isset($component['button'])) $component['button'] = '';
@@ -156,6 +195,5 @@ function HM_LC_Sw2_FM($component) {
             . '</div>'
             . '<div class="clearfix"></div>'
         . '</div>';
-    }		
-	
+    }			
 }
