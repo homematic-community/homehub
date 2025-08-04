@@ -61,7 +61,7 @@ function MultiView($component) {
 			if(!isset($iseDataValuelist[$i])) { $iseDataValuelist[$i] = ""; }
 			if($i != "0") $ausgabe = $ausgabe .  " | ";
 			if(isset($preiseText[$i])) $ausgabe = $ausgabe . $preiseText[$i]." ";
-			$ausgabe = $ausgabe .  '<span class="info set " data-id="'.$iseWert.'" data-component="'.$iseComponent[$i].'" data-datapoint="'.$iseDatapoint[$i].'" data-unit="'.$iseUnit[$i].'" data-state-icons="" data-indicator="-1" data-valuelist="'.$iseDataValuelist[$i].'" Style="margin-left:0px;" data-set-value=""></span> '.$iseUnit[$i]."";
+			$ausgabe = $ausgabe .  '<span class="info set " data-id="'.$iseWert.'" data-component="'.$iseComponent[$i].'" data-datapoint="'.$iseDatapoint[$i].'"  data-state-icons="" data-indicator="-1" data-valuelist="'.$iseDataValuelist[$i].'" Style="margin-left:0px;" data-set-value=""></span> '.$iseUnit[$i]."";
 			$i++;
 		}
     $ausgabe = $ausgabe . '<div class="clearfix"></div></div></div>';
