@@ -278,7 +278,7 @@ array_multisort($eventdaten, SORT_ASC, $events);
 $tagtemp = "";
 $tagalt = "";
 echo "<style>";
-echo ".icalcalendar tr td { padding:2px 10px 2px 0px;}";
+echo ".icalcalendar tr td { padding:2px 10px 2px 0px;border:0px solid red;vertical-align: top;}";
 echo "</style>";
 echo "<table border='0' class='icalcalendar'>";
   $i = 1;   
@@ -321,27 +321,27 @@ echo "<table border='0' class='icalcalendar'>";
 			if(substr($event['DTSTART'], 0, 8) < date("Ymd"))
 			{
 				
-				echo '<td>seit</td><td>'.$tag.'</td><td>ganztags</td><td>&nbsp;-&nbsp;</td><td><span style="color:green;">'.$event['SUMMARY'].'</span></td>';
+				echo '<td>seit</td><td>'.$tag.'</td><td>ganztags</td><td>-</td><td><span style="color:green;">'.$event['SUMMARY'].'</span></td>';
 			}
 			else if(substr($event['DTSTART'], 0, 8) == date("Ymd") AND substr($event['DTSTART'], -6) == "000000")
 			{
 
-				echo '<td>heute</td>'.$tag.'<td><td>ganztags</td>&nbsp;-&nbsp;</td><td><span style="color:green;">'.$event['SUMMARY'].'</span></td>';
+				echo '<td>heute</td>'.$tag.'<td><td>ganztags</td>-</td><td><span style="color:green;">'.$event['SUMMARY'].'</span></td>';
 			}
 			else if(substr($event['DTSTART'], 0, 8) == date("Ymd"))
 			{
 
-				echo '<td>heute</td><td>'.$tag.'</td><td>'.date('H:i', strtotime($event['DTSTART'])).'</td><td>&nbsp;-&nbsp;</td><td><span style="color:green;">'.$event['SUMMARY'].'</span></td>';
+				echo '<td>heute</td><td>'.$tag.'</td><td>'.date('H:i', strtotime($event['DTSTART'])).'</td><td>-</td><td><span style="color:green;">'.$event['SUMMARY'].'</span></td>';
 			}
 			else if(substr($event['DTSTART'], -6) == "000000")
 			{
 
-				echo "<td>".$wochentag."</td><td>".$tag.'</td><td>ganztags</td><td>&nbsp;-&nbsp;</td><td><span style="color:;">'.$event['SUMMARY'].'</span></td>';
+				echo "<td>".$wochentag."</td><td>".$tag.'</td><td>ganztags</td><td>-</td><td><span style="color:;">'.$event['SUMMARY'].'</span></td>';
 			}			
 			else
 			{
 
-				echo '<td>'.$wochentag.'&nbsp;</td><td>'.$tag.'</td><td>'.date('H:i', strtotime($event['DTSTART'])).'</td><td>&nbsp;-&nbsp;</td><td><span style="color:;">'.$event['SUMMARY'].'</span></td>';
+				echo '<td>'.$wochentag.'&nbsp;</td><td>'.$tag.'</td><td>'.date('H:i', strtotime($event['DTSTART'])).'</td><td>-</td><td><span style="color:;">'.$event['SUMMARY'].'</span></td>';
 			}
 			if($beschreibung == 1) 
 			{ 
