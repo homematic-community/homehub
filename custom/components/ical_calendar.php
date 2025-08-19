@@ -276,10 +276,11 @@ $eventdaten = array_column($events, 'DTSTART');
 array_multisort($eventdaten, SORT_ASC, $events);
 */
 
-
+echo "<table border='0'>";
   $i = 1;   
   foreach($events as $event)
   {
+	echo "<tr>";
     $now = date('Y-m-d H:i:s');//current date and time
 	//$now = date('Y-m-d-m-Y H:i');//current date and time
     $eventdate = date('Y-m-d H:i:s', strtotime($event['DTSTART']));//user friendly date
@@ -296,33 +297,33 @@ array_multisort($eventdaten, SORT_ASC, $events);
 			$tage = array("So","Mo","Di","Mi","Do","Fr","Sa");
 			if($i > 1)
 			{
-				echo "<br>";
+				//echo "<br>";
 			}
 
 			if(substr($event['DTSTART'], 0, 8) < date("Ymd"))
 			{
 				$tag = $tage[date("w",strtotime($event['DTSTART']))];
-				echo "seit ".$tag." ".date('d.m.Y', strtotime($event['DTSTART']))." - <span style='color:green;'>".$event['SUMMARY']."</span>";
+				echo '<td>seit '.$tag.' '.date('d.m.Y', strtotime($event['DTSTART'])).'</td><td>&nbsp;-&nbsp;</td><td><span style="color:green;">'.$event['SUMMARY'].'</span></td>';
 			}
 			else if(substr($event['DTSTART'], 0, 8) == date("Ymd") AND substr($event['DTSTART'], -6) == "000000")
 			{
 				$tag = $tage[date("w",strtotime($event['DTSTART']))];
-				echo $tag." ".date('d.m.Y', strtotime($event['DTSTART'])).' - <span style="color:green;">'.$event['SUMMARY'].'</span>';
+				echo '<td>heute</td><td>&nbsp;-&nbsp;</td><td><span style="color:green;">'.$event['SUMMARY'].'</span></td>';
 			}
 			else if(substr($event['DTSTART'], 0, 8) == date("Ymd"))
 			{
 				$tag = $tage[date("w",strtotime($event['DTSTART']))];
-				echo $tag." ".date('d.m.Y H:i', strtotime($event['DTSTART'])).' - <span style="color:green;">'.$event['SUMMARY'].'</span>';
+				echo '<td>heute '.date('H:i', strtotime($event['DTSTART'])).'</td><td>&nbsp;-&nbsp;</td><td><span style="color:green;">'.$event['SUMMARY'].'</span></td>';
 			}
 			else if(substr($event['DTSTART'], -6) == "000000")
 			{
 				$tag = $tage[date("w",strtotime($event['DTSTART']))];
-				echo $tag." ".date('d.m.Y', strtotime($event['DTSTART'])).' - <span style="color:;">'.$event['SUMMARY'].'</span>';
+				echo "<td>".$tag." ".date('d.m.Y', strtotime($event['DTSTART'])).'</td><td>&nbsp;-&nbsp;</td><td><span style="color:;">'.$event['SUMMARY'].'</span></td>';
 			}			
 			else
 			{
 				$tag = $tage[date("w",strtotime($event['DTSTART']))];
-				echo $tag." ".date('d.m.Y  H:i', strtotime($event['DTSTART'])).' - <span style="color:;">'.$event['SUMMARY'].'</span>';
+				echo "<td>".$tag." ".date('d.m.Y  H:i', strtotime($event['DTSTART'])).'</td><td>&nbsp;-&nbsp;</td><td><span style="color:;">'.$event['SUMMARY'].'</span></td>';
 			}
 			if($beschreibung == 1) 
 			{ 
@@ -348,8 +349,9 @@ array_multisort($eventdaten, SORT_ASC, $events);
 					
   //  }
   }
+  echo "</tr>";
 }
-
+echo "</table>";
 
 
 
