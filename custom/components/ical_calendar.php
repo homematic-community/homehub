@@ -89,12 +89,13 @@ if(isset($_GET['url']) AND isset($_GET['tage']) AND isset($_GET['beschreibung'])
   
   foreach ($urls as $url) {
 	
-	  
+	  //echo $url."<br>";
 
 
     $beschreibung = $_GET['beschreibung']; 
 
     $cachedatei = "../../cache/".md5($url).".txt";
+	//echo $cachedatei."<br>";
   
     if(file_Exists($cachedatei))
     {
@@ -104,16 +105,9 @@ if(isset($_GET['url']) AND isset($_GET['tage']) AND isset($_GET['beschreibung'])
 	   // echo "Cachedatei wird genutzt";
 	   $content = file_get_contents($cachedatei);
       }
-    }
-  
-  
-  
-  
-
-  // echo "Cacheinhalt exisiert nicht - schreibe neu";
-  if(!isset($content))
-  {
-	 $content = file_get_contents($url); 
+	  else
+	  {
+		  $content = file_get_contents($url); 
 	 if($content != "") 
 	 { 
         $datei = fopen($cachedatei,"w+");
@@ -121,11 +115,25 @@ if(isset($_GET['url']) AND isset($_GET['tage']) AND isset($_GET['beschreibung'])
 		fclose($datei);
 	 
 	 }
-  }	  
-  else
-  {
-	// echo "Nutze Cachedatei";
-  }	  
+	  }
+    }
+	else
+	{
+		$content = file_get_contents($url); 
+	 if($content != "") 
+	 { 
+        $datei = fopen($cachedatei,"w+");
+		fwrite($datei,$content); 
+		fclose($datei);
+	 
+	 }
+	}
+  
+  
+  
+  
+
+
 $contentall = $contentall."\r\n".$content;
 
 }
