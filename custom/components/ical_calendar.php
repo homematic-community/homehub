@@ -1,4 +1,10 @@
 <?php
+setlocale(LC_ALL, 'de_DE@euro', 'de_DE', 'deu_deu');
+
+
+
+
+
 
 /*
 {
@@ -173,6 +179,7 @@ $contentall = $contentall."\r\n".$content;
  	// Damit Werte gefüllt sind
 	if(Isset($majorarray['DTSTART;VALUE=DATE'])) { $majorarray['DTSTART'] = $majorarray['DTSTART;VALUE=DATE']; }
 	if(Isset($majorarray['DTSTART;TZID=Europe/Berlin'])) { $majorarray['DTSTART'] = $majorarray['DTSTART;TZID=Europe/Berlin']; }
+	if(Isset($majorarray['DTSTART;TZID=Africa/Ceuta'])) { $majorarray['DTSTART'] = $majorarray['DTSTART;TZID=Africa/Ceuta']; }
 	
 	
 	if(Isset($majorarray['DTEND;VALUE=DATE'])) { $majorarray['DTEND'] = $majorarray['DTEND;VALUE=DATE']; }
@@ -181,13 +188,58 @@ $contentall = $contentall."\r\n".$content;
 	// Damit DTEND;VALUE=DATE korrekt umgesetzt
 	if(Isset($majorarray['DTSTART']))		
 	{
+	
+		if (strpos($majorarray['DTSTART'], "Z") !== false)
+		{ 
+
+
+
+
+
+
+
+	//echo $majorarray['DTSTART']."<br>";
+	//echo  strtotime($majorarray['DTSTART'])."<br>";
+//	echo $majorarray['DTSTART']."<br>";
 		$majorarray['DTSTART'] = str_replace("Z", "", $majorarray['DTSTART']);
+	$utc_time_string =  substr($majorarray['DTSTART'], 0, 4).'-'.substr($majorarray['DTSTART'], 4, 2).'-'.substr($majorarray['DTSTART'], 6, 2).' '.substr($majorarray['DTSTART'], 9, 2).':'.substr($majorarray['DTSTART'], 11, 2).':'.substr($majorarray['DTSTART'], 13, 2);
+	$utc_datetime = new DateTime($utc_time_string, new DateTimeZone('UTC'));
+	$mez_datetime = $utc_datetime->setTimezone(new DateTimeZone('Europe/Berlin')); // Berlin is a common MEZ timezone
+	$mez_time = $mez_datetime->format('YmdHis');
+	//echo $mez_time."<br><hr>";
+	$majorarray['DTSTART'] = $mez_time;
+			
+		}
 		$majorarray['DTSTART'] = str_replace("T", "", $majorarray['DTSTART']);
 		$majorarray['DTSTART'] = str_pad($majorarray['DTSTART'],14,"0");
 	}
 	
 	if(Isset($majorarray['DTEND']))		
 	{
+		
+				if (strpos($majorarray['DTEND'], "Z") !== false)
+		{ 
+
+
+
+
+
+
+
+	//echo $majorarray['DTSTART']."<br>";
+	//echo  strtotime($majorarray['DTSTART'])."<br>";
+//	echo $majorarray['DTSTART']."<br>";
+		$majorarray['DTEND'] = str_replace("Z", "", $majorarray['DTEND']);
+	$utc_time_string =  substr($majorarray['DTEND'], 0, 4).'-'.substr($majorarray['DTEND'], 4, 2).'-'.substr($majorarray['DTEND'], 6, 2).' '.substr($majorarray['DTEND'], 9, 2).':'.substr($majorarray['DTEND'], 11, 2).':'.substr($majorarray['DTEND'], 13, 2);
+	$utc_datetime = new DateTime($utc_time_string, new DateTimeZone('UTC'));
+	$mez_datetime = $utc_datetime->setTimezone(new DateTimeZone('Europe/Berlin')); // Berlin is a common MEZ timezone
+	$mez_time = $mez_datetime->format('YmdHis');
+	//echo $mez_time."<br><hr>";
+	$majorarray['DTEND'] = $mez_time;
+			
+		}
+		
+		
 		$majorarray['DTEND'] = str_replace("Z", "", $majorarray['DTEND']);
 		$majorarray['DTEND'] = str_replace("T", "", $majorarray['DTEND']);
 		$majorarray['DTEND'] = str_pad($majorarray['DTEND'],14,"0");
