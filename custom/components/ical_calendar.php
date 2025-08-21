@@ -322,7 +322,7 @@ echo "<table border='0' class='icalcalendar'>";
 			}
 			else
 			{
-				$tag =date('d.m.', strtotime($event['DTSTART']));
+				$tag = date('d.m.', strtotime($event['DTSTART']));
 				$wochentag =  $wochentag = $tage[date("w",strtotime($event['DTSTART']))];
 			}
 			
@@ -334,7 +334,7 @@ echo "<table border='0' class='icalcalendar'>";
 			else if(substr($event['DTSTART'], 0, 8) == date("Ymd") AND substr($event['DTSTART'], -6) == "000000")
 			{
 
-				echo '<td>heute</td>'.$tag.'<td><td>ganztags</td><td><span style="color:green;">'.$event['SUMMARY'].'</span></td>';
+				echo '<td>heute</td><td>'.$tag.'</td><td>ganztags</td><td><span style="color:green;">'.$event['SUMMARY'].'</span></td>';
 			}
 			else if(substr($event['DTSTART'], 0, 8) == date("Ymd"))
 			{
