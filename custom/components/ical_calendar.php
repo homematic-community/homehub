@@ -32,45 +32,39 @@ Siehe Datei: ical_calendar.png
 
 
 ini_set('display_errors', 'on');
-function ical_calendar($component) {
-    $modalId = mt_rand();
+function ical_calendar($component) 
+{
+  $modalId = mt_rand();
 	
-	if(isset($component["aufgeklappt"])) {
-		if($component["aufgeklappt"] == "1") {
-			$aufgeklappt = "collapsed";
-		}
-		else {
-			$aufgeklappt = "collapse";
-		}
+  if(isset($component["aufgeklappt"])) {
+    if($component["aufgeklappt"] == "1") {
+	  $aufgeklappt = "collapsed";
+	} else {
+	  $aufgeklappt = "collapse";
 	}
-	else	
-	{
-			$aufgeklappt = "collapse";
-	}	
-	if (!isset($component['color'])) $component['color'] = '#595959';
-	if (!isset($component['tage'])) $component['tage'] = '14';
-	if (!isset($component['beschreibung'])) $component['tage'] = '0';
-	return '<div class="hh" style=\'border-left-color: '.$component['color'].'; border-left-style: solid;\'>'
-		. '<div data-toggle="collapse" data-target="#' . $modalId . '" style="display:flow-root;" class="collapsed">'
-            . '<div class="pull-left"><img src="icon/' . $component["icon"] . '" class="icon">'.$component['name'].'</div>'
-        //    . '<div class="pull-right"></div>'
-		.'</div>'
-         . '<div class="hh2 '.$aufgeklappt.'" id="' . $modalId . '">'
-        . '</div>'
-    . '</div>
-	<script type="text/javascript">
-//function execute_ical_calendar_' . $modalId . '() {
-  $.ajax({
-    url: "custom/components/ical_calendar.php?url='.urlencode($component["url"]).'&tage='.$component["tage"].'&beschreibung='.$component["beschreibung"].'",
-    success: function(data) {
-	  $("#' . $modalId . '").html("" + data);
-    }
-  });
-  //setTimeout(execute_Abfallkalender, 900000); // 15 Minuten
-//}
+  }
+  else	
+  {
+    $aufgeklappt = "collapse";
+  }	
+  if (!isset($component['color'])) $component['color'] = '#595959';
+  if (!isset($component['tage'])) $component['tage'] = '14';
+  if (!isset($component['beschreibung'])) $component['tage'] = '0';
+  return '<div class="hh" style=\'border-left-color: '.$component['color'].'; border-left-style: solid;\'>'
+		  .'<div data-toggle="collapse" data-target="#' . $modalId . '" style="display:flow-root;" class="collapsed">'
+           .'<div class="pull-left"><img src="icon/' . $component["icon"] . '" class="icon">'.$component['name'].'</div>'
+  		  .'</div>'
+         .'<div class="hh2 '.$aufgeklappt.'" id="' . $modalId . '"></div>'
+       .'</div>
+	     <script type="text/javascript">
 
-//setTimeout(execute_ical_calendar_' . $modalId . ', 150);
-</script>';
+         $.ajax({
+           url: "custom/components/ical_calendar.php?url='.urlencode($component["url"]).'&tage='.$component["tage"].'&beschreibung='.$component["beschreibung"].'",
+           success: function(data) {
+	         $("#' . $modalId . '").html("" + data);
+           }
+         });
+         </script>';
 }
 
 
@@ -78,73 +72,75 @@ function ical_calendar($component) {
 
 
 
+
+
+
+
+
  
 
-
-
-
- 
-
-
+// Wenn Parameter uebergeben werden, dann wird nachgeladen
 if(isset($_GET['url']) AND isset($_GET['tage']) AND isset($_GET['beschreibung']))
 {
+	
+  $calender_cache = "../../cache/ical_calender_".md5($_GET['url']).".txt";
+  
+  // Fenn Cachedatei keine Stunde alt ist nimm diese
+  if(file_Exists($calender_cache))
+  {
+    if(date("ymdh",filemtime($calender_cache)) == date("ymdh"))
+    {
+	  echo file_get_contents($calender_cache);
+	  exit();
+	}
+  }	   
+
+  
   $contentall = "";
   $tage = $_GET['tage'];
   $url = $_GET['url'];
   $urls = explode(";",$url);
   
-  foreach ($urls as $url) {
-	
-	  //echo $url."<br>";
-
-
+  // Sammle alle ICS-Dateiinhalte
+  foreach ($urls as $url) 
+  {
     $beschreibung = $_GET['beschreibung']; 
-
     $cachedatei = "../../cache/".md5($url).".txt";
-	//echo $cachedatei."<br>";
   
     if(file_Exists($cachedatei))
     {
-    // echo "Cachedatei existiert";
-      if(date("d.m.Y",filemtime($cachedatei)) == date("d.m.Y",time()))
+      // Wenn ICAL Datei keine Stunde alt ist nimm diese
+      if(date("ymdh",filemtime($cachedatei)) == date("ymdh",time()))
       {
 	   // echo "Cachedatei wird genutzt";
 	   $content = file_get_contents($cachedatei);
       }
 	  else
 	  {
-		  $content = file_get_contents($url); 
-	 if($content != "") 
-	 { 
-        $datei = fopen($cachedatei,"w+");
-		fwrite($datei,$content); 
-		fclose($datei);
-	 
-	 }
-	  }
+	    $content = file_get_contents($url); 
+	    if($content != "") 
+	    { 
+          $datei = fopen($cachedatei,"w+");
+		  fwrite($datei,$content); 
+		  fclose($datei);
+	    }
+      }
     }
-	else
-	{
-		$content = file_get_contents($url); 
-	 if($content != "") 
-	 { 
+    else
+    {
+      $content = file_get_contents($url); 
+	  if($content != "") 
+	  { 
         $datei = fopen($cachedatei,"w+");
-		fwrite($datei,$content); 
-		fclose($datei);
-	 
-	 }
-	}
-  
-  
-  
-  
-
-
-$contentall = $contentall."\r\n".$content;
-
-}
-	  // Ersetze Zeilenumbruch
-	  $content = str_replace("\r\n ", "", $contentall);
+	    fwrite($datei,$content); 
+	    fclose($datei);	 
+      }
+    }
+    $contentall = $contentall."\r\n".$content;
+  }
+	  
+  // Ersetze Zeilenumbruch
+  $content = str_replace("\r\n ", "", $contentall);
 
   // Suche Events nach BEGIN und END
   preg_match_all('/(BEGIN:VEVENT.*?END:VEVENT)/si', $content, $result, PREG_PATTERN_ORDER);
@@ -189,62 +185,34 @@ $contentall = $contentall."\r\n".$content;
 	if(Isset($majorarray['DTSTART']))		
 	{
 	
-		if (strpos($majorarray['DTSTART'], "Z") !== false)
-		{ 
-
-
-
-
-
-
-
-	//echo $majorarray['DTSTART']."<br>";
-	//echo  strtotime($majorarray['DTSTART'])."<br>";
-//	echo $majorarray['DTSTART']."<br>";
+      if (strpos($majorarray['DTSTART'], "Z") !== false)
+	  { 
 		$majorarray['DTSTART'] = str_replace("Z", "", $majorarray['DTSTART']);
-	$utc_time_string =  substr($majorarray['DTSTART'], 0, 4).'-'.substr($majorarray['DTSTART'], 4, 2).'-'.substr($majorarray['DTSTART'], 6, 2).' '.substr($majorarray['DTSTART'], 9, 2).':'.substr($majorarray['DTSTART'], 11, 2).':'.substr($majorarray['DTSTART'], 13, 2);
-	$utc_datetime = new DateTime($utc_time_string, new DateTimeZone('UTC'));
-	$mez_datetime = $utc_datetime->setTimezone(new DateTimeZone('Europe/Berlin')); // Berlin is a common MEZ timezone
-	$mez_time = $mez_datetime->format('YmdHis');
-	//echo $mez_time."<br><hr>";
-	$majorarray['DTSTART'] = $mez_time;
-			
-		}
-		$majorarray['DTSTART'] = str_replace("T", "", $majorarray['DTSTART']);
-		$majorarray['DTSTART'] = str_pad($majorarray['DTSTART'],14,"0");
+	    $utc_time_string =  substr($majorarray['DTSTART'], 0, 4).'-'.substr($majorarray['DTSTART'], 4, 2).'-'.substr($majorarray['DTSTART'], 6, 2).' '.substr($majorarray['DTSTART'], 9, 2).':'.substr($majorarray['DTSTART'], 11, 2).':'.substr($majorarray['DTSTART'], 13, 2);
+	    $utc_datetime = new DateTime($utc_time_string, new DateTimeZone('UTC'));
+	    $mez_datetime = $utc_datetime->setTimezone(new DateTimeZone('Europe/Berlin')); // Berlin is a common MEZ timezone
+	    $mez_time = $mez_datetime->format('YmdHis');
+		$majorarray['DTSTART'] = $mez_time;
+	  }
+	  $majorarray['DTSTART'] = str_replace("T", "", $majorarray['DTSTART']);
+	  $majorarray['DTSTART'] = str_pad($majorarray['DTSTART'],14,"0");
 	}
 	
 	if(Isset($majorarray['DTEND']))		
 	{
-		
-				if (strpos($majorarray['DTEND'], "Z") !== false)
+		if (strpos($majorarray['DTEND'], "Z") !== false)
 		{ 
-
-
-
-
-
-
-
-	//echo $majorarray['DTSTART']."<br>";
-	//echo  strtotime($majorarray['DTSTART'])."<br>";
-//	echo $majorarray['DTSTART']."<br>";
-		$majorarray['DTEND'] = str_replace("Z", "", $majorarray['DTEND']);
-	$utc_time_string =  substr($majorarray['DTEND'], 0, 4).'-'.substr($majorarray['DTEND'], 4, 2).'-'.substr($majorarray['DTEND'], 6, 2).' '.substr($majorarray['DTEND'], 9, 2).':'.substr($majorarray['DTEND'], 11, 2).':'.substr($majorarray['DTEND'], 13, 2);
-	$utc_datetime = new DateTime($utc_time_string, new DateTimeZone('UTC'));
-	$mez_datetime = $utc_datetime->setTimezone(new DateTimeZone('Europe/Berlin')); // Berlin is a common MEZ timezone
-	$mez_time = $mez_datetime->format('YmdHis');
-	//echo $mez_time."<br><hr>";
-	$majorarray['DTEND'] = $mez_time;
-			
+          $majorarray['DTEND'] = str_replace("Z", "", $majorarray['DTEND']);
+	      $utc_time_string =  substr($majorarray['DTEND'], 0, 4).'-'.substr($majorarray['DTEND'], 4, 2).'-'.substr($majorarray['DTEND'], 6, 2).' '.substr($majorarray['DTEND'], 9, 2).':'.substr($majorarray['DTEND'], 11, 2).':'.substr($majorarray['DTEND'], 13, 2);
+	      $utc_datetime = new DateTime($utc_time_string, new DateTimeZone('UTC'));
+	      $mez_datetime = $utc_datetime->setTimezone(new DateTimeZone('Europe/Berlin')); // Berlin is a common MEZ timezone
+	      $mez_time = $mez_datetime->format('YmdHis');
+          $majorarray['DTEND'] = $mez_time;
 		}
-		
-		
 		$majorarray['DTEND'] = str_replace("Z", "", $majorarray['DTEND']);
 		$majorarray['DTEND'] = str_replace("T", "", $majorarray['DTEND']);
 		$majorarray['DTEND'] = str_pad($majorarray['DTEND'],14,"0");
 	}
-	
 	$majorarray['SUMMARY'] = str_replace('\\', "", $majorarray['SUMMARY']);
 	
 	
@@ -281,176 +249,107 @@ $contentall = $contentall."\r\n".$content;
 	  }
 	  // oder alle events deren Start vor oder am gleichen Tag war und nach oder am gleichen tag endet
 	  else if(substr($majorarray['DTSTART'], 0, 8) <= date("Ymd") AND substr($majorarray['DTEND'], 0, 8) >= date("Ymd", strtotime("+1 day"))) 
-	//	  else if($majorarray['DTSTART'] <= date("YmdHis") AND $majorarray['DTEND'] >= date("YmdHis", strtotime("+1 day"))) 
 	  {
 		$events[] = $majorarray;
-		
   	  }
 	  else
 	  {
 		
 	  }
 	}
-	/*
-	// Nur solche beachten die nicht vergangen sind	
-	if(substr($majorarray['DTEND'], 0, 8) <= (date("Ymd", strtotime("+".$tage." day")))) 
-	{
-//AND (substr($majorarray['DTSTART'], 0, 8) <= date("Ymd"))) 
-		$events[] = $majorarray;
-		if(isset($_GET['debug'])) { print_r($majorarray); }
-		echo "<hr>";
-	}
-	*/
-	//$events[] = $majorarray;
-//print_r($majorarray);
     unset($majorarray);
-	
-	//echo $majorarray['DTSTART']."<br>";
-	//echo "<hr>".$majorarray['DTSTART']."<br>".$majorarray['DESCRIPTION'];
-    //$icalarray[] = $majorarray;
-
   }
-  
-   
-   
-   
-// if(isset($_GET['debug'])) { print_r($events); }
- 
-// if(isset($_GET['debug'])) { exit(); }
-  //sort events into date order
-  
-  
-usort($events, function($a, $b) {
 
+  // Sortiere Events
+  usort($events, function($a, $b) 
+  {
     if (isset($a["DTSTART"]) && isset($b["DTSTART"])) {
-        return strtotime($a["DTSTART"]) - strtotime($b["DTSTART"]);
+      return strtotime($a["DTSTART"]) - strtotime($b["DTSTART"]);
     }
-});
+  }); 
 
-
-/*
-// Feld 'name' extrahieren
-$eventdaten = array_column($events, 'DTSTART');
-
-// Nach dem Feld 'name' sortieren (aufsteigend)
-array_multisort($eventdaten, SORT_ASC, $events);
-*/
-$tagtemp = "";
-$tagalt = "";
-echo "<style>";
-echo ".icalcalendar tr td { padding:2px 10px 2px 0px;border:0px solid red;vertical-align: top;}";
-echo "</style>";
-echo "<table border='0' class='icalcalendar'>";
+  $tagtemp = "";
+  $tagalt = "";
+  $content_output = "";
+  $content_output.= "<style>";
+  $content_output.= ".icalcalendar tr td { padding:2px 10px 2px 0px;border:0px solid red;vertical-align: top;}";
+  $content_output.= "</style>";
+  $content_output.= "<table border='0' class='icalcalendar'>";
   $i = 1;   
+
   foreach($events as $event)
   {
-	echo "<tr>";
+    $content_output.= "<tr>";
     $now = date('Y-m-d H:i:s');//current date and time
-	//$now = date('Y-m-d-m-Y H:i');//current date and time
     $eventdate = date('Y-m-d H:i:s', strtotime($event['DTSTART']));//user friendly date
-	//$eventdate = date('d-m-Y H:i', strtotime($event['DTSTART']));//user friendly date
-
-   // if($eventdate > $now)
-	//{
-	
-      /*  echo "
-            <div class='eventHolder'>
-                <div class='eventDate'>$eventdate</div>
-                <div class='eventTitle'>".$event['SUMMARY']."</div>
-            </div>";*/
-			$tage = array("So","Mo","Di","Mi","Do","Fr","Sa");
-			if($i > 1)
-			{
-				//echo "<br>";
-			}
+	$tage = array("So","Mo","Di","Mi","Do","Fr","Sa");
 			
+	$tagalt = $tagtemp;
+	$tagtemp = date('d.m.', strtotime($event['DTSTART']));
+    if($tagalt == $tagtemp)
+    {
+      $tag = "";
+      $wochentag = "";
+    }
+    else
+    {
+      $tag = date('d.m.', strtotime($event['DTSTART']));
+      $wochentag =  $wochentag = $tage[date("w",strtotime($event['DTSTART']))];
+    }
 			
-			$tagalt = $tagtemp;
-			$tagtemp = date('d.m.', strtotime($event['DTSTART']));
-			if($tagalt == $tagtemp)
-			{
-				$tag = "";
-				$wochentag = "";
-			}
-			else
-			{
-				$tag = date('d.m.', strtotime($event['DTSTART']));
-				$wochentag =  $wochentag = $tage[date("w",strtotime($event['DTSTART']))];
-			}
-			
-			if(substr($event['DTSTART'], 0, 8) < date("Ymd"))
-			{
-				
-				echo '<td>seit</td><td>'.$tag.'</td><td>ganztags</td><td><span style="color:green;">'.$event['SUMMARY'].'</span></td>';
-			}
-			else if(substr($event['DTSTART'], 0, 8) == date("Ymd") AND substr($event['DTSTART'], -6) == "000000")
-			{
-
-				echo '<td>heute</td><td>'.$tag.'</td><td>ganztags</td><td><span style="color:green;">'.$event['SUMMARY'].'</span></td>';
-			}
-			else if(substr($event['DTSTART'], 0, 8) == date("Ymd"))
-			{
-
-				
-	if(date('d.m.Y', strtotime($event['DTSTART'])) == date('d.m.Y', strtotime($event['DTEND'])))
-				{
-				  echo '<b>heute '.date('H:i', strtotime($event['DTSTART'])).' - '.date('H:i', strtotime($event['DTEND'])).' - <span style="color:green;">'.$event['SUMMARY'].'</span></b>';	
-				echo '<td>heute</td><td>'.$tag.'</td><td>'.date('H:i', strtotime($event['DTSTART'])).' - '.date('H:i', strtotime($event['DTEND'])).'</td><td><span style="color:green;">'.$event['SUMMARY'].'</span></td>';
-				}
-				else
-				{
-echo '<td>heute</td><td>'.$tag.'</td><td>'.date('H:i', strtotime($event['DTSTART'])).' - '.date('d.m. H:i', strtotime($event['DTEND'])).'</td><td><span style="color:green;">'.$event['SUMMARY'].'</span></td>';
-				}
-			}
-			else if(substr($event['DTSTART'], -6) == "000000")
-			{
-
-				echo "<td>".$wochentag."</td><td>".$tag.'</td><td>ganztags</td><td><span style="color:;">'.$event['SUMMARY'].'</span></td>';
-			}			
-			else
-			{
-
-
-				if (date('d.m', strtotime($event['DTSTART'])) == date('d.m', strtotime($event['DTEND'])))
-				{
-				//	echo date('d.m.  H:i', strtotime($event['DTSTART'])).' bis '.date('H:i', strtotime($event['DTEND'])).' - <span style="color:#4287f5;">'.$event['SUMMARY'].'</span>';
-								echo '<td>'.$wochentag.'&nbsp;</td><td>'.$tag.'</td><td>'.date('H:i', strtotime($event['DTSTART'])).' bis '.date('H:i', strtotime($event['DTEND'])).'</td><td><span style="color:;">'.$event['SUMMARY'].'</span></td>';
-				}
-				else
-				{
-					//echo date('d.m.  H:i', strtotime($event['DTSTART'])).' bis '.date('d.m. H:i', strtotime($event['DTEND'])).' - <span style="color:#4287f5;">'.$event['SUMMARY'].'</span>';
-					echo '<td>'.$wochentag.'&nbsp;</td><td>'.$tag.'</td><td>'.date('H:i', strtotime($event['DTSTART'])).' bis '.date('d.m. H:i', strtotime($event['DTEND'])).'</td><td><span style="color:;">'.$event['SUMMARY'].'</span></td>';
-				}
-				
-			}
-			if($beschreibung == 1) 
-			{ 
-				if(isset($event['DESCRIPTION']))
-				{
-					echo $event['DESCRIPTION']; 
-				}		
-			}
-			/*
-					//if(substr($majorarray['DTEND'], 0, 8) < date("Ymd")) { $majorarray['DTEND'] = date("Ymd"); }
-			
-			if(date('H:i', strtotime($event['DTSTART'])) == "00:00") { echo date('d-m-Y', strtotime($event['DTSTART']))." <span style='color:transparent;'>".date('H:i', strtotime($event['DTSTART']))."</span> - "; }
-			else { echo date('d-m-Y H:i', strtotime($event['DTSTART']))." - "; }
-				
-			if(date('Y-m-d') == date('Y-m-d', strtotime($event['DTSTART']))) 
-			{ echo '<span style="color:green;">'.$event['SUMMARY'].'</span>'; }
-			else { echo $event['SUMMARY']; }
-			*/
-
-			$i++;
-
-					
-					
-  //  }
+    if(substr($event['DTSTART'], 0, 8) < date("Ymd"))
+    {
+      $content_output.= '<td>seit</td><td>'.$tag.'</td><td>ganztags</td><td><span style="color:green;">'.$event['SUMMARY'].'</span></td>';
+    }
+    else if(substr($event['DTSTART'], 0, 8) == date("Ymd") AND substr($event['DTSTART'], -6) == "000000")
+    {
+      $content_output.= '<td>heute</td><td>'.$tag.'</td><td>ganztags</td><td><span style="color:green;">'.$event['SUMMARY'].'</span></td>';
+    }
+    else if(substr($event['DTSTART'], 0, 8) == date("Ymd"))
+    {
+      if(date('d.m.Y', strtotime($event['DTSTART'])) == date('d.m.Y', strtotime($event['DTEND'])))
+      {
+        $content_output.= '<td>heute</td><td>'.$tag.'</td><td>'.date('H:i', strtotime($event['DTSTART'])).' - '.date('H:i', strtotime($event['DTEND'])).'</td><td><span style="color:green;">'.$event['SUMMARY'].'</span></td>';
+      }
+      else
+      {
+        $content_output.= '<td>heute</td><td>'.$tag.'</td><td>'.date('H:i', strtotime($event['DTSTART'])).' - '.date('d.m. H:i', strtotime($event['DTEND'])).'</td><td><span style="color:green;">'.$event['SUMMARY'].'</span></td>';
+      }
+    }
+    else if(substr($event['DTSTART'], -6) == "000000")
+    {
+      $content_output.= "<td>".$wochentag."</td><td>".$tag.'</td><td>ganztags</td><td><span style="color:;">'.$event['SUMMARY'].'</span></td>';
+    }			
+    else
+    {
+      if (date('d.m', strtotime($event['DTSTART'])) == date('d.m', strtotime($event['DTEND'])))
+      {
+        $content_output.= '<td>'.$wochentag.'&nbsp;</td><td>'.$tag.'</td><td>'.date('H:i', strtotime($event['DTSTART'])).' bis '.date('H:i', strtotime($event['DTEND'])).'</td><td><span style="color:;">'.$event['SUMMARY'].'</span></td>';
+      }
+      else
+      {
+        $content_output.= '<td>'.$wochentag.'&nbsp;</td><td>'.$tag.'</td><td>'.date('H:i', strtotime($event['DTSTART'])).' bis '.date('d.m. H:i', strtotime($event['DTEND'])).'</td><td><span style="color:;">'.$event['SUMMARY'].'</span></td>';
+      }
+    }
+    if($beschreibung == 1) 
+	{ 
+	  if(isset($event['DESCRIPTION']))
+      {
+        $content_output.= $event['DESCRIPTION']; 
+      }		
+    }
+    $i++;
+    $content_output.= "</tr>";
   }
-  echo "</tr>";
+  $content_output.= "</table>";
+  
+  // Scrheibe datei          
+  $datei = fopen($calender_cache,"w+");
+  fwrite($datei,$content_output); 
+  fclose($datei);
+  // Ausgabe
+  echo $content_output;
 }
-echo "</table>";
-
 
 
 
