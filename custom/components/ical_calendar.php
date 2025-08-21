@@ -86,7 +86,7 @@ if(isset($_GET['url']) AND isset($_GET['tage']) AND isset($_GET['beschreibung'])
   $calender_cache = "../../cache/ical_calender_".md5($_GET['url']).".txt";
   
   // Fenn Cachedatei keine Stunde alt ist nimm diese
-  if(file_Exists($calender_cache))
+  if(file_Exists($calender_cache) AND !isset($_GET['debug']))
   {
     if(date("ymdh",filemtime($calender_cache)) == date("ymdh"))
     {
@@ -104,6 +104,7 @@ if(isset($_GET['url']) AND isset($_GET['tage']) AND isset($_GET['beschreibung'])
   // Sammle alle ICS-Dateiinhalte
   foreach ($urls as $url) 
   {
+	if(isset($_GET['debug'])) { echo $url."<br><br>"; }
     $beschreibung = $_GET['beschreibung']; 
     $cachedatei = "../../cache/".md5($url).".txt";
   
@@ -141,20 +142,24 @@ if(isset($_GET['url']) AND isset($_GET['tage']) AND isset($_GET['beschreibung'])
 	  
   // Ersetze Zeilenumbruch
   $content = str_replace("\r\n ", "", $contentall);
+  
 
   // Suche Events nach BEGIN und END
   preg_match_all('/(BEGIN:VEVENT.*?END:VEVENT)/si', $content, $result, PREG_PATTERN_ORDER);
   for ($i = 0; $i < count($result[0]); $i++) 
   {
+	if(isset($_GET['debug'])) { echo "<br><br><hr>".$result[0][$i]."<hr>"; }
 	// trenne die Zeilen
-    $tmpbyline = explode("\r\n", $result[0][$i]);
+    $tmpbyline = explode("\n", $result[0][$i]);
     // gernerie Array
 	foreach ($tmpbyline as $item) 
 	{
-      $tmpholderarray = explode(":",$item);
+	  if(isset($_GET['debug'])) { echo $item."<br>"; }
+      $tmpholderarray = explode(":",rtrim($item));
       if (count($tmpholderarray) >1) 
 	  {
-        $majorarray[$tmpholderarray[0]] = $tmpholderarray[1];
+        
+		if(isset($tmpholderarray[1])) { $majorarray[$tmpholderarray[0]] = $tmpholderarray[1]; }
 		if(isset($tmpholderarray[2])) { $majorarray[$tmpholderarray[0]] = $majorarray[$tmpholderarray[0]].$tmpholderarray[2]; }
 		if(isset($tmpholderarray[3])) { $majorarray[$tmpholderarray[0]] = $majorarray[$tmpholderarray[0]].$tmpholderarray[3]; }
 		if(isset($tmpholderarray[4])) { $majorarray[$tmpholderarray[0]] = $majorarray[$tmpholderarray[0]].$tmpholderarray[4]; }
@@ -163,7 +168,6 @@ if(isset($_GET['url']) AND isset($_GET['tage']) AND isset($_GET['beschreibung'])
   
     }
 	
-	//print_r($majorarray);
 
 	// Beschreibungstext anpassen falls vorhanden
     if (preg_match('/DESCRIPTION:(.*)END:VEVENT/si', $result[0][$i], $regs)) 
@@ -173,14 +177,15 @@ if(isset($_GET['url']) AND isset($_GET['tage']) AND isset($_GET['beschreibung'])
 
 	
  	// Damit Werte gefüllt sind
-	if(Isset($majorarray['DTSTART;VALUE=DATE'])) { $majorarray['DTSTART'] = $majorarray['DTSTART;VALUE=DATE']; }
+	if(Isset($majorarray['DTSTART;VALUE=DATE'])) { $majorarray['DTSTART'] = $majorarray['DTSTART;VALUE=DATE']; }	
 	if(Isset($majorarray['DTSTART;TZID=Europe/Berlin'])) { $majorarray['DTSTART'] = $majorarray['DTSTART;TZID=Europe/Berlin']; }
 	if(Isset($majorarray['DTSTART;TZID=Africa/Ceuta'])) { $majorarray['DTSTART'] = $majorarray['DTSTART;TZID=Africa/Ceuta']; }
 	
 	
 	if(Isset($majorarray['DTEND;VALUE=DATE'])) { $majorarray['DTEND'] = $majorarray['DTEND;VALUE=DATE']; }
 	if(Isset($majorarray['DTEND;TZID=Europe/Berlin'])) { $majorarray['DTEND'] = $majorarray['DTEND;TZID=Europe/Berlin']; }
-
+    if(Isset($majorarray['DTEND;TZID=Africa/Ceuta'])) { $majorarray['DTEND'] = $majorarray['DTSTART;TZID=Africa/Ceuta']; }
+	
 	// Damit DTEND;VALUE=DATE korrekt umgesetzt
 	if(Isset($majorarray['DTSTART']))		
 	{
@@ -194,7 +199,7 @@ if(isset($_GET['url']) AND isset($_GET['tage']) AND isset($_GET['beschreibung'])
 	    $mez_time = $mez_datetime->format('YmdHis');
 		$majorarray['DTSTART'] = $mez_time;
 	  }
-	  $majorarray['DTSTART'] = str_replace("T", "", $majorarray['DTSTART']);
+	  $majorarray['DTSTART'] = str_replace("T", "", $majorarray['DTSTART']);	  
 	  $majorarray['DTSTART'] = str_pad($majorarray['DTSTART'],14,"0");
 	}
 	
@@ -209,27 +214,14 @@ if(isset($_GET['url']) AND isset($_GET['tage']) AND isset($_GET['beschreibung'])
 	      $mez_time = $mez_datetime->format('YmdHis');
           $majorarray['DTEND'] = $mez_time;
 		}
-		$majorarray['DTEND'] = str_replace("Z", "", $majorarray['DTEND']);
 		$majorarray['DTEND'] = str_replace("T", "", $majorarray['DTEND']);
+		$majorarray['DTEND'] = str_replace(" ", "", $majorarray['DTEND']);
 		$majorarray['DTEND'] = str_pad($majorarray['DTEND'],14,"0");
-	}
-	$majorarray['SUMMARY'] = str_replace('\\', "", $majorarray['SUMMARY']);
-	
-	
-	if(isset($_GET['debug'])) 
-	{ 
-	  echo "<hr>";
-  	  echo "EndEvent ".substr($majorarray['DTEND'], 0, 8)."<br>";
-	  echo "EndEvent ".$majorarray['DTEND']."<br>";	  
-	  echo "5 tage + ".date("Ymd", strtotime("+".$tage." day"))."<br>"; 
-	  echo "StartEvent ".substr($majorarray['DTSTART'], 0, 8)."<br>";
-	  echo "StartEvent ".$majorarray['DTSTART']."<br>";
-	  echo "aktuelles datum ".date("Ymd")."<br>";
-	  if(isset($majorarray['DESCRIPTION'])) { echo $majorarray['DESCRIPTION']; }
 	}
 	
 	// Filtere Zeichen
 	$majorarray['SUMMARY'] = str_replace("()", "", $majorarray['SUMMARY']);
+	$majorarray['SUMMARY'] = str_replace('\\', "", $majorarray['SUMMARY']);
 	
 	if(!isset($majorarray['DTEND'])) { $majorarray['DTEND'] = $majorarray['DTSTART'];  
 	//echo $majorarray['SUMMARY']."setze dtend ".str_pad(date("Ymd", strtotime("+1 day")),14,"0")."<br>";
@@ -245,6 +237,8 @@ if(isset($_GET['url']) AND isset($_GET['tage']) AND isset($_GET['beschreibung'])
 		if($majorarray['DTSTART'] <= date("YmdHis", strtotime("+".$tage." day")))
 		{
 			$events[] = $majorarray;
+
+	
 		}
 	  }
 	  // oder alle events deren Start vor oder am gleichen Tag war und nach oder am gleichen tag endet
@@ -257,6 +251,19 @@ if(isset($_GET['url']) AND isset($_GET['tage']) AND isset($_GET['beschreibung'])
 		
 	  }
 	}
+	if(isset($_GET['debug'])) { print_r($majorarray); }
+	if(isset($_GET['debug'])) 
+	{ 
+	  echo "<hr>";
+  	  echo "EndEvent ".substr($majorarray['DTEND'], 0, 8)."<br>";
+	  echo "EndEvent ".$majorarray['DTEND']."<br>";	  
+	  echo "5 tage + ".date("Ymd", strtotime("+".$tage." day"))."<br>"; 
+	  echo "StartEvent ".substr($majorarray['DTSTART'], 0, 8)."<br>";
+	  echo "StartEvent ".$majorarray['DTSTART']."<br>";
+	  echo "aktuelles datum ".date("Ymd")."<br>";
+	  if(isset($majorarray['DESCRIPTION'])) { echo $majorarray['DESCRIPTION']; }
+	}
+	
     unset($majorarray);
   }
 
