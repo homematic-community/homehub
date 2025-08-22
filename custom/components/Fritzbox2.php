@@ -120,6 +120,14 @@ function Fritzbox2($component) {
 	$AnrufEingehend = substr($AnrufEingehend,-6);
 	$AnrufBlockiert = substr($AnrufBlockiert,-6);
 	$AnrufAB = substr($AnrufAB,-6);
+	if(isset($component["anzahl"]))
+	{
+	  $max = $component["anzahl"];
+    }
+    else
+    {
+	  $max = 20;
+    }
 
     $modalId = mt_rand();
 	return '<div class="hh hhdouble" style="width:100%;height:100%;">'
@@ -131,7 +139,7 @@ function Fritzbox2($component) {
 	<script type="text/javascript">
 
   $.ajax({
-    url: "custom/components/Fritzbox2.php?fritz_url='.$fritz_url.'&fritz_pwd='.urlencode($component["fritz_pwd"]).'&fritz_user='.$fritz_user.'&aufgeklappt='.$aufgeklappt.'&AnrufAusgehend='.$AnrufAusgehend.'&AnrufVerpasst='.$AnrufVerpasst.'&AnrufEingehend='.$AnrufEingehend.'&AnrufBlockiert='.$AnrufBlockiert.'&AnrufAB='.$AnrufAB.'",
+    url: "custom/components/Fritzbox2.php?fritz_url='.$fritz_url.'&fritz_pwd='.urlencode($component["fritz_pwd"]).'&fritz_user='.$fritz_user.'&aufgeklappt='.$aufgeklappt.'&AnrufAusgehend='.$AnrufAusgehend.'&AnrufVerpasst='.$AnrufVerpasst.'&AnrufEingehend='.$AnrufEingehend.'&AnrufBlockiert='.$AnrufBlockiert.'&AnrufAB='.$AnrufAB.'&max='.$max.'",
     success: function(data) {
 	  $("#' . $modalId . '").html("" + data);
     }
@@ -160,6 +168,8 @@ if(isset($_GET['fritz_url']))
 	$AnrufEingehend = "#".$_GET['AnrufEingehend'];
 	$AnrufBlockiert = "#".$_GET['AnrufBlockiert'];
 	$AnrufAB = "#".$_GET['AnrufAB'];
+	$max = $_GET['max'];
+	
     // Get Challenge-String
 	$req_url = 'http://' . $fritz_url . '/login_sid.lua';
 	$l = simplexml_load_string(file_get_contents($req_url));
@@ -197,14 +207,7 @@ if(isset($_GET['fritz_url']))
          </tr>
        </thead>
     <tbody>';
-if(isset($component["anzahl"]))
-{
-    $max = $component["anzahl"];
-}
-else
-{
-	$max = 20;
-}
+
     $counter = 1;
     foreach($cl->Call as $call) {
         if ($counter > $max) {
