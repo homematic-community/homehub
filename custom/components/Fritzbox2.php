@@ -104,17 +104,62 @@ function Fritzbox2($component) {
 			$aufgeklappt = "collapse";
 	}
 	
-if(isset($component["ausgehend"])) { $AnrufAusgehend = $component["ausgehend"]; }
-else { $AnrufAusgehend = "#4287f5"; }	
-if(isset($component["verpasst"])) { $AnrufVerpasst = $component["verpasst"]; }
-else { $AnrufVerpasst = "#e05a55"; }	
-if(isset($component["eingehend"])) { $AnrufEingehend = $component["eingehend"]; }
-else { $AnrufEingehend = "#8bba8a"; }	
-if(isset($component["blockiert"])) { $AnrufBlockiert = $component["blockiert"]; }
-else { $AnrufBlockiert = "#ff0900"; }	
-if(isset($component["ab"])) { $AnrufAB = $component["ab"]; }
-else { $AnrufAB = "#f5b342"; }	
+	if(isset($component["ausgehend"])) { $AnrufAusgehend = $component["ausgehend"]; }
+	else { $AnrufAusgehend = "#4287f5"; }	
+	if(isset($component["verpasst"])) { $AnrufVerpasst = $component["verpasst"]; }
+	else { $AnrufVerpasst = "#e05a55"; }	
+	if(isset($component["eingehend"])) { $AnrufEingehend = $component["eingehend"]; }
+	else { $AnrufEingehend = "#8bba8a"; }	
+	if(isset($component["blockiert"])) { $AnrufBlockiert = $component["blockiert"]; }
+	else { $AnrufBlockiert = "#ff0900"; }	
+	if(isset($component["ab"])) { $AnrufAB = $component["ab"]; }
+	else { $AnrufAB = "#f5b342"; }	
+
+	$AnrufAusgehend = substr($AnrufAusgehend,-6);
+	$AnrufVerpasst = substr($AnrufVerpasst,-6);
+	$AnrufEingehend = substr($AnrufEingehend,-6);
+	$AnrufBlockiert = substr($AnrufBlockiert,-6);
+	$AnrufAB = substr($AnrufAB,-6);
+
+    $modalId = mt_rand();
+	return '<div class="hh hhdouble" style="width:100%;height:100%;">'
+            . '<div class="pull-left"><img src="icon/' . $component["icon"] . '" class="icon">'.$component['name'].'</div>'
+           // . '<div class="pull-right"></div>'
+        . '<div class="hh2" id="' . $modalId . '"><br><br>lade Liste ...<br>'
+        . '</div>'
+    . '</div>
+	<script type="text/javascript">
+
+  $.ajax({
+    url: "custom/components/Fritzbox2.php?fritz_url='.$fritz_url.'&fritz_pwd='.urlencode($component["fritz_pwd"]).'&fritz_user='.$fritz_user.'&aufgeklappt='.$aufgeklappt.'&AnrufAusgehend='.$AnrufAusgehend.'&AnrufVerpasst='.$AnrufVerpasst.'&AnrufEingehend='.$AnrufEingehend.'&AnrufBlockiert='.$AnrufBlockiert.'&AnrufAB='.$AnrufAB.'",
+    success: function(data) {
+	  $("#' . $modalId . '").html("" + data);
+    }
+  });
+
+</script>';
+}
+
+
+
+
+
 	
+		
+
+
+
+if(isset($_GET['fritz_url']))
+{
+	$fritz_url = $_GET['fritz_url'];
+	$fritz_pwd = urldecode($_GET['fritz_pwd']);
+	$fritz_user = $_GET['fritz_user'];
+	$aufgeklappt = $_GET['aufgeklappt'];
+	$AnrufAusgehend = "#".$_GET['AnrufAusgehend'];
+	$AnrufVerpasst = "#".$_GET['AnrufVerpasst'];
+	$AnrufEingehend = "#".$_GET['AnrufEingehend'];
+	$AnrufBlockiert = "#".$_GET['AnrufBlockiert'];
+	$AnrufAB = "#".$_GET['AnrufAB'];
     // Get Challenge-String
 	$req_url = 'http://' . $fritz_url . '/login_sid.lua';
 	$l = simplexml_load_string(file_get_contents($req_url));
@@ -137,11 +182,7 @@ else { $AnrufAB = "#f5b342"; }
     $cl = simplexml_load_string(file_get_contents(sprintf('http://%s:49000/calllist.lua?sid=%s', $fritz_url, $sid)));
 //print_r($cl);
     $modalId = mt_rand();
-    $retValue = '<div class="hh">
-    <div data-toggle="collapse" data-target="#'.$modalId.'">
-    <img src="icon/'.$component["icon"].'" class="icon">'.$component['name'].'
-    </div>
-	<div class="hh2 '.$aufgeklappt.'" id="' . $modalId . '">
+    $retValue = '
     <table class="table">
        <thead>
          <tr>
@@ -192,9 +233,8 @@ else
         $counter++;
     }
 
-    return $retValue .= '      </tbody>
-    </table>
-   </div>
- </div>';
+    echo $retValue;
+    echo '</tbody>
+    </table>';
 }
 ?>
