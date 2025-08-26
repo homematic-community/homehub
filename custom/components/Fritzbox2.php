@@ -131,15 +131,16 @@ function Fritzbox2($component) {
 
     $modalId = mt_rand();
 	return '<div class="hh hhdouble" style="width:100%;height:100%;">'
-            . '<div class="pull-left"><img src="icon/' . $component["icon"] . '" class="icon">'.$component['name'].'</div>'
+            //. '<div class="pull-left"><img src="icon/' . $component["icon"] . '" class="icon">'.$component['name'].'</div>'
+			.'<div data-toggle="collapse" data-target="#'.$modalId.'"><img src="icon/'.$component["icon"].'" class="icon">'.$component['name'].'</div>'
            // . '<div class="pull-right"></div>'
-        . '<div class="hh2" id="' . $modalId . '"><br><br>lade Liste ...<br>'
+        . '<div class="hh2 '.$aufgeklappt.'"" id="' . $modalId . '">lade Liste ...<br>'
         . '</div>'
     . '</div>
 	<script type="text/javascript">
 
   $.ajax({
-    url: "custom/components/Fritzbox2.php?fritz_url='.$fritz_url.'&fritz_pwd='.urlencode($component["fritz_pwd"]).'&fritz_user='.$fritz_user.'&aufgeklappt='.$aufgeklappt.'&AnrufAusgehend='.$AnrufAusgehend.'&AnrufVerpasst='.$AnrufVerpasst.'&AnrufEingehend='.$AnrufEingehend.'&AnrufBlockiert='.$AnrufBlockiert.'&AnrufAB='.$AnrufAB.'&max='.$max.'",
+    url: "custom/components/Fritzbox2.php?fritz_url='.$fritz_url.'&fritz_pwd='.urlencode($component["fritz_pwd"]).'&fritz_user='.$fritz_user.'&AnrufAusgehend='.$AnrufAusgehend.'&AnrufVerpasst='.$AnrufVerpasst.'&AnrufEingehend='.$AnrufEingehend.'&AnrufBlockiert='.$AnrufBlockiert.'&AnrufAB='.$AnrufAB.'&max='.$max.'",
     success: function(data) {
 	  $("#' . $modalId . '").html("" + data);
     }
@@ -162,7 +163,6 @@ if(isset($_GET['fritz_url']))
 	$fritz_url = $_GET['fritz_url'];
 	$fritz_pwd = urldecode($_GET['fritz_pwd']);
 	$fritz_user = $_GET['fritz_user'];
-	$aufgeklappt = $_GET['aufgeklappt'];
 	$AnrufAusgehend = "#".$_GET['AnrufAusgehend'];
 	$AnrufVerpasst = "#".$_GET['AnrufVerpasst'];
 	$AnrufEingehend = "#".$_GET['AnrufEingehend'];
