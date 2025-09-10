@@ -228,91 +228,27 @@ if(isset($_GET['url']) AND isset($_GET['tage']) AND isset($_GET['beschreibung'])
 	}
 	if(isset($majorarray['DTSTART']) AND isset($majorarray['DTEND']))
 	{
-		
-	  // Wiederkehrende Termine ausrechnen
-	  $z = 0;
-	  if(Isset($majorarray['RRULE']))
+	  // Alle Events die neuer sind
+	  //if(substr($majorarray['DTSTART'], 0, 8) >= date("Ymd")) 
+	  if($majorarray['DTSTART'] >= date("YmdHis")) 
 	  {
-		
-	      while($majorarray['DTEND'] <= date("YmdHis", strtotime("+".$tage." day")))
-		  {
-	        if(isset($_GET['debug'])) {
-			echo "<hr>".$majorarray['DTEND']."<br>".date("YmdHis", strtotime("+".$tage." day"));
-			echo "<br>".substr($majorarray['DTSTART'], 0, 8);
-			echo "<br>".substr($majorarray['DTEND'], 0, 8);
-            }
+		// Alle Events die maximal 7 Tage älter sind.
+		//if(substr($majorarray['DTSTART'], 0, 8) <= date("Ymd", strtotime("+".$tage." day")))
+		if($majorarray['DTSTART'] <= date("YmdHis", strtotime("+".$tage." day")))
+		{
+			$events[] = $majorarray;
 
-            if($majorarray['DTSTART'] >= date("YmdHis")) 
-	        {
-		      // Alle Events die maximal 7 Tage älter sind.
-		      //if(substr($majorarray['DTSTART'], 0, 8) <= date("Ymd", strtotime("+".$tage." day")))
-		      if($majorarray['DTSTART'] <= date("YmdHis", strtotime("+".$tage." day")))
-		      {
-			    $events[] = $majorarray;
-		      }
-	        }
-	        else if(substr($majorarray['DTSTART'], 0, 8) <= date("Ymd") AND substr($majorarray['DTEND'], 0, 8) >= date("Ymd", strtotime("+1 day"))) 
-	        {
-		      $events[] = $majorarray;
-  	        }
-	        else
-	        {
-		
-	        }
-	  
-	        if(strpos($majorarray['RRULE'], "YEARLY") !== false)
-		    {
-		  	  $majorarray['DTSTART'] = date('YmdHis', (strtotime($majorarray['DTSTART'])+31536000));
-			  if(isset($_GET['debug'])) { echo "<br>".$majorarray['DTSTART']; }
-			  $majorarray['DTEND'] = date('YmdHis', (strtotime($majorarray['DTEND'])+31536000));
-			  if(isset($_GET['debug'])) { echo "<br>".$majorarray['DTEND']; }
-		    }
-			
-		    else if(strpos($majorarray['RRULE'], "DAILY") !== false)
-		    {
-			  $majorarray['DTSTART'] = date('YmdHis', (strtotime($majorarray['DTSTART'])+86400));
-			  if(isset($_GET['debug'])) { echo "<br>a".$majorarray['DTSTART'];}
-			  $majorarray['DTEND'] = date('YmdHis', (strtotime($majorarray['DTEND'])+86400));
-			  if(isset($_GET['debug'])) { echo "<br>b".$majorarray['DTEND']; }
-		    }
-		    else if(strpos($majorarray['RRULE'], "WEEKLY") !== false)
-		    {
-			  $majorarray['DTSTART'] = date('YmdHis', (strtotime($majorarray['DTSTART'])+604800));
-			  if(isset($_GET['debug'])) { echo "<br>a".$majorarray['DTSTART']; }
-			  $majorarray['DTEND'] = date('YmdHis', (strtotime($majorarray['DTEND'])+604800));
-			  if(isset($_GET['debug'])) { echo "<br>b".$majorarray['DTEND']; }
-		    }			
-			else
-			{
-			  break;
-			}
-			
-			
-		  }
 	
-	  
+		}
 	  }
+	  // oder alle events deren Start vor oder am gleichen Tag war und nach oder am gleichen tag endet
+	  else if(substr($majorarray['DTSTART'], 0, 8) <= date("Ymd") AND substr($majorarray['DTEND'], 0, 8) >= date("Ymd", strtotime("+1 day"))) 
+	  {
+		$events[] = $majorarray;
+  	  }
 	  else
 	  {
-	    // Alle Events die neuer sind
-	    //if(substr($majorarray['DTSTART'], 0, 8) >= date("Ymd")) 
-	    if($majorarray['DTSTART'] >= date("YmdHis")) 
-	    {
-	  	  // Alle Events die maximal 7 Tage älter sind.
-		  //if(substr($majorarray['DTSTART'], 0, 8) <= date("Ymd", strtotime("+".$tage." day")))
-		  if($majorarray['DTSTART'] <= date("YmdHis", strtotime("+".$tage." day")))
-		  {
-			$events[] = $majorarray;
-		  }
-	    }
-	    // oder alle events deren Start vor oder am gleichen Tag war und nach oder am gleichen tag endet
-	    else if(substr($majorarray['DTSTART'], 0, 8) <= date("Ymd") AND substr($majorarray['DTEND'], 0, 8) >= date("Ymd", strtotime("+1 day"))) 
-	    {
-	  	  $events[] = $majorarray;
-  	    }
-	    else
-	    {
-	    }	
+		
 	  }
 	}
 	if(isset($_GET['debug'])) { print_r($majorarray); }
