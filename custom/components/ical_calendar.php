@@ -236,11 +236,34 @@ if(isset($_GET['url']) AND isset($_GET['tage']) AND isset($_GET['beschreibung'])
 		
 	      while($majorarray['DTEND'] <= date("YmdHis", strtotime("+".$tage." day")))
 		  {
+			
+			
+
+		
 	        if(isset($_GET['debug'])) {
-			echo "<hr>".$majorarray['DTEND']."<br>".date("YmdHis", strtotime("+".$tage." day"));
-			echo "<br>".substr($majorarray['DTSTART'], 0, 8);
-			echo "<br>".substr($majorarray['DTEND'], 0, 8);
+			echo "<hr>Ende: ".$majorarray['DTEND'];
+			echo "<br>Aktuelles + x Tage: ".date("YmdHis", strtotime("+".$tage." day"));
+			echo "<br>DT Start erste 8: ".substr($majorarray['DTSTART'], 0, 8);
+			echo "<br>DT Ende erste 8: ".substr($majorarray['DTEND'], 0, 8);
             }
+
+            // Ende Datum beachten
+			$EndDate = explode("UNTIL=",$majorarray['RRULE']);
+		    if(isset($EndDate[1]))
+			{
+				$EndDate = explode(";",$EndDate[1]);
+				
+				$EndDate[0] = str_replace("T", "", $EndDate[0]);
+				$EndDate[0] = str_replace("Z", "", $EndDate[0]);
+				if(isset($_GET['debug'])) {echo "<br>wenn ".$EndDate[0]." größer als ".$majorarray['DTEND']; }
+				if($EndDate[0] <= $majorarray['DTEND'])
+				{
+					if(isset($_GET['debug'])) {echo "<hr>#ö#<hr><br>EndeDatum".$EndDate[0]; }
+					if(isset($_GET['debug'])) {echo "<hr><br>".date("YmdHis")."<hr>"; }
+					break;
+				}
+			}
+
 
             if($majorarray['DTSTART'] >= date("YmdHis")) 
 	        {
