@@ -279,6 +279,18 @@ if(isset($_GET['url']) AND isset($_GET['tage']) AND isset($_GET['beschreibung'])
 			}
 			
 			
+			// Intervall
+			$Interval = explode("INTERVAL=",$majorarray['RRULE']);
+		    if(isset($Interval[1]))
+			{
+				$Interval = explode(";",$Interval[1]);
+				if(isset($_GET['debug'])) {echo "<hr>Interval<hr><br>".$Interval[0]; }
+				$Interval = $Interval[0];
+			}
+			else
+			{
+				$Interval = "1";
+			}
 			
 			
 
@@ -299,27 +311,30 @@ if(isset($_GET['url']) AND isset($_GET['tage']) AND isset($_GET['beschreibung'])
 	        {
 		
 	        }
+			
+			
 	  
 	        if(strpos($majorarray['RRULE'], "YEARLY") !== false)
 		    {
-		  	  $majorarray['DTSTART'] = date('YmdHis', (strtotime($majorarray['DTSTART'])+31536000));
+		  	  $majorarray['DTSTART'] = date('YmdHis', (strtotime($majorarray['DTSTART'])+(31536000*$Interval)));
 			  if(isset($_GET['debug'])) { echo "<br>".$majorarray['DTSTART']; }
-			  $majorarray['DTEND'] = date('YmdHis', (strtotime($majorarray['DTEND'])+31536000));
+			  $majorarray['DTEND'] = date('YmdHis', (strtotime($majorarray['DTEND'])+(31536000*$Interval)));
 			  if(isset($_GET['debug'])) { echo "<br>".$majorarray['DTEND']; }
 		    }
 			
 		    else if(strpos($majorarray['RRULE'], "DAILY") !== false)
 		    {
-			  $majorarray['DTSTART'] = date('YmdHis', (strtotime($majorarray['DTSTART'])+86400));
+				
+			  $majorarray['DTSTART'] = date('YmdHis', (strtotime($majorarray['DTSTART'])+(86400*$Interval)));
 			  if(isset($_GET['debug'])) { echo "<br>a".$majorarray['DTSTART'];}
-			  $majorarray['DTEND'] = date('YmdHis', (strtotime($majorarray['DTEND'])+86400));
+			  $majorarray['DTEND'] = date('YmdHis', (strtotime($majorarray['DTEND'])+(86400*$Interval)));
 			  if(isset($_GET['debug'])) { echo "<br>b".$majorarray['DTEND']; }
 		    }
 		    else if(strpos($majorarray['RRULE'], "WEEKLY") !== false)
 		    {
-			  $majorarray['DTSTART'] = date('YmdHis', (strtotime($majorarray['DTSTART'])+604800));
+			  $majorarray['DTSTART'] = date('YmdHis', (strtotime($majorarray['DTSTART'])+(604800*$Interval)));
 			  if(isset($_GET['debug'])) { echo "<br>a".$majorarray['DTSTART']; }
-			  $majorarray['DTEND'] = date('YmdHis', (strtotime($majorarray['DTEND'])+604800));
+			  $majorarray['DTEND'] = date('YmdHis', (strtotime($majorarray['DTEND'])+(604800**$Interval)));
 			  if(isset($_GET['debug'])) { echo "<br>b".$majorarray['DTEND']; }
 		    }			
 			else
@@ -328,6 +343,7 @@ if(isset($_GET['url']) AND isset($_GET['tage']) AND isset($_GET['beschreibung'])
 			}
 			
 			$z++;
+			unset($interval);
 		  }
 	
 	  
