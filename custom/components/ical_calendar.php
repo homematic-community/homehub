@@ -247,7 +247,7 @@ if(isset($_GET['url']) AND isset($_GET['tage']) AND isset($_GET['beschreibung'])
 			echo "<br>DT Ende erste 8: ".substr($majorarray['DTEND'], 0, 8);
             }
 
-            // Ende Datum beachten
+            // Ende Datum beachten - Datum
 			$EndDate = explode("UNTIL=",$majorarray['RRULE']);
 		    if(isset($EndDate[1]))
 			{
@@ -263,7 +263,24 @@ if(isset($_GET['url']) AND isset($_GET['tage']) AND isset($_GET['beschreibung'])
 					break;
 				}
 			}
+            // Ende Datum beachten - Count
+			$EndDate = explode("COUNT=",$majorarray['RRULE']);
+		    if(isset($EndDate[1]))
+			{
+				
+				$EndDate = explode(";",$EndDate[1]);
+				if(isset($_GET['debug'])) {echo "<br>wenn ".$EndDate[0]." größer als ".$z; }
+				if($EndDate[0] <= $z)
+				{
+					if(isset($_GET['debug'])) {echo "<hr>Count erreicht<hr><br>".$z; }
 
+					break;
+				}
+			}
+			
+			
+			
+			
 
             if($majorarray['DTSTART'] >= date("YmdHis")) 
 	        {
@@ -310,7 +327,7 @@ if(isset($_GET['url']) AND isset($_GET['tage']) AND isset($_GET['beschreibung'])
 			  break;
 			}
 			
-			
+			$z++;
 		  }
 	
 	  
