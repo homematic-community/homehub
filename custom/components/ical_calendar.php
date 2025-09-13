@@ -186,7 +186,11 @@ if(isset($_GET['url']) AND isset($_GET['tage']) AND isset($_GET['beschreibung'])
 		
 		$majorarray['DTSTART'] = $value;
 	  }
+			  if (substr($key, 0, 5) == "DTEND")
+	  {
 		
+		$majorarray['DTEND'] = $value;
+	  }
       
 	}
 
