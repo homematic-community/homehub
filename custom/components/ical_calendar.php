@@ -177,9 +177,24 @@ if(isset($_GET['url']) AND isset($_GET['tage']) AND isset($_GET['beschreibung'])
 
 	
  	// Damit Werte gefüllt sind
+	
+	
+	foreach ($majorarray as $key => $value) {
+		if(isset($_GET['debug'])) { echo "<hr>###Schlüssel: ".$key." => Wert: ".$value."<br>"; }
+	  if (substr($key, 0, 7) == "DTSTART")
+	  {
+		
+		$majorarray['DTSTART'] = $value;
+	  }
+		
+      
+	}
+
+	
 	if(Isset($majorarray['DTSTART;VALUE=DATE'])) { $majorarray['DTSTART'] = $majorarray['DTSTART;VALUE=DATE']; }	
 	if(Isset($majorarray['DTSTART;TZID=Europe/Berlin'])) { $majorarray['DTSTART'] = $majorarray['DTSTART;TZID=Europe/Berlin']; }
 	if(Isset($majorarray['DTSTART;TZID=Africa/Ceuta'])) { $majorarray['DTSTART'] = $majorarray['DTSTART;TZID=Africa/Ceuta']; }
+	
 	
 	
 	if(Isset($majorarray['DTEND;VALUE=DATE'])) { $majorarray['DTEND'] = $majorarray['DTEND;VALUE=DATE']; }
