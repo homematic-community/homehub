@@ -345,10 +345,23 @@ if(isset($_GET['url']) AND isset($_GET['tage']) AND isset($_GET['beschreibung'])
 	  
 	        if(strpos($majorarray['RRULE'], "YEARLY") !== false)
 		    {
-		  	  $majorarray['DTSTART'] = date('YmdHis', (strtotime($majorarray['DTSTART'])+(31536000*$Interval)));
+			  if (isLeapYear((substr($majorarray['DTSTART'], 0, 4)+1))) {
+			  $majorarray['DTSTART'] = date('YmdHis', (strtotime($majorarray['DTSTART'])+(31622400*$Interval)));
+			  if(isset($_GET['debug'])) { echo "<br>SCHALTJAHR".$majorarray['DTSTART']; }
+			  $majorarray['DTEND'] = date('YmdHis', (strtotime($majorarray['DTEND'])+(31622400*$Interval)));
+			  if(isset($_GET['debug'])) { echo "<br>SCHALTJAHR".$majorarray['DTEND']; }
+				  
+			  }
+			  else
+			  {
+			  $majorarray['DTSTART'] = date('YmdHis', (strtotime($majorarray['DTSTART'])+(31536000*$Interval)));
 			  if(isset($_GET['debug'])) { echo "<br>".$majorarray['DTSTART']; }
 			  $majorarray['DTEND'] = date('YmdHis', (strtotime($majorarray['DTEND'])+(31536000*$Interval)));
-			  if(isset($_GET['debug'])) { echo "<br>".$majorarray['DTEND']; }
+			  if(isset($_GET['debug'])) { echo "<br>".$majorarray['DTEND']; }				  
+			  }
+			 
+
+
 		    }
 			
 		    else if(strpos($majorarray['RRULE'], "DAILY") !== false)
@@ -507,7 +520,14 @@ if(isset($_GET['url']) AND isset($_GET['tage']) AND isset($_GET['beschreibung'])
   echo $content_output;
 }
 
-
+function isLeapYear($year) {
+    // Überprüft, ob die Jahreszahl eine gültige Ganzzahl ist
+    if (!filter_var($year, FILTER_VALIDATE_INT)) {
+        return false; // Ungültige Eingabe
+    }
+    // date('L') gibt '1' für ein Schaltjahr und '0' für ein Gemeinjahr zurück
+    return (date('L', strtotime("$year-01-01")) == 1);
+}
 
 
 ?>
