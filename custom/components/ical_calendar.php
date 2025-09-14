@@ -143,6 +143,16 @@ if(isset($_GET['url']) AND isset($_GET['tage']) AND isset($_GET['beschreibung'])
   // Ersetze Zeilenumbruch
   $content = str_replace("\r\n ", "", $contentall);
   
+  // Filtere VALARME
+  $startwort = "BEGIN:VALARM";
+  $endwort = "END:VALARM";
+  $neuer_text = "";
+
+  // Regulären Ausdruck erstellen, der den Text zwischen den Stichwörtern findet
+  $pattern = '/' . preg_quote($startwort, '/') . '(.*?)' . preg_quote($endwort, '/') . '/s';
+
+    // Den Text ersetzen
+  $content =  $ersetzt_text = preg_replace($pattern, $startwort . $neuer_text . $endwort, $content);
 
   // Suche Events nach BEGIN und END
   preg_match_all('/(BEGIN:VEVENT.*?END:VEVENT)/si', $content, $result, PREG_PATTERN_ORDER);
