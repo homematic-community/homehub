@@ -115,7 +115,7 @@ foreach ($json['custom'] as $customs) {
 					if (sprintf("%02d", $col[1]).':'.sprintf("%02d", $col[2]) == date('H:i')) {
 					// Stunden und Minuten auf zweistellig ergänzen und mit aktueller Uhrzeit vergleichen
 						$diagramm[$custom['ise_id']][$custom['collect']][$history] = add_diagramm($custom);
-						echo '- sammle '.$custom['ise_id'].' '.[$custom['collect']].' '.$history.PHP_EOL;
+						echo '- sammle '.$custom['ise_id'].' '.$custom['collect'].' '.$history.PHP_EOL;
 					} else {
 						echo '- überspringe '.$custom['ise_id'].' '.$history.', fällig um '.$custom['collect'].PHP_EOL;
 						continue;
