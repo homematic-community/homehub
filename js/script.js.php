@@ -680,6 +680,7 @@ var updateDatapoints = function () {
                     case 'HmIP-WTH-2':
                     case 'HmIP-BWTH':
                     case 'HmIP-WTH-B':
+					case 'HmIP-WTH-B-2':
                     case 'HmIPW-WTH':
                     case 'HmIPW-STHD':
                     case 'HmIPW-STH':
