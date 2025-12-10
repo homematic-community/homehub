@@ -1,4 +1,42 @@
 <?php
+
+// HmIP_RGBW
+/*
+
+
+		{
+		"name":"WZ-TV-Ambiente-RGB",
+		"icon":"light_led_stripe_rgb.png",
+		"display_name":"WZ-TV-Ambiente-RGB",
+		"color":"#FF8800"
+		},	
+
+
+
+Optionale mit angepassten Effekten:
+
+
+		{
+		"name":"WZ-TV-Ambiente-RGB",
+		"icon":"light_led_stripe_rgb.png",
+		"display_name":"WZ-TV-Ambiente-RGB",
+		"color":"#FF8800",
+		"presets_id":"0,3,6",
+		"presets_text":"Solid,Wipe,Sweep"
+		},		
+
+
+
+Optional presets_id (1-10) in Kombination mit presets_text zur Auswahl von presets 
+presets_id die Nummer
+presets_text - pro id und frei wählbar
+
+
+
+*/
+
+
+
 function HmIP_RGBW($component) {
     if ($component['parent_device_interface'] == 'HmIP-RF' && $component['visible'] == 'true' && isset($component['LEVEL'])) {
         $modalId = mt_rand();
@@ -7,15 +45,53 @@ function HmIP_RGBW($component) {
 		    if(!isset($component['button'])) {
         $component['button'] = '';
     }
+	
+	if (!isset($component['presets_id']))
+	{
+		$component['presets_id']= "1,2,3,4,5,6,7,8,9,10";
+	}
+	if (!isset($component['presets_text']))
+	{
+		$component['presets_text']= "Effekt 1";
+	}
+	
+
+	$presets_ids = explode(",",$component['presets_id']);
+	$presets_text = explode(",",$component['presets_text']);
+
+	$i = 0;
+	$presets = "";
+			
+	foreach ($presets_ids as $presets_id) {
+		if(!isset($presets_text[$i])) { $presets_text[$i] = "Effekt ".($i+1); }
+		$presets = $presets .'<button type="button" class="btn btn-primary set" data-set-id="' . $component['EFFECT'] . '" data-set-value="'.($presets_id*2).'">'.$presets_text[$i].'</button>';
+		$i++;
+
+		
+		
+	}
         return '<div class="hh" style=\'border-left-color: '.$component['color']. '; border-left-style: solid;\'>'
-            . '<!--<div data-toggle="collapse" data-target="#' . $modalId . '">-->'
-				. '<div class="pull-left"><img src="icon/' . $component["icon"] . '" class="icon">' . $component['name'] . '</div>'
+            . '<div >'
+				. '<div class="pull-left" data-toggle="collapse" data-target="#' . $modalId . '"><img src="icon/' . $component["icon"] . '" class="icon">' . $component['name'] . '</div>'
 				. '<div class="pull-right">'
 				. '<span class="info" data-id="' . $component['LEVEL'] . '" data-component="' . $component['component'] . '" id ="dim'.$component['LEVEL']. 'rahmen" data-datapoint="LEVEL"></span>&nbsp;&nbsp;|&nbsp;&nbsp;'
 				. '<input class="info" data-id="' . $component['HUE']. '" data-component="' . $component['component'] . '" id="hue_'.$component['HUE']. '" data-datapoint="HUE" style="display:none;">'
 				. '<input class="info" data-id="' . $component['SATURATION'] . '" data-component="' . $component['component'] . '" id="hue_'.$component['SATURATION']. '" data-datapoint="SATURATION" style="display:none;">'
 				. '<input type="color"  id="color_'.$component['HUE']. '"  onchange="hue'.$component['HUE']. 'change();">&nbsp;&nbsp;|'
 				. '<span class="info set"  data-id="' . $component['LEVEL'] . '" data-component="' . $component['component'] . '" data-datapoint="LEVEL" data-set-id="' . $component['LEVEL'] . '" data-button="' . $component['button'] . '" data-set-value=""></span>'
+				            . '</div>'
+							. '</div>'
+            . '<div class="clearfix"></div>'
+			. '<div class="hh2 collapse" id="' . $modalId . '">'
+				. '<div class="row text-center">'
+                    . '<div class="btn-group">'
+                        .$presets
+
+                    . '</div>'
+                . '</div>'
+				. '</div>'
+				. '</div>'
+
 				. '<script type="text/javascript">'."\n"
 				. 'function hue'.$component['HUE']. '() {'." \n"
 					. 'let  hue'.$component['HUE']. ' = document.getElementById("hue_'.$component['HUE']. '").value;'	
@@ -117,9 +193,10 @@ function HmIP_RGBW($component) {
 
 
 				. '</script>'."\n"
-                . '</div>'
-                . '<div class="clearfix"></div>'
-            . '</div>';
+              //  . '</div>'
+               // . '<div class="clearfix"></div>'
+            //. '</div>';
+			.'';
     }
 }
 
