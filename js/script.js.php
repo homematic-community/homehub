@@ -152,6 +152,7 @@ var updateDatapoints = function () {
                     case 'HmIP-FSI16':
                     case 'HmIPW-DRS8':
                     case 'HmIPW-DRS4':
+                    case 'HmIP-DRSI1':
                     case 'HmIP-DRSI4':
                     case 'HmIP-FWI':
 					case 'HmIP-WHS2':
@@ -2946,3 +2947,4 @@ function startImport() {
     window.clearTimeout(timer);
     window.location = "?seite=Import";
 }
+

@@ -10,6 +10,10 @@
                 "icon": "fts_garage_car_01.png"
             },
             {
+                "name": "HmIP-DRSI1",
+                "icon": "control_fault_current_circuit_breaker_off.png"
+            },
+            {
                 "name": "HmIP-DRSI4",
                 "icon": "control_fault_current_circuit_breaker_off.png"
             },
