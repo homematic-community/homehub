@@ -305,8 +305,23 @@ var setDatapointIoBroker = function(id, value, datapoint, ioBrokerAPI) {
                 }
             });
         } else {
-            console.log("Dimmer aber ohne Wert - Fehler");
+            console.log("Text aber ohne Wert - Fehler");
         }
+    } else if (datapoint == "presets") {
+        url = ioBrokerAPI + '/set/' + id + '?value=' + value
+        $.ajax({
+            type: 'GET',
+            url: url,
+            dataType: 'json',
+            success: function(json) {
+                $('#flash-error').hide();
+                updateDatapointsioBroker();
+            },
+            //other code
+            error: function() {
+                $('#flash-error').html('Es gab einen Fehler beim Verarbeiten des Reqeusts.').show();
+            }
+        });	
     } else {
         alert("kein Modus definiert");
     }

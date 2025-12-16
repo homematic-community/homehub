@@ -78,6 +78,21 @@
             "objekt":"yeelight-2.0.Buero.control.active_bright,yeelight-2.0.Buero.control.rgb,yeelight-2.0.Buero.control.power",
 			"modus":"dimmer,color,toggle"
 		 },		 
+		 
+		 // Presets für Licht einstellungen Szenen
+		         {
+            "component":"ioBroker",
+            "api":"http://192.168.178.13:8087",
+            "name":"Aussenlampe",
+            "icon":"light_floor_lamp_2.png",
+			"objekt":"yeelight-2.0.Aussenlampe.control.active_bright,yeelight-2.0.Aussenlampe.control.rgb,yeelight-2.0.Aussenlampe.control.power,yeelight-2.0.Aussenlampe.control.power",
+            "modus":"dimmer,color,toggle,presets",
+            "unit":"100",
+            "operate":",false,true",
+			"presets_id":"0,3,6",
+			"presets_text":"Solid,Wipe,Sweep",
+            "showtime":"true"
+         },
 */
 
 
@@ -104,7 +119,7 @@ function ioBroker($component)
     if (!$VerbindingsTest) {
      return "";
 	}
-	
+	$presets = "";
 	$Ausgabe = "";
 	$Ausgabe2 = "";
 	$i = 0;
@@ -195,6 +210,35 @@ function ioBroker($component)
 			else { $ShowTime = ''; }
 			$Ausgabe = $Ausgabe .  ' <span class="infoioBroker" data-id="' . $iseWert . '" data-api="'.$iseAPI.'" style="display:none;"></span><span class="runioBroker btn-action" data-component="ioBroker" data-datapoint="'. $iseModus[$i] .'" data-run-id="' . $iseWert . '" data-api="'.$iseAPI.'">'.$iseLabel[$i].'</span>';
 		}
+		else if ($iseModus[$i] == "presets")
+		{
+			if(isset($component['showtime']))
+			{
+				if($component['showtime'] == "true") { $ShowTime = '<span class="infoioBrokershowtime" id="' . $iseWert  . 't" data-component="iobrokershowtime" data-datapoint="showtime"></span>'; }
+				else { $ShowTime = ''; }
+			}
+			else { $ShowTime = ''; }
+			if (!isset($component['presets_id']))
+			{
+				$component['presets_id']= "1,2,3,4,5,6,7,8,9,10";
+				echo "###";
+			}
+			if (!isset($component['presets_text']))
+			{
+				$component['presets_text']= "Effekt 1";
+			}
+			$presets_ids = explode(",",$component['presets_id']);
+			$presets_text = explode(",",$component['presets_text']);
+			$y = "0";
+			
+			foreach ($presets_ids as $presets_id) 
+			{
+				//$presets = $presets .  '<span class="btn-action  setioBroker" data-id="' . $iseWert . '"  id="' . $iseWert . '_'.$y.'" data-component="ioBroker" data-datapoint="'. $iseModus[$i] .'" data-unit="" data-valuelist="" >'.$presets_text[$y].'</span> ';
+				$presets = $presets .  '<span><button type="button" class="btn btn-primary setioBroker" data-datapoint="'. $iseModus[$i] .'" data-api="'.$iseAPI.'" data-set-id="'.$iseWert.'" data-set-value="'.$presets_id.'">'.$presets_text[$y].'</button>';
+				//$presets = $presets .  '<span><button type="button" class="btn btn-primary setioBroker" data-id="' . $iseWert . '"  id="' . $iseWert . '" data-component="ioBroker" data-datapoint="'. $iseModus[$i] .'" data-api="'.$iseAPI.'" data-set-id="'.$iseWert.'" data-set-value="'.$presets_id.'">'.$presets_text[$y].'</button>';
+				$y++;
+			}
+		}		
 		else if($iseModus[$i] == "text")
 		{
 			if(isset($component['showtime']))
@@ -235,13 +279,22 @@ function ioBroker($component)
 
    
    return '<div class="hh"  style=\'border-left-color: '.$component['color'].'; border-left-style: solid;\'>'
-					.'<div data-toggle="collapse" data-target="#'.$modalId.'" class="" aria-expanded="true">'
-					.'<div class="pull-left"><img src="icon/' . $component["icon"] . '" class="icon">' . $component['name'] . '</div>'
+					.'<div>'
+					.'<div class="pull-left" data-toggle="collapse" data-target="#'.$modalId.'" class="" aria-expanded="true"><img src="icon/' . $component["icon"] . '" class="icon">' . $component['name'] . '</div>'
                     .'<div class="pull-right">'
 						.$ShowTime
 					. $Ausgabe
                     . '</div>'
                     . '<div class="clearfix"></div>'
+					
+					 .'<div class="hh2 collapse" id="' . $modalId . '">'
+				. '<div class="row text-center">'
+                    . '<div class="btn-group">'
+                        .$presets
+                    . '</div>'
+                . '</div>'
+				. '</div>'
+				
                 . '</div>'
 
 				.$Ausgabe2
