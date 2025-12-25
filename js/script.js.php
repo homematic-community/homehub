@@ -2839,7 +2839,7 @@ var updateDatapoints = function () {
                         break;
                     case 'HmIP-CCU3':
                     case 'HmIP-HAP':
-                    case 'HmIP-RFUSB':
+                    case 'HmIP-RFUSB': 
                     case 'RPI-RF-MOD':
                     case 'HM-MOD-RPI-PCB':
                         $('[data-id="' + ise_id + '"]').html((Math.round(value * 10) / 10) + ' &percnt;');
