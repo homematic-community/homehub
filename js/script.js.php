@@ -32,9 +32,26 @@ $(document).ready(function () {
     });	
 });
 
+
+// Funktion, damit Datenpunkt nur bei sichtbarer Anzeige aktualisiert werden
+var DisplayOn = 1;
+document.addEventListener("visibilitychange", () => {
+  
+  if (document.hidden) {
+    DisplayOn = 0;
+	console.log("gestoppt");
+	clearTimeout(timer);
+	
+  } else {
+     DisplayOn = 1;
+	console.log("weiter");
+	updateDatapoints();
+  }
+});
+
 var updateDatapoints = function () {
-	window.clearTimeout(timer);
-    //192.168.2.6/config/xmlapi/state.cgi?datapoint_id=    
+	window.clearTimeout(timer);  
+	if (DisplayOn != "1") { return;	}	
     showTitle();
     var id = '';
     
