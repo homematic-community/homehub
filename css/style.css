@@ -52,6 +52,7 @@ header #date img{
 
 a {
     color: #f5f5f5;
+	text-decoration:none; /* Bootstrap 3 auf 5  - Vorbereitung */
 }
 
 a:hover {
@@ -495,3 +496,13 @@ input#open-menu:checked ~ nav {
 }
 
 
+
+
+/* Bootstrap 3 auf 5  - Vorbereitung */
+
+.pull-right {
+    float:right; 
+}
+.pull-left {
+    float:left;
+}

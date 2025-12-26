@@ -396,7 +396,7 @@ if(count((array)$export) > 0)
 			$Page = $_GET['seite'];
 		}
 		
-        echo "<nav id='sidebar' class='offcanvas'>\n";
+        echo "<nav id='sidebar'>\n";
             
                     foreach($menu as $entry) {
                         if (!isset($entry['visible'])) { $entry['visible'] = "true"; }
@@ -416,7 +416,7 @@ if(count((array)$export) > 0)
                     }
 
          echo "</nav>\n";
-        echo "<nav id='sidebarkomplett' class='offcanvas'>\n";
+        echo "<nav id='sidebarkomplett'>\n";
                
                     foreach($menu as $entry) {
                         if (!isset($entry['visible'])) { $entry['visible'] = "true"; }
