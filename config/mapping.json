@@ -570,6 +570,10 @@
                 "icon": "ccu.png"
             },			
             {
+                "name": "HmIP-HAP-B1",
+                "icon": "ccu.png"
+            },			
+            {
                 "name": "RPI-RF-MOD",
                 "icon": "ccu.png"
             },	
