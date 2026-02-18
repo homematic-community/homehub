@@ -752,7 +752,7 @@ object aldp_obj;
 
 foreach(itemID, dom.GetObject(ID_DEVICES).EnumUsedIDs()) {
 address = dom.GetObject(itemID).Address();
-aldp_obj = dom.GetObject(\"AL-\" # address # \":0.STICKY_UNREACH\");
+aldp_obj = dom.GetObject("AL-" # address # ":0.STICKY_UNREACH");
 if (aldp_obj) {
 if (aldp_obj.Value()) {
 aldp_obj.AlReceipt();
