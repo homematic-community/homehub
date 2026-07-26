@@ -674,16 +674,19 @@ function api_state($ccu, $datapoints, bool $onlyvalue = false, $debug = false) {
 	  if (empty($onlyvalue)) {
 	    // Wenn es sich um einen Channel handelt gib Timestamp aus
 	    $ccu_request = $ccu_request . "if (oDatapoint.IsTypeOf(OT_CHANNEL)) {\r\n";
+	    $ccu_request = $ccu_request . "if (dom.GetObject(".$datapoint.").LastDPActionTime()) {\r\n";		
 	    $ccu_request = $ccu_request . "WriteLine(\"<datapoint ise_id='".$datapoint."t' value='\"#dom.GetObject(".$datapoint.").LastDPActionTime().ToString(\"%m.%d.%Y %H:%M:%S\")#\"'/>\");";
-	    $ccu_request = $ccu_request . "}\r\n";
+	    $ccu_request = $ccu_request . "}}\r\n";
 	    // Wenn es sich um einen Datenpunkt handelt gib Timestamp aus
 	    $ccu_request = $ccu_request . "if (oDatapoint.IsTypeOf(OT_DP)) {\r\n";
+	    $ccu_request = $ccu_request . "if (dom.GetObject(".$datapoint.").Timestamp()) {\r\n";		
 	    $ccu_request = $ccu_request . "WriteLine(\"<datapoint ise_id='".$datapoint."t' value='\"#dom.GetObject(".$datapoint.").Timestamp().ToString(\"%m.%d.%Y %H:%M:%S\")#\"'/>\");";
-	    $ccu_request = $ccu_request . "}\r\n";
+	    $ccu_request = $ccu_request . "}}\r\n";
 	    // Wenn es sich um ein Programm handelt gib Timestamp aus
 	    $ccu_request = $ccu_request . "if (oDatapoint.IsTypeOf(OT_PROGRAM)) {\r\n";
+		$ccu_request = $ccu_request . "if (dom.GetObject(".$datapoint.").ProgramLastExecuteTime()) {\r\n";	
 	    $ccu_request = $ccu_request . "WriteLine(\"<datapoint ise_id='".$datapoint."t' value='\"#dom.GetObject(".$datapoint.").ProgramLastExecuteTime().ToString(\"%m.%d.%Y %H:%M:%S\")#\"'/>\");";
-	    $ccu_request = $ccu_request . "}\r\n";
+	    $ccu_request = $ccu_request . "}}\r\n";
 	  }
 
     }

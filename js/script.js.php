@@ -163,6 +163,7 @@ var updateDatapoints = function () {
                     case 'HmIP-PSM-2 QHJ':
                     case 'HmIP-BSM':
                     case 'HmIP-BS2':
+					case 'HmIP-PCBS':
 					case 'HmIP-PCBS2':
                     case 'HmIP-FSM':
                     case 'HmIP-FSM16':
