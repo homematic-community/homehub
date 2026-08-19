@@ -153,7 +153,6 @@ var updateDatapoints = function () {
 						$('[data-id="' + ise_id + '"]').html("<img src='icon/red_dot.png'>");
 					 }
 					 break;
-                    case 'HmIP-USBSM':
                     case 'ELV-SH-BS2':
                     case 'HMIP-PSM':
                     case 'HMIP-PS':
@@ -163,7 +162,6 @@ var updateDatapoints = function () {
                     case 'HmIP-PSM-2 QHJ':
                     case 'HmIP-BSM':
                     case 'HmIP-BS2':
-					case 'HmIP-PCBS':
 					case 'HmIP-PCBS2':
                     case 'HmIP-FSM':
                     case 'HmIP-FSM16':
@@ -1342,6 +1340,7 @@ var updateDatapoints = function () {
                         }
                         break;
                     case 'SysVar':
+					case 'SysVarInt':
                         switch (datapoint) {
                             case '2':
                                 // Yes/No 
@@ -2658,8 +2657,6 @@ var updateDatapoints = function () {
                     case 'HM-RC-19-B':
                     case 'HM-RC-19-SW':
                     case 'HM-RC-19':
-                    case 'HM-RC-12':
-                    case 'HM-RC-12-B':
                     case 'HM-RC-4-2':
                     case 'HM-RC-4-B':
                     case 'HM-RC-4':   
@@ -2971,3 +2968,4 @@ function startImport() {
     window.clearTimeout(timer);
     window.location = "?seite=Import";
 }
+

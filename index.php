@@ -220,7 +220,7 @@ if(count((array)$export) > 0)
 			//echo "PPP";
             foreach($mapping[$category['name']] as $mappingEntry) 
 			{
-                foreach(array('channels', 'systemvariables', 'programs') AS $part) 
+                foreach(array('channels', 'systemvariables', 'programs','systemvariablesinternal') AS $part) 
 				{
                     $dummies = array_filter($export[$part], function($dummy) use ($mappingEntry) {
                             if($dummy['component'] == $mappingEntry['name']) {
@@ -270,7 +270,7 @@ if(count((array)$export) > 0)
                 }
 				
                     
-                foreach(array('channels', 'systemvariables', 'programs') AS $part) 
+                foreach(array('channels', 'systemvariables', 'programs','systemvariablesinternal') AS $part) 
 				{
                     $key = @array_search($customEntry['name'], array_column($export[$part], 'name'));
                     if(is_int($key)) 
@@ -545,6 +545,28 @@ if(count((array)$export) > 0)
 		}
 		// Alle Systemvariablen auflisten
 		elseif($Page=="Systemvariablen") 
+		{
+			foreach($components[$Page] as $entry)
+			{ 
+				if(isset($entry['ise_id']))
+				{
+					$functionname = str_replace("-", "_", $entry['component']);
+					if (!function_exists($functionname))
+					{
+						if(file_exists("custom/components/".$functionname.".php"))   { require("custom/components/".$functionname.".php"); }
+					  	elseif (file_exists("components/".$functionname.".php")) { require("components/".$functionname.".php"); }
+						else {  }
+					}
+					echo $functionname($entry);
+					if(isset($entry['append_divider']))
+					{
+					  if($entry['append_divider'] == true) { echo "<div class='divider'></div>\n"; }					
+					}
+				}
+			}
+		}	
+		// Alle internen Systemvariablen auflisten
+		elseif($Page=="SystemvariablenIntern") 
 		{
 			foreach($components[$Page] as $entry)
 			{ 
