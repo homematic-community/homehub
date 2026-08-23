@@ -26,9 +26,12 @@ if(isset($_GET['datapoint_id']))
 				{
 					if(isset($element['value'])) 
 					{	
-				 $element['value'] = str_replace("<","&lt;",  $element['value']);
-  $element['value'] = str_replace( ">","&gt;", $element['value']);
+						$element['value'] = str_replace('"', '', $element['value']);
+						$element['value'] = strip_tags($element['value']);
+						$element['value'] = str_replace("<","&lt;",  $element['value']);
+						$element['value'] = str_replace( ">","&gt;", $element['value']);
 						echo '<datapoint ise_id="'.$element['ise_id'].'" value="'.$element['value'].'"/>';
+						
 										echo '<datapoint ise_id="'.$element1['ise_id'].'t" value="03.27.2024 10:30:59"/>';
 						echo "\n";
 						$t = 1;
@@ -53,11 +56,11 @@ if(isset($_GET['datapoint_id']))
 						if(isset($element2['value'])) 
 						{
 							
-  $element2['value'] = str_replace("<","&lt;",  $element2['value']);
-  $element2['value'] = str_replace( ">","&gt;", $element2['value']);
+							$element2['value'] = str_replace("<","&lt;",  $element2['value']);
+							$element2['value'] = str_replace( ">","&gt;", $element2['value']);
 
 							echo '<datapoint ise_id="'.$element2['ise_id'].'" value="'.$element2['value'].'"/>';
-										echo '<datapoint ise_id="'.$element2['ise_id'].'t" value="03.27.2024 10:30:59"/>';
+							echo '<datapoint ise_id="'.$element2['ise_id'].'t" value="03.27.2024 10:30:59"/>';
 							echo "\n";
 							$t = 1;
 						}
@@ -91,8 +94,11 @@ if(isset($_GET['datapoint_id']))
 				{
 					if(isset($element['value'])) 
 					{
-										 $element['value'] = str_replace("<","&lt;",  $element['value']);
-  $element['value'] = str_replace( ">","&gt;", $element['value']);
+						$element['value'] = str_replace('"', '', $element['value']);
+						$element['value'] = strip_tags($element['value']);
+						$element['value'] = str_replace("<","&lt;",  $element['value']);	
+						$element['value'] = str_replace( ">","&gt;", $element['value']);
+						
 						echo '<datapoint ise_id="'.$element['ise_id'].'" value="'.$element['value'].'"/>';
 						echo '<datapoint ise_id="'.$element['ise_id'].'t" value="'.$element['timestamp'].'"/>';
 						echo "\n";
