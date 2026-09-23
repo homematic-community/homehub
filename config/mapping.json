@@ -548,7 +548,11 @@
             {
                 "name": "HmIP-eTRV-B-2 R4M",
                 "icon": "sani_heating.png"
-            },			
+            },	
+            {
+                "name": "HmIP-FALMOT-C8",
+                "icon": "sani_floor_heating.png"
+            },				
             {
                 "name": "HmIP-FALMOT-C12",
                 "icon": "sani_floor_heating.png"

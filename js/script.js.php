@@ -999,6 +999,26 @@ var updateDatapoints = function () {
                                 $('[data-id="' + ise_id + '"]').html(value);
                         }
                         break;
+					case 'HmIP-FALMOT-C8':
+                        switch (datapoint) {
+                            case 'LEVEL':
+                                var channel = $('[data-id="' + ise_id + '"]').attr('data-channel');
+                                var channelpos = $('[data-id="' + ise_id + '"]').attr('data-channel-pos');
+                                var totalchannels = $('[data-id="' + ise_id + '"]').attr('data-channel-total');
+                                var offset = (4-totalchannels)*20;
+                                if (value) {
+                                  value = (Math.round(value * 1000) / 10);
+                                  var iconvalue = ((Math.ceil(value/10))*10).toString();
+                                  $('[data-id="' + ise_id + '"]').html('<div style="position: absolute; width: 40px; margin-top: 2px; margin-left:' + ((channelpos*40)-268-offset) + 'px;"><img src="icon/level_' + iconvalue + '.png" /></div><div style="font-size:5pt; position: absolute; margin-top: -6px; margin-left:' + ((channelpos*40)-266-offset) + 'px;">' + channel + '</div><div style="font-size:5pt; position: absolute; margin-top: 31px; margin-left:' + ((channelpos*40)-266-offset) + 'px;">' + value + '%</div>');
+                                }
+                                else {
+                                  $('[data-id="' + ise_id + '"]').html('<div style="position: absolute; width: 40px; margin-top: 2px; margin-left:' + ((channelpos*40)-268-offset) + 'px;"><img src="icon/level_off.png" /></div><div style="font-size:5pt; position: absolute; margin-top: -6px; margin-left:' + ((channelpos*40)-266-offset) + 'px;">' + channel + '</div><div style="font-size:5pt; position: absolute; margin-top: 31px; margin-left:' + ((channelpos*40)-266-offset) + 'px;">- . -</div>');
+                                }
+                                break; 
+                              default:
+                                  $('[data-id="' + ise_id + '"]').html(value);
+                        }
+                        break;					
                     case 'HmIP-FALMOT-C12':
                         switch (datapoint) {
                             case 'LEVEL':
