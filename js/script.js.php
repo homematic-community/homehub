@@ -356,6 +356,7 @@ var updateDatapoints = function () {
 					case 'HmIP-SMO-2':
 					case 'HmIP-SMO230':
                     case 'HmIP-SMO-A':
+                    case 'HmIP-SMO-A-2':
 					case 'HmIP-SMO230-A':
                         switch (datapoint) {
                             case 'CURRENT_ILLUMINATION':
